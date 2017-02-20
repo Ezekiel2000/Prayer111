@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="org.kccc.prayer111.MainActivity">
+    <item
+        android:id="@+id/action_intro"
+        android:orderInCategory="100"
+        android:title="@string/action_intro"
+        app:showAsAction="never"/>
+    <item android:title="@string/action_calender"
+          android:id="@+id/action_calender"/>
+</menu>

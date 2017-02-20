@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_introduce"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.kccc.prayer111.IntroduceActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:background="@color/colorTitle"
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/title_background"/>
+
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="25dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="25dp"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <TextView
+                android:text="여호와를 자기 하나님으로 삼은 나라 곧 하나님의 기업으로 선택된 백성은 복이 있도다(시편33:12)"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTitle"/>
+
+            <TextView
+                android:text="어지럽고 혼란스러운 세대 속에서 살고 있는 우리에게 지금 가장 필요한 것은 한마음 한 뜻이 되어 하나님께 기도하는 것입니다."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"/>
+
+            <TextView
+                android:text="모든 그리스도인들이 하나되어 같은 시간에 기도할 때 변화할 수 없을 것만 같아 보이는 한국 사회와 한반도 땅 가운데 주님의 나라가 이루어질 것을 믿습니다."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"/>
+
+            <TextView
+                android:text="111 기도운동은 기도를 통한 전국민 복음화를 꿈꾸는 운동으로 매일 오후 1시에 1분 동안 북한 구원을 위하여 대한민국이 정의롭고 정직한 나라가 되게 하기 위하여 그리고 한 영혼의 구원을 위하여 기도하는 기도운동입니다."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:src="@drawable/intro_background"
+            android:layout_width="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_height="185dp"
+            android:id="@+id/imageView2"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

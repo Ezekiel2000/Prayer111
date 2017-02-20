@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorTitle">#6b58ca</color>
+    <color name="colorTodayTitle">#01af78</color>
+    <color name="colorMonthTitle">#04b0ca</color>
+    <color name="colorTodayText">#004f2e</color>
+    <color name="colorMonthText">#03606e</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorFab">#00cab5</color>
+    <color name="colorTextView">#f3f3f3 </color>
+    <color name="colorLogIn">#6b58ca</color>
+    <color name="colorSignUp">#8e80d7</color>
+    <color name="colorChecked">#dddddd</color>
+    <color name="colorCheckBoxText">#999999</color>
+    <color name="colorKaKao">#fedd35</color>
+    <color name="colorFacebook">#4763b2</color>
+    <color name="colorText">#cccccc</color>
+    <color name="colorEditTextNormal">#c1d1c1</color>
+    <color name="colorEditTextFont">#999999</color>
+    <color name="colorCalender">#ffffff</color>
+</resources>

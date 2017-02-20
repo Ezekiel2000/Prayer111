@@ -1,0 +1,165 @@
+package org.kccc.prayer111;
+
+import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+
+/**
+ * Created by ezekiel on 2017. 2. 2..
+ */
+
+public class MonthFragment extends Fragment {
+
+    TextView month_pray_title;
+    TextView month_pray_content;
+
+    private String TAG = MonthFragment.class.getSimpleName();
+
+    private static String url = "http://api.kccc.org/a/pray111/get/month";
+
+    ArrayList<HashMap<String, String>> monthPraysList;
+
+    SimpleDateFormat curYearFormat;
+    SimpleDateFormat curMonthFormat;
+
+    public MonthFragment() {
+
+    }
+
+    public static MonthFragment newInstance() {
+        MonthFragment fragment = new MonthFragment();
+        return fragment;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_month, container, false);
+
+        Log.d("하이", "getID" + view.getId());
+
+        monthPraysList = new ArrayList<>();
+
+        curYearFormat = new SimpleDateFormat("yyyy");
+        curMonthFormat = new SimpleDateFormat("MM");
+
+        month_pray_title = (TextView) view.findViewById(R.id.month_pray_title);
+        Typeface typefaceTitle = Typeface.createFromAsset(getContext().getAssets(), "tvN_OTF_Light.otf");
+        month_pray_title.setTypeface(typefaceTitle);
+
+        month_pray_content = (TextView) view.findViewById(R.id.month_pray_content);
+        Typeface typefaceContent = Typeface.createFromAsset(getContext().getAssets(), "NotoSansCJKkr_Light.otf");
+        month_pray_content.setTypeface(typefaceContent);
+
+        new GetMonthPrays().execute();
+
+        return view;
+    }
+
+    private class GetMonthPrays extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            HttpHandler sh = new HttpHandler();
+
+            String jsonStr = sh.makeServiceCall(url);
+
+            if (jsonStr != null) {
+                try {
+                    JSONArray jsonary = new JSONArray(jsonStr);
+
+                    for (int i =0 ; i < jsonary.length() ; i++) {
+
+                        JSONObject jsonObj = jsonary.getJSONObject(i);
+
+                        String pray = jsonObj.getString("prayer");
+                        String yymm = jsonObj.getString("yymm");
+
+                        HashMap<String, String> monthPray = new HashMap<>();
+
+                        monthPray.put("pray", pray);
+                        monthPray.put("yymm", yymm);
+
+                        monthPraysList.add(monthPray);
+
+                    }
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "Json parsing error" + e.getMessage());
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            long now = System.currentTimeMillis();
+            Date date = new Date(now);
+
+            String strCurMonth = curYearFormat.format(date) + curMonthFormat.format(date);
+
+            for ( int i = 0 ; i < monthPraysList.size() ; i++ ) {
+                if ( monthPraysList.get(i).get("yymm").equals(strCurMonth) ) {
+                    month_pray_content.setText(monthPraysList.get(i).get("pray"));
+                } else {
+                    Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
+
+
+
+    }
+
+
+
+    @Override
+    public void onResume() {
+
+
+
+//        FloatingActionButton fab_write = (FloatingActionButton) getActivity().findViewById(R.id.fab_write);
+//        FloatingActionButton fab_share = (FloatingActionButton) getActivity().findViewById(R.id.fab_share);
+//        fab_share.show();
+//        fab_write.hide();
+
+        Log.d("하이", "fragment2  Resume");
+
+
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+
+        Log.d("하이", "fragment2  onPause");
+
+        super.onPause();
+    }
+}

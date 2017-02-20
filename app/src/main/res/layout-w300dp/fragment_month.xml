@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             android:orientation="vertical"
+                                             android:paddingBottom="@dimen/activity_vertical_margin"
+                                             android:paddingLeft="@dimen/activity_horizontal_margin"
+                                             android:paddingRight="@dimen/activity_horizontal_margin"
+                                             android:paddingTop="@dimen/activity_vertical_margin">
+
+
+    <TextView
+        android:id="@+id/month_pray_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:text="@string/pray"
+        android:textColor="@color/colorMonthTitle"
+        android:textSize="48sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/month_pray_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="45dp"
+        android:text="이번 111기도 어플이 잘 나오게 해주세요"
+        android:textSize="17sp"
+        android:textColor="@color/colorMonthText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/month_pray_title"/>
+
+    <ImageView
+        android:id="@+id/month_background"
+        android:layout_width="0dp"
+        android:layout_height="81dp"
+        android:layout_marginBottom="56dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/bg_month_pray"
+        android:alpha="0.6"/>
+
+
+</android.support.constraint.ConstraintLayout>
