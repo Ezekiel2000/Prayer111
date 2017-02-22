@@ -32,6 +32,8 @@ public class SignUpActivity extends AppCompatActivity {
     ImageView image_select;
     Button btn_sign;
 
+    String imgPath;
+
     final int REQ_CODE_SELECT_IMAGE = 100;
 
 
@@ -90,10 +92,11 @@ public class SignUpActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(getBaseContext(), WriteActivity.class);
 
-                    intent.putExtra("uri", image_select.toString());
-                    intent.putExtra("name", text_sign_name.toString());
+                    intent.putExtra("name", text_sign_name.getText().toString());
+                    intent.putExtra("user_profile", imgPath);
 
                     startActivity(intent);
+                    finish();
 
                 } else {
 
@@ -119,6 +122,9 @@ public class SignUpActivity extends AppCompatActivity {
                 try {
 
                     String nameImage = getImageNameToUri(data.getData());
+
+                    imgPath = data.getData().toString();
+
 
                     Log.d("하이", "data.getData :" + data.getData());
 
@@ -148,7 +154,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         cursor.moveToFirst();
 
-        String imgPath = cursor.getString(column_index);
+        imgPath = cursor.getString(column_index);
+
         String imgName = imgPath.substring(imgPath.lastIndexOf("/") + 1);
 
         return imgPath;

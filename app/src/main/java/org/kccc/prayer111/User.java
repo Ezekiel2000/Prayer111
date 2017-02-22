@@ -1,7 +1,5 @@
 package org.kccc.prayer111;
 
-import android.graphics.drawable.Drawable;
-
 /**
  * Created by ezekiel on 2017. 2. 13..
  */
@@ -9,7 +7,9 @@ import android.graphics.drawable.Drawable;
 public class User {
 
     // email 가입시 필요한 내용
-    Drawable user_profile;
+    String user_profile;
+    String userId;
+    String name;
     String email;
     String password;
     String password_conform;
@@ -20,7 +20,15 @@ public class User {
 //    String name;
 
 
-    public Drawable getUser_profile() {
+    public String getName() {
+        return this.name;
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
+    public String getUser_profile() {
         return this.user_profile;
     }
 
@@ -36,8 +44,10 @@ public class User {
         return this.password_conform;
     }
 
-    User(Drawable user_profile, String email, String password, String password_conform) {
+    User(String user_profile, String userId, String name, String email, String password, String password_conform) {
         this.user_profile = user_profile;
+        this.userId = userId;
+        this.name = name;
         this.email = email;
         this.password = password;
         this.password_conform = password_conform;

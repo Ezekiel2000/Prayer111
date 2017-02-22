@@ -31,6 +31,12 @@ public class WriteActivity extends AppCompatActivity {
     ImageView write_select_image;
     ImageView ic_camera;
 
+    private String userName;
+    private String userId;
+    private String profileUrl;
+    private String email;
+    private String password;
+
     final int REQ_CODE_SELECT_IMAGE = 100;
 
     @Override
@@ -43,8 +49,9 @@ public class WriteActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-//        String name = intent.getStringExtra("name");
-//        Uri uri = Uri.parse(intent.getStringExtra("uri"));
+        userId = intent.getStringExtra("userId");
+        userName = intent.getStringExtra("name");
+        profileUrl = intent.getStringExtra("user_profile");
 
         Typeface typeface = Typeface.createFromAsset(getAssets(), "NotoSansCJKkr_Regular.otf");
 
@@ -52,7 +59,9 @@ public class WriteActivity extends AppCompatActivity {
         btn_Cancel = (TextView) findViewById(R.id.text_cancel);
         title = (TextView) findViewById(R.id.text_title);
         write_content = (EditText)findViewById(R.id.write_content);
+        write_name = (TextView) findViewById(R.id.write_name);
         write_select_image = (ImageView) findViewById(R.id.write_select_image);
+        write_profile = (ImageView) findViewById(R.id.write_profile);
         ic_camera = (ImageView) findViewById(R.id.ic_camera);
 
         btn_Ok.setTypeface(typeface);
@@ -60,7 +69,11 @@ public class WriteActivity extends AppCompatActivity {
         title.setTypeface(typeface);
         write_content.setTypeface(typeface);
 
-//        setDisplay();
+        Log.d("하이",  "setDisplay 전 ");
+
+        setDisplay();
+
+
 
 //        Log.d("하이",  "name : " + name.toString());
 //        Log.d("하이",  "image : " + uri.toString());
@@ -88,13 +101,19 @@ public class WriteActivity extends AppCompatActivity {
 
     }
 
-    private void setDisplay() {
+    public void setDisplay() {
 
-        write_name.setText("전형배");
+        write_name.setText(userName);
+
+        Log.d("하이",  "setText 후 ");
+
         Glide.with(this)
-                .load("https://graph.facebook.com/1197597296976302/picture")
-                .bitmapTransform(new CropCircleTransformation(this))
+                .load(profileUrl)
+                .error(R.drawable.write_pro_default)
+                .bitmapTransform(new CropCircleTransformation(getBaseContext()))
                 .into(write_profile);
+
+        Log.d("하이",  "glide 후 ");
 
     }
 

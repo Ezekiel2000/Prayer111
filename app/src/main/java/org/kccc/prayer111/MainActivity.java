@@ -1,5 +1,6 @@
 package org.kccc.prayer111;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -129,23 +130,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == 1) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-            if (resultCode == RESULT_OK) {
-                today_checked = true;
-                Log.d("하이", "RESULT_OK " + today_checked);
+        if (resultCode == Activity.RESULT_OK) {
 
-            }
+            if (requestCode == REQUEST_MAIN) {
 
-            if (resultCode == RESULT_CANCELED) {
-                today_checked = false;
-                Log.d("하이", "REQUEST_MAIN " + today_checked);
+                today_checked = data.getBooleanExtra("checked", today_checked);
 
             }
         }
 
+        if (resultCode == Activity.RESULT_CANCELED) {
 
-        super.onActivityResult(requestCode, resultCode, data);
+            today_checked = false;
+
+        }
+
     }
 
     @Override
@@ -173,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
             Intent calenderIntent = new Intent(this, CalendarActivity.class);
             calenderIntent.putExtra("checked", today_checked);
-            startActivityForResult(calenderIntent, 1);
+            startActivityForResult(calenderIntent, REQUEST_MAIN);
 
         }
 
@@ -187,14 +188,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("하이", "Main onStart");
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("하이", "Main onResume");
     }
 
 

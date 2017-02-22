@@ -95,9 +95,6 @@ public class CalendarActivity extends AppCompatActivity {
         Intent intent = getIntent();
         today_checked = intent.getBooleanExtra("checked", today_checked);
 
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("cheked", today_checked);
-
         Log.d("하이", String.valueOf(today_checked) + 1 );
 
         if (today_checked == false) {
@@ -110,13 +107,14 @@ public class CalendarActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "오늘 기도하였습니다", Toast.LENGTH_SHORT).show();
                     Log.d("하이", String.valueOf(today_checked) + 2);
 
+                    gridView.invalidateViews();
+                    gridView.setAdapter(gridAdapter);
 
-                    setResult(Activity.RESULT_OK, returnIntent);
                 }
             }).setNegativeButton("아니요", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
+                    today_checked = false;
                     Log.d("하이", String.valueOf(today_checked) + 2.1);
 
                     return;
@@ -196,6 +194,7 @@ public class CalendarActivity extends AppCompatActivity {
             Integer today = mCal.get(Calendar.DAY_OF_MONTH);
             String sToday = String.valueOf(today);
             if (sToday.equals(getItem(position)) && today_checked == true ) {
+
                 holder.textItemGridView.setTextColor(getResources().getColor(R.color.colorCalender));
                 holder.textItemGridView.setBackground(getResources().getDrawable(R.drawable.calendar_stamp));
 
@@ -210,5 +209,22 @@ public class CalendarActivity extends AppCompatActivity {
         TextView textItemGridView;
     }
 
+    @Override
+    public void onBackPressed() {
 
+        if (today_checked == true) {
+
+            Intent reIntent = new Intent();
+            reIntent.putExtra("checked", today_checked);
+            setResult(Activity.RESULT_OK, reIntent);
+            finish();
+
+        } else if (today_checked == false) {
+
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+
+        }
+
+    }
 }

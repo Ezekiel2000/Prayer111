@@ -126,17 +126,39 @@ public class SignInActivity extends AppCompatActivity {
             checkBox.setChecked(saveLoginData);
         }
 
+        // 일반적인 이메일 로그인 버튼 클릭 시
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                save();
-                Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
+
+                if ( text_input_email.getText().length() != 0 && text_input_password.getText().length() != 0 ) {
+
+                    save();
+                    Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
+                    setLayoutText();
+                    Intent intent = new Intent(getBaseContext(), WriteActivity.class);
+
+                    intent.putExtra("user_profile", profileUrl);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("name", userName);
+                    intent.putExtra("email", email);
+                    intent.putExtra("password", password);
+
+                    startActivity(intent);
+                    finish();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "빈칸을 입력하세요", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
 
         signtext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent signIntent = new Intent(getApplicationContext(), SignUpActivity.class);
                 startActivity(signIntent);
             }
@@ -185,6 +207,12 @@ public class SignInActivity extends AppCompatActivity {
 
                                 setLayoutText();
                                 Intent intent = new Intent(getBaseContext(), WriteActivity.class);
+
+                                intent.putExtra("user_profile", profileUrl);
+                                intent.putExtra("userId", userId);
+                                intent.putExtra("name", userName);
+                                intent.putExtra("email", email);
+                                intent.putExtra("password", password);
                                 startActivity(intent);
                                 finish();
 
@@ -263,6 +291,13 @@ public class SignInActivity extends AppCompatActivity {
 
                 setLayoutText();
                 Intent intent = new Intent(getBaseContext(), WriteActivity.class);
+
+                intent.putExtra("user_profile", profileUrl);
+                intent.putExtra("userId", userId);
+                intent.putExtra("name", userName);
+                intent.putExtra("email", email);
+                intent.putExtra("password", password);
+
                 startActivity(intent);
                 finish();
             }
