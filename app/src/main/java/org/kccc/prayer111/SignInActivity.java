@@ -27,10 +27,12 @@ import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -65,26 +67,25 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_sign);
-        mFacebookcallbackManager = CallbackManager.Factory.create();
-        mToken = AccessToken.getCurrentAccessToken();
 
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(0xFF5f4fb2);
         }
 
-
+        // 임시 강제 로그아웃
+        UserManagement.requestLogout(new LogoutResponseCallback() {
+            @Override
+            public void onCompleteLogout() {
+                Log.d("하이", "로그아웃 성공");
+            }
+        });
 
         appData = getSharedPreferences("appData", MODE_PRIVATE);
         login();
 
-    }
 
-    GraphRequest.GraphJSONObjectCallback jsonObjectCallback = new GraphRequest.GraphJSONObjectCallback() {
-        @Override
-        public void onCompleted(JSONObject object, GraphResponse response) {
-            setResult(RESULT_OK);
-        }
-    };
+
+    }
 
     private void save() {
 
@@ -148,44 +149,74 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        LoginManager.getInstance().logOut();
+
         facebookLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this, Arrays.asList("public_profile", "email"));
-                LoginManager.getInstance().registerCallback(mFacebookcallbackManager, new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        Log.d("하이", "onSuccess");
 
-                        GraphRequest request;
-                        mToken = loginResult.getAccessToken();
-                        request = GraphRequest.newMeRequest(mToken, jsonObjectCallback);
+                isFacebookLogin();
 
-//                        Bundle parameters = new Bundle();
-//                        parameters.putString("fields", "id, name, email");
-//                        request.setParameters(parameters);
-//                        request.executeAsync();
-
-
-
-                        setLayoutText();
-                        Intent intent = new Intent(getBaseContext(), WriteActivity.class);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Log.d("하이", "onCancel");
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        Log.d("하이", "onError : " + error.getLocalizedMessage());
-                    }
-                });
             }
         });
     }
+
+    private void isFacebookLogin() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        mFacebookcallbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
+        LoginManager.getInstance().registerCallback(mFacebookcallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d("하이", "페이스북 토큰 " + loginResult.getAccessToken().getToken());
+                Log.d("하이", "페이스북 Id " + loginResult.getAccessToken().getUserId());
+                userId = loginResult.getAccessToken().getUserId().toString();
+
+                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        if (response.getError() != null) {
+                            Log.d("하이", "에러 : " + response.getError().getErrorMessage());
+                        } else {
+                            try {
+                                email = object.getString("email");
+                                userName = object.getString("name");
+                                profileUrl = "https://graph.facebook.com/" + userId + "/picture";
+
+                                setLayoutText();
+                                Intent intent = new Intent(getBaseContext(), WriteActivity.class);
+                                startActivity(intent);
+                                finish();
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email");
+                request.setParameters(parameters);
+                request.executeAsync();
+
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                error.printStackTrace();
+            }
+        });
+    }
+
+
+
 
     private void isKakaoLogin() {
         mKakaocallback = new SessionCallback();
@@ -233,7 +264,7 @@ public class SignInActivity extends AppCompatActivity {
                 setLayoutText();
                 Intent intent = new Intent(getBaseContext(), WriteActivity.class);
                 startActivity(intent);
-
+                finish();
             }
         });
     }
@@ -251,6 +282,11 @@ public class SignInActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            return;
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
         mFacebookcallbackManager.onActivityResult(requestCode, resultCode, data);
     }

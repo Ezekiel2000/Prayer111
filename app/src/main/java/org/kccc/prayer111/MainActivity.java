@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(0xFF5f4fb2);
         }
-
         today_checked = false;
 
         Log.d("하이", "시스템바 변경");
@@ -113,44 +112,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(signInIntent);
             }
         });
-        Log.d("하이", "팹버튼 변경");
-        // 하단 공
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_share);
-//        Log.d("하이", "팹 버튼 생성");
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // 공유 버튼 눌렀을 때
-//                // 항목 설정
-//                final CharSequence[] items = {"카카오톡", "카카오스토리", "페이스북"};
-//
-//                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
-//
-//                alertBuilder.setTitle("공유하시겠습니까?")
-//                        .setCancelable(false)
-//                        .setItems(items, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int index) {
-//                                Toast.makeText(getApplicationContext(), items[index], Toast.LENGTH_SHORT).show();
-//                            }
-//                        })
-//                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int index) {
-//                                dialog.dismiss();
-//                            }
-//                        });
-//
-//
-//                AlertDialog dialog = alertBuilder.create();
-//                dialog.show();
-//
-//
-//                startActivity(signInIntent);
-//
-//            }
-//        });
 
+        Log.d("하이", "팹버튼 변경");
 
     }
 
@@ -165,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
 
         if (requestCode == 1) {
 
@@ -219,6 +181,39 @@ public class MainActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("하이", "Main onStart");
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("하이", "Main onResume");
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("하이", "Main onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("하이", "Main onStop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("하이", "Main onDestroy");
     }
 
     @Override

@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -87,24 +86,22 @@ public class MonthFragment extends Fragment {
             String jsonStr = sh.makeServiceCall(url);
 
             if (jsonStr != null) {
+
                 try {
-                    JSONArray jsonary = new JSONArray(jsonStr);
 
-                    for (int i =0 ; i < jsonary.length() ; i++) {
+                    JSONObject jsonObject = new JSONObject(jsonStr);
 
-                        JSONObject jsonObj = jsonary.getJSONObject(i);
+                    String pray = jsonObject.getString("prayer");
+                    String yymm = jsonObject.getString("yymm");
+                    String day = jsonObject.getString("day");
 
-                        String pray = jsonObj.getString("prayer");
-                        String yymm = jsonObj.getString("yymm");
 
-                        HashMap<String, String> monthPray = new HashMap<>();
+                    HashMap<String, String> monthPray = new HashMap<>();
 
-                        monthPray.put("pray", pray);
-                        monthPray.put("yymm", yymm);
+                    monthPray.put("pray", pray);
+                    monthPray.put("yymm", yymm);
 
-                        monthPraysList.add(monthPray);
-
-                    }
+                    monthPraysList.add(monthPray);
 
                 } catch (JSONException e) {
                     Log.e(TAG, "Json parsing error" + e.getMessage());
@@ -123,17 +120,14 @@ public class MonthFragment extends Fragment {
 
             String strCurMonth = curYearFormat.format(date) + curMonthFormat.format(date);
 
-            for ( int i = 0 ; i < monthPraysList.size() ; i++ ) {
-                if ( monthPraysList.get(i).get("yymm").equals(strCurMonth) ) {
-                    month_pray_content.setText(monthPraysList.get(i).get("pray"));
-                } else {
-                    Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                }
+            if (monthPraysList.get(0).get("yymm").equals(strCurMonth)) {
+
+                month_pray_content.setText(monthPraysList.get(0).get("pray"));
+            } else {
+
+                Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
             }
-
         }
-
-
 
     }
 

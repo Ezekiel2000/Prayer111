@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -90,26 +89,22 @@ public class TodayFragment extends Fragment {
             String jsonStr = sh.makeServiceCall(url);
 
             if (jsonStr != null) {
+
                 try {
-                    JSONArray jsonary = new JSONArray(jsonStr);
 
-                    for (int i = 0 ; i < jsonary.length() ; i++) {
+                    JSONObject jsonObject = new JSONObject(jsonStr);
 
-                        JSONObject jsonObj = jsonary.getJSONObject(i);
+                    String pray = jsonObject.getString("prayer");
+                    String yymm = jsonObject.getString("yymm");
+                    String day = jsonObject.getString("day");
 
-                        String pray = jsonObj.getString("prayer");
-                        String yymm = jsonObj.getString("yymm");
-                        String day = jsonObj.getString("day");
+                    HashMap<String, String> todayPray = new HashMap<>();
 
-                        HashMap<String, String> todayPray = new HashMap<>();
+                    todayPray.put("pray", pray);
+                    todayPray.put("yymm", yymm);
+                    todayPray.put("day", day);
 
-                        todayPray.put("pray", pray);
-                        todayPray.put("yymm", yymm);
-                        todayPray.put("day", day);
-
-                        todayPraysList.add(todayPray);
-
-                    }
+                    todayPraysList.add(todayPray);
 
                 } catch (JSONException e) {
                     Log.e(TAG, "Json parsing error:" + e.getMessage());
@@ -131,12 +126,10 @@ public class TodayFragment extends Fragment {
             String strCurDay = curDayFormat.format(date);
 
 
-            for ( int i = 0 ; i < todayPraysList.size() ; i++ ) {
-                if ( todayPraysList.get(i).get("yymm").equals(strCurYear) && todayPraysList.get(i).get("day").equals(strCurDay)) {
-                    today_pray_content.setText(todayPraysList.get(i).get("pray"));
-                } else {
-                    Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                }
+            if (todayPraysList.get(0).get("yymm").equals(strCurYear) && todayPraysList.get(0).get("day").equals(strCurDay)) {
+                today_pray_content.setText(todayPraysList.get(0).get("pray"));
+            } else {
+                Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
             }
         }
     }

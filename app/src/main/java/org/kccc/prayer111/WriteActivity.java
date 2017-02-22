@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
 public class WriteActivity extends AppCompatActivity {
 
     TextView btn_Ok;
@@ -58,6 +60,8 @@ public class WriteActivity extends AppCompatActivity {
         title.setTypeface(typeface);
         write_content.setTypeface(typeface);
 
+//        setDisplay();
+
 //        Log.d("하이",  "name : " + name.toString());
 //        Log.d("하이",  "image : " + uri.toString());
 
@@ -73,6 +77,7 @@ public class WriteActivity extends AppCompatActivity {
         ic_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -83,26 +88,38 @@ public class WriteActivity extends AppCompatActivity {
 
     }
 
+    private void setDisplay() {
+
+        write_name.setText("전형배");
+        Glide.with(this)
+                .load("https://graph.facebook.com/1197597296976302/picture")
+                .bitmapTransform(new CropCircleTransformation(this))
+                .into(write_profile);
+
+    }
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Toast.makeText(getBaseContext(), "resultCode :" + requestCode, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getBaseContext(), "resultCode :" + requestCode, Toast.LENGTH_SHORT).show();
 
         if (requestCode == REQ_CODE_SELECT_IMAGE) {
 
             if (resultCode == Activity.RESULT_OK) {
 
                 try {
+
                     String nameImage = getImageNameToUri(data.getData());
 
                     Log.d("하이", "파일 이름 : " + nameImage);
 
-//                    write_select_image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    write_select_image.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     write_select_image.setVisibility(View.VISIBLE);
                     Glide.with(this)
                             .load(data.getData())
                             .into(write_select_image);
-
 
                     Toast.makeText(getBaseContext(), "resultCode :" + requestCode, Toast.LENGTH_SHORT).show();
 
@@ -117,6 +134,7 @@ public class WriteActivity extends AppCompatActivity {
 
 
     public String getImageNameToUri(Uri data) {
+
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = managedQuery(data, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);

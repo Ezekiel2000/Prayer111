@@ -120,6 +120,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                     String nameImage = getImageNameToUri(data.getData());
 
+                    Log.d("하이", "data.getData :" + data.getData());
+
                     Log.d("하이", "파일 이름 : " + nameImage);
 
                     image_select.setScaleType(ImageView.ScaleType.FIT_CENTER);

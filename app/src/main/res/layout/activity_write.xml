@@ -87,67 +87,81 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <android.support.constraint.ConstraintLayout
-            android:scrollbars="vertical"
-            android:background="#d9d9d9"
+        <ScrollView
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:id="@+id/constraintLayout"
+            android:background="#d9d9d9"
+            android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             >
 
-            <ImageView
-                android:id="@+id/write_profile"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/write_pro_default"
-                app:layout_constraintLeft_toLeftOf="parent"
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/constraintLayout"
                 app:layout_constraintTop_toTopOf="parent"
-                />
-
-            <TextView
-                android:id="@+id/write_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:text="PSY"
-                android:textColor="#595959"
-                android:textSize="14sp"
-                app:layout_constraintLeft_toRightOf="@+id/write_profile"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <EditText
-                android:background="#d9d9d9"
-                android:textSize="16sp"
-                android:id="@+id/write_content"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="중보기도 내용을 글로 나누어 보세요"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/write_profile"
-                app:layout_constraintHorizontal_bias="1.0"/>
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                >
 
-            <ImageView
-                android:id="@+id/write_select_image"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/write_content"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+                <ImageView
+                    android:id="@+id/write_profile"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/write_pro_default"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/write_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:text="PSY"
+                    android:textColor="#595959"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toRightOf="@+id/write_profile"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <EditText
+                    android:background="#d9d9d9"
+                    android:textSize="16sp"
+                    android:id="@+id/write_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:hint="중보기도 내용을 글로 나누어 보세요"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/write_profile"
+                    />
+
+                <ImageView
+                    android:id="@+id/write_select_image"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/write_content"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"/>
 
 
-        </android.support.constraint.ConstraintLayout>
+            </android.support.constraint.ConstraintLayout>
+
+
+
+        </ScrollView>
+
+
+
 
         <LinearLayout
             app:layout_constraintBottom_toBottomOf="parent"

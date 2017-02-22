@@ -29,6 +29,7 @@
         android:layout_marginStart="42dp"
         android:cursorVisible="false"
         android:hint="이름"
+        android:inputType="text"
         android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
