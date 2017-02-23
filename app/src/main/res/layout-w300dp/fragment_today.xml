@@ -30,7 +30,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingMultiplier="1"
-        android:text="2017 나사렛형제들 금식수련회가 약 400여명 참석하여 잘 마치게 하심을 감사합니다 나사렛들이 계속적으로 삶 속에서 하나님과 깊이 있게 교제하게 하소서"
+        android:text="로딩중입니다."
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginStart="16dp"

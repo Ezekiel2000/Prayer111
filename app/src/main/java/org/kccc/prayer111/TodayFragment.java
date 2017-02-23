@@ -36,6 +36,8 @@ public class TodayFragment extends Fragment {
 
     private static String url = "http://api.kccc.org/a/pray111/get/today";
 
+    String today_pray;
+
     ArrayList<HashMap<String, String>> todayPraysList;
 
     public TodayFragment() {
@@ -73,6 +75,15 @@ public class TodayFragment extends Fragment {
         return view;
     }
 
+
+    public String share() {
+
+        today_pray = todayPraysList.get(0).get("pray");
+        Log.d("하이", "fragment1  Resume" + today_pray);
+        return today_pray;
+
+    }
+
     private class GetTodayPrays extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -99,6 +110,8 @@ public class TodayFragment extends Fragment {
                     String day = jsonObject.getString("day");
 
                     HashMap<String, String> todayPray = new HashMap<>();
+
+
 
                     todayPray.put("pray", pray);
                     todayPray.put("yymm", yymm);
@@ -128,6 +141,7 @@ public class TodayFragment extends Fragment {
 
             if (todayPraysList.get(0).get("yymm").equals(strCurYear) && todayPraysList.get(0).get("day").equals(strCurDay)) {
                 today_pray_content.setText(todayPraysList.get(0).get("pray"));
+                today_pray = today_pray_content.getText().toString();
             } else {
                 Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
             }
@@ -143,6 +157,9 @@ public class TodayFragment extends Fragment {
 //        fab_write.hide();
 
         Log.d("하이", "fragment1  Resume");
+
+
+        share();
 
         getActivity().findViewById(R.id.fab_write).setVisibility(View.GONE);
         getActivity().findViewById(R.id.multiple_action).setVisibility(View.VISIBLE);

@@ -19,7 +19,7 @@ public class LoadingActivity extends AppCompatActivity {
             public void run() {
                 finish();
             }
-        }, 3000);
+        }, 2000);
 
         // 시스템바 색상 변경 단 API Level 21이상일때만 변경
         if (Build.VERSION.SDK_INT >= 21) {

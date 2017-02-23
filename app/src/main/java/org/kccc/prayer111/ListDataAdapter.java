@@ -98,6 +98,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             if (icon_heart_clicked == false) {
                 holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
                 holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber() + 1));
+                Log.d("하이", "선택한 놈 : "+ holder.getAdapterPosition());
                 icon_heart_clicked = true;
             } else {
                 holder.icon_heart.setImageResource(R.drawable.ic_heart);

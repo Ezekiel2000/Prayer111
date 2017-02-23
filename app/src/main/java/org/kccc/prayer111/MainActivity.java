@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -19,7 +20,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+
+import static org.kccc.prayer111.R.string.pray;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private BackPressCloseHandler backPressCloseHandler;
 
     private boolean today_checked;
+
+    String pray_content = null;
 
     public static final int REQUEST_MAIN = 2501;
 
@@ -88,13 +98,39 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setSelectedTabIndicatorColor(0xFF6b58ca);
         Log.d("하이", "탭바 변경");
 
+
+        Log.d("하이", "기도" + pray_content);
+
         setTitle();
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
+        CallbackManager callbackManager = CallbackManager.Factory.create();
+        ShareDialog shareDialog = new ShareDialog(this);
+
 
         FloatingActionButton fab_kakao = (FloatingActionButton) findViewById(R.id.fab_share_kakao);
         fab_kakao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "카카오톡 공유하기 성공", Toast.LENGTH_SHORT).show();
+
+                if (mViewPager.getCurrentItem() == 0) {
+                    Toast.makeText(getApplicationContext(), "카카오톡 오늘의 기도 공유하기 성공", Toast.LENGTH_SHORT).show();
+
+
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "[오늘의 기도]\n");
+
+                    getPrayContent();
+
+                    intent.putExtra(Intent.EXTRA_TEXT, "기도" + pray);
+                    intent.setPackage("com.kakao.talk");
+                    startActivity(intent);
+
+                } else if (mViewPager.getCurrentItem() == 1) {
+                    Toast.makeText(getApplicationContext(), "카카오톡 이달의 기도 공유하기 성공", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -102,7 +138,43 @@ public class MainActivity extends AppCompatActivity {
         fab_facebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "페이스북 공유하기 성공", Toast.LENGTH_SHORT).show();
+
+                Log.d("하이", "지금 현재" + mViewPager.getCurrentItem());
+
+                if (mViewPager.getCurrentItem() == 0) {
+
+                    Toast.makeText(getApplicationContext(), "페이스북 오늘의 기도 공유하기 성공", Toast.LENGTH_SHORT).show();
+
+//                    Intent intent = new Intent(Intent.ACTION_SEND);
+//                    intent.setType("text/plain");
+//                    intent.putExtra(Intent.EXTRA_SUBJECT, "[오늘의 기도]\n");
+//                    intent.putExtra(Intent.EXTRA_TEXT, "기도" + pray);
+//                    intent.setPackage("com.facebook.katana");
+//                    startActivity(intent);
+
+
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentTitle("오늘의 기도")
+                            .setContentDescription(
+                                    "테스트중입니다")
+                            .setContentUrl(Uri.parse("https://www.facebook.com/111Pray/"))
+                            .setShareHashtag(new ShareHashtag.Builder()
+                                    .setHashtag("#111기도")
+                                    .build())
+                            .build();
+                    shareDialog.show(content);
+
+
+                } else if (mViewPager.getCurrentItem() == 1) {
+
+                    Toast.makeText(getApplicationContext(), "페이스북 이달의 기도 공유하기 성공", Toast.LENGTH_SHORT).show();
+
+                }
+
+
+
+
+
             }
         });
 
@@ -184,16 +256,29 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void getPrayContent() {
+
+        TodayFragment fragment = (TodayFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_today);
+        fragment = new TodayFragment();
+
+        String pray = fragment.today_pray;
+
+        Log.d("하이", "기도내용" + pray);
+
+    }
+
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d("하이", "Main onStart");
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("하이", "Main onResume");
     }
 
 
