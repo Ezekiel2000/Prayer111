@@ -53,7 +53,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        CharSequence info[] = new CharSequence[] {"페이스북 공유하기", "카카오톡 공유하기", "기도제목 신고하기"};
+        CharSequence info[] = new CharSequence[] {"메세지로 공유하기", "카카오톡 공유하기", "기도제목 신고하기"};
         ListData data = listData.get(position);
 
         // glide 라이브러리 사용하여 원형 프로필 만들기
@@ -124,9 +124,48 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                     switch (which) {
                         case 0:
                             Toast.makeText(context, "페이스북 공유", Toast.LENGTH_SHORT).show();
+
+//                            ShareLinkContent content = new ShareLinkContent.Builder()
+//                            .setContentTitle("오늘의 기도")
+//                            .setContentDescription(
+//                                    "테스트중입니다")
+//                            .setContentUrl(Uri.parse("https://www.facebook.com/111Pray/"))
+//                            .setShareHashtag(new ShareHashtag.Builder()
+//                                    .setHashtag("#111기도")
+//                                    .build())
+//                            .build();
+
+
+                            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                            smsIntent.putExtra("sms_body", holder.text_content.getText());
+                            smsIntent.setType("vnd.android-dir/mms-sms");
+
+                            try {
+                                v.getContext().startActivity(smsIntent);
+                            } catch (Exception e) {
+                                Toast.makeText(context, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+                            }
+
+
+
                             break;
                         case 1:
+
                             Toast.makeText(context, "카카오톡 공유", Toast.LENGTH_SHORT).show();
+                            Log.d("하이", "선택한 놈 : "+ holder.getAdapterPosition());
+                            Intent kakaoIntent = new Intent(Intent.ACTION_SEND);
+                            kakaoIntent.setType("text/plain");
+                            kakaoIntent.putExtra(Intent.EXTRA_SUBJECT, "[" + holder.text_name.getText() + " 의 중보 기도]\n");
+
+                            kakaoIntent.putExtra(Intent.EXTRA_TEXT, holder.text_content.getText());
+                            kakaoIntent.setPackage("com.kakao.talk");
+
+                            try {
+                                v.getContext().startActivity(kakaoIntent);
+                            } catch (Exception e) {
+                                Toast.makeText(context, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+                            }
+
                             break;
                         case 2:
                             Toast.makeText(context, "신고하기", Toast.LENGTH_SHORT).show();

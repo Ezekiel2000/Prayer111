@@ -37,6 +37,8 @@ public class MonthFragment extends Fragment {
     SimpleDateFormat curYearFormat;
     SimpleDateFormat curMonthFormat;
 
+    String month_pray;
+
     public MonthFragment() {
 
     }
@@ -123,6 +125,10 @@ public class MonthFragment extends Fragment {
             if (monthPraysList.get(0).get("yymm").equals(strCurMonth)) {
 
                 month_pray_content.setText(monthPraysList.get(0).get("pray"));
+                month_pray = month_pray_content.getText().toString();
+
+                ((MainActivity) getActivity()).month_pray_content = month_pray;
+
             } else {
 
                 Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();

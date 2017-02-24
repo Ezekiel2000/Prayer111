@@ -27,8 +27,6 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
-import static org.kccc.prayer111.R.string.pray;
-
 public class MainActivity extends AppCompatActivity {
 
     /**
@@ -49,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean today_checked;
 
-    String pray_content = null;
+    String today_pray_content = null;
+    String month_pray_content = null;
 
     public static final int REQUEST_MAIN = 2501;
 
@@ -98,9 +97,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setSelectedTabIndicatorColor(0xFF6b58ca);
         Log.d("하이", "탭바 변경");
 
-
-        Log.d("하이", "기도" + pray_content);
-
         setTitle();
 
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -115,21 +111,35 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (mViewPager.getCurrentItem() == 0) {
-                    Toast.makeText(getApplicationContext(), "카카오톡 오늘의 기도 공유하기 성공", Toast.LENGTH_SHORT).show();
-
 
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "[오늘의 기도]\n");
 
-                    getPrayContent();
-
-                    intent.putExtra(Intent.EXTRA_TEXT, "기도" + pray);
+                    intent.putExtra(Intent.EXTRA_TEXT, today_pray_content);
                     intent.setPackage("com.kakao.talk");
-                    startActivity(intent);
+
+                    try {
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+                    }
 
                 } else if (mViewPager.getCurrentItem() == 1) {
-                    Toast.makeText(getApplicationContext(), "카카오톡 이달의 기도 공유하기 성공", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "[이달의 기도]\n");
+
+                    intent.putExtra(Intent.EXTRA_TEXT, month_pray_content);
+                    intent.setPackage("com.kakao.talk");
+
+                    try {
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
         });
@@ -145,24 +155,49 @@ public class MainActivity extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(), "페이스북 오늘의 기도 공유하기 성공", Toast.LENGTH_SHORT).show();
 
-//                    Intent intent = new Intent(Intent.ACTION_SEND);
-//                    intent.setType("text/plain");
-//                    intent.putExtra(Intent.EXTRA_SUBJECT, "[오늘의 기도]\n");
-//                    intent.putExtra(Intent.EXTRA_TEXT, "기도" + pray);
-//                    intent.setPackage("com.facebook.katana");
-//                    startActivity(intent);
-
+                    Log.d("하이", "기도 : " + today_pray_content);
 
                     ShareLinkContent content = new ShareLinkContent.Builder()
                             .setContentTitle("오늘의 기도")
                             .setContentDescription(
                                     "테스트중입니다")
-                            .setContentUrl(Uri.parse("https://www.facebook.com/111Pray/"))
+                            .setContentUrl(Uri.parse("https://www.facebook.com/111Pray/posts/1737817673214781"))
                             .setShareHashtag(new ShareHashtag.Builder()
                                     .setHashtag("#111기도")
                                     .build())
                             .build();
                     shareDialog.show(content);
+
+//                    Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+//                    shareIntent.setType("text/plain");
+//                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Content to share");
+//                    PackageManager pm = v.getContext().getPackageManager();
+//                    List<ResolveInfo> activityList = pm.queryIntentActivities(shareIntent, 0);
+//                    for (final ResolveInfo app : activityList) {
+//                        if ((app.activityInfo.name).contains("facebook")) {
+//                            final ActivityInfo activity = app.activityInfo;
+//                            final ComponentName name = new ComponentName(activity.applicationInfo.packageName, activity.name);
+//                            shareIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+//                            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |             Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+//                            shareIntent.setComponent(name);
+//                            v.getContext().startActivity(shareIntent);
+//                            break;
+//                        }
+//                    }
+
+//                    Intent intent = new Intent(Intent.ACTION_SEND);
+//                    intent.setType("text/plain");
+//                    intent.putExtra(Intent.EXTRA_SUBJECT, "[이달의 기도]\n");
+//                    intent.putExtra(Intent.EXTRA_TEXT, "https://kccc.org");
+//                    intent.setPackage("com.facebook.katana");
+//
+//                    try {
+//                        startActivity(intent);
+//                    } catch (Exception e) {
+//                        Toast.makeText(MainActivity.this, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+//                    }
+
+
 
 
                 } else if (mViewPager.getCurrentItem() == 1) {
@@ -256,18 +291,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getPrayContent() {
-
-        TodayFragment fragment = (TodayFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_today);
-        fragment = new TodayFragment();
-
-        String pray = fragment.today_pray;
-
-        Log.d("하이", "기도내용" + pray);
-
-    }
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -292,6 +315,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.d("하이", "Main onStop");
+
+
+
     }
 
     @Override

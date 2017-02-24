@@ -99,15 +99,17 @@ public class IntercessionFragment extends Fragment {
                     String name = object.getString("id");
                     String content = object.getString("pray");
                     String date = object.getString("indate");
+                    String profile = object.getString("photo");
                     int warn = object.getInt("warn");
-                    int prayNumber = object.getInt("love");
+                    int prayNumber = object.getInt("heart");
                     int commentNumber = object.getInt("comment");
 
                     Log.d("하이", "불러오는 값 : " + number);
+                    Log.d("하이", "사진값 : " + profile);
 
                     data = new ListData[jsonArray.length()];
 
-                    data[i] = new ListData(R.drawable.a, name, date, content, prayNumber, commentNumber);
+                    data[i] = new ListData(profile, name, date, content, prayNumber, commentNumber);
                     listData.add(data[i]);
 
                 }
