@@ -72,8 +72,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-
-
         btn_sign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +93,11 @@ public class SignUpActivity extends AppCompatActivity {
                     intent.putExtra("name", text_sign_name.getText().toString());
                     intent.putExtra("user_profile", imgPath);
 
+                    PropertyManager.getInstance().setUserName(text_sign_email.getText().toString());
+                    PropertyManager.getInstance().setPassword(text_sign_password.getText().toString());
+                    PropertyManager.getInstance().setUserProfile(imgPath);
+
+
                     startActivity(intent);
                     finish();
 
@@ -107,8 +110,6 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
 
@@ -148,7 +149,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     public String getImageNameToUri(Uri data) {
-        String[] proj = { MediaStore.Images.Media.DATA };
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(data, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
@@ -182,8 +183,6 @@ public class SignUpActivity extends AppCompatActivity {
 //        startActivity(intent, PICK_FROM_CAMERA);
 //
 //    }
-
-
 
 
 }

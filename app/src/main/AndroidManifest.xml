@@ -9,9 +9,6 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-
-    출처: http://itmir.tistory.com/458 [미르의 IT 정복기]
-
     <application
         android:name=".GlobalApplication"
         android:allowBackup="true"

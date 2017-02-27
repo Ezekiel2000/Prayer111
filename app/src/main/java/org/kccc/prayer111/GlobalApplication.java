@@ -2,6 +2,7 @@ package org.kccc.prayer111;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.kakao.auth.KakaoSDK;
@@ -14,6 +15,7 @@ public class GlobalApplication extends Application {
 
     private static GlobalApplication mInstance;
     private static volatile Activity currentActivity = null;
+    private static Context mContext;
 
     public static Activity getCurrentAcitivty() {
         Log.d("하이", "++ currentActivity : " + (currentActivity != null ? currentActivity.getClass().getSimpleName() : ""));
@@ -37,5 +39,10 @@ public class GlobalApplication extends Application {
         super.onCreate();
         mInstance = this;
         KakaoSDK.init(new KaKaoSDKAdapter());
+        mContext = this;
+    }
+
+    public static Context getmContext() {
+        return mContext;
     }
 }

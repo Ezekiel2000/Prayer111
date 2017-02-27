@@ -1,7 +1,6 @@
 package org.kccc.prayer111;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -38,8 +37,6 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 public class SignInActivity extends AppCompatActivity {
-
-    private SharedPreferences appData;
 
     boolean saveLoginData;
 
@@ -80,33 +77,23 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        appData = getSharedPreferences("appData", MODE_PRIVATE);
         login();
-
+//        load();
 
 
     }
 
-    private void save() {
-
-        SharedPreferences.Editor editor = appData.edit();
-
-        editor.putBoolean("SAVE_LOGIN_DATA", checkBox.isChecked());
-        editor.putString("EMAIL", text_input_email.getText().toString().trim());
-        editor.putString("PASSWORD", text_input_password.getText().toString().trim());
-
-        editor.apply();
-
-    }
-
-    private void load() {
-
-        saveLoginData = appData.getBoolean("SAVE_LOGIN_DATA", false);
-
-        email = appData.getString("EMAIL", "");
-        password = appData.getString("PASSWORD", "");
-
-    }
+//    private void save() {
+//
+//        SharedPreferences.Editor editor = appData.edit();
+//
+//        editor.putBoolean("SAVE_LOGIN_DATA", checkBox.isChecked());
+//        editor.putString("EMAIL", text_input_email.getText().toString().trim());
+//        editor.putString("PASSWORD", text_input_password.getText().toString().trim());
+//
+//        Log.d("하이", "저장 성공");
+//
+//    }
 
     private void login() {
 
@@ -120,20 +107,35 @@ public class SignInActivity extends AppCompatActivity {
 
         signtext = (TextView) findViewById(R.id.text_sign_up);
 
-        if (saveLoginData) {
-            text_input_email.setText(email);
-            text_input_password.setText(password);
-            checkBox.setChecked(saveLoginData);
+        if (checkBox.isChecked()) {
+            text_input_email.setText(PropertyManager.getInstance().getUserName());
+            text_input_password.setText(PropertyManager.getInstance().getPassword());
         }
+
+//        if (saveLoginData) {
+//            text_input_email.setText(email);
+//            text_input_password.setText(password);
+//            checkBox.setChecked(saveLoginData);
+//        }
 
         // 일반적인 이메일 로그인 버튼 클릭 시
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if ( text_input_email.getText().length() != 0 && text_input_password.getText().length() != 0 ) {
+                if (text_input_email.getText().length() != 0 && text_input_password.getText().length() != 0) {
 
-                    save();
+                    if (checkBox.isChecked()) {
+
+                        PropertyManager.getInstance().setUserName(text_input_email.getText().toString());
+                        PropertyManager.getInstance().setPassword(text_input_password.getText().toString());
+
+                    }
+
+
+                    // 서버에서 이메일과 비밀번호를 검색해서 일치되는 것이 있을 경우 로그인
+                    // 일치되는 것이 없을 경우 Toast를 사용하여 다시 입력하
+
                     Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
                     setLayoutText();
                     Intent intent = new Intent(getBaseContext(), WriteActivity.class);
@@ -244,8 +246,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-
-
     private void isKakaoLogin() {
         mKakaocallback = new SessionCallback();
         com.kakao.auth.Session.getCurrentSession().addCallback(mKakaocallback);
@@ -278,9 +278,9 @@ public class SignInActivity extends AppCompatActivity {
                 Log.d("하이", "오류");
             }
 
-           @Override
+            @Override
             public void onNotSignedUp() {
-               Log.d("하이", "onNotSignedUp");
+                Log.d("하이", "onNotSignedUp");
             }
 
             @Override
@@ -310,7 +310,6 @@ public class SignInActivity extends AppCompatActivity {
         Log.d("하이", "아이디 : " + userId);
         Log.d("하이", "이름 : " + userName);
         Log.d("하이", "이메일 : " + email);
-
 
 
     }

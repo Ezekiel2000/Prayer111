@@ -1,9 +1,7 @@
 package org.kccc.prayer111;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,11 +11,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -50,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     String today_pray_content = null;
     String month_pray_content = null;
 
+
     public static final int REQUEST_MAIN = 2501;
 
     @Override
@@ -67,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         // 로딩 화면 띄우기
         Intent loadingIntent = new Intent(this, LoadingActivity.class);
-        Intent signInIntent = new Intent(this, SignInActivity.class);
         loadingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         loadingIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
@@ -97,14 +94,16 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setSelectedTabIndicatorColor(0xFF6b58ca);
         Log.d("하이", "탭바 변경");
 
-        setTitle();
+        CheckBox checked = (CheckBox) findViewById(R.id.checkBox);
 
+        String name = PropertyManager.getInstance().getUserName();
+
+        // 페이스북 공유를 위한 sdk선언 및 다이얼로그 박스
         FacebookSdk.sdkInitialize(getApplicationContext());
-
         CallbackManager callbackManager = CallbackManager.Factory.create();
         ShareDialog shareDialog = new ShareDialog(this);
 
-
+        // 카카오톡 공유 펩버튼 및 클릭시
         FloatingActionButton fab_kakao = (FloatingActionButton) findViewById(R.id.fab_share_kakao);
         fab_kakao.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +111,27 @@ public class MainActivity extends AppCompatActivity {
 
                 if (mViewPager.getCurrentItem() == 0) {
 
+
+                    // 카카오 링크 사용할 경우(웹사이트 링크는 도메인이 없기 때문에 어려움)
+//                    try {
+//
+//                        Uri uri = Uri.parse("R.drawable.app_icon");
+//
+//                        KakaoLink kakaoLink = KakaoLink.getKakaoLink(getApplicationContext());
+//                        KakaoTalkLinkMessageBuilder kakaoTalkLinkMessageBuilder = kakaoLink.createKakaoTalkLinkMessageBuilder();
+//                        kakaoTalkLinkMessageBuilder
+//                                .addText("[오늘의 기도]\n" + today_pray_content)
+//                                .addImage("uri", 100, 100)
+//                                .addWebButton("페이지로 이동", "http://www.kakao.com/services/8")
+//                                .build();
+//                        kakaoLink.sendMessage(kakaoTalkLinkMessageBuilder, v.getContext());
+//
+//                    } catch (KakaoParameterException e) {
+//                        e.printStackTrace();
+//                        Toast.makeText(MainActivity.this, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+//                    }
+
+                    // 뷰페이저가 0일 경우(오늘의 기도) 인텐트를 통해 카카오톡 공유 실행
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "[오늘의 기도]\n");
@@ -127,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } else if (mViewPager.getCurrentItem() == 1) {
 
+                    // 뷰페이저가 1일 경우(이달의 기도) 인텐트를 통해 카카오톡 공유 실행
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "[이달의 기도]\n");
@@ -160,55 +181,41 @@ public class MainActivity extends AppCompatActivity {
                     ShareLinkContent content = new ShareLinkContent.Builder()
                             .setContentTitle("오늘의 기도")
                             .setContentDescription(
-                                    "테스트중입니다")
+                                    today_pray_content)
                             .setContentUrl(Uri.parse("https://www.facebook.com/111Pray/posts/1737817673214781"))
                             .setShareHashtag(new ShareHashtag.Builder()
                                     .setHashtag("#111기도")
                                     .build())
                             .build();
-                    shareDialog.show(content);
 
-//                    Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-//                    shareIntent.setType("text/plain");
-//                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Content to share");
-//                    PackageManager pm = v.getContext().getPackageManager();
-//                    List<ResolveInfo> activityList = pm.queryIntentActivities(shareIntent, 0);
-//                    for (final ResolveInfo app : activityList) {
-//                        if ((app.activityInfo.name).contains("facebook")) {
-//                            final ActivityInfo activity = app.activityInfo;
-//                            final ComponentName name = new ComponentName(activity.applicationInfo.packageName, activity.name);
-//                            shareIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-//                            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |             Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-//                            shareIntent.setComponent(name);
-//                            v.getContext().startActivity(shareIntent);
-//                            break;
-//                        }
-//                    }
-
-//                    Intent intent = new Intent(Intent.ACTION_SEND);
-//                    intent.setType("text/plain");
-//                    intent.putExtra(Intent.EXTRA_SUBJECT, "[이달의 기도]\n");
-//                    intent.putExtra(Intent.EXTRA_TEXT, "https://kccc.org");
-//                    intent.setPackage("com.facebook.katana");
-//
-//                    try {
-//                        startActivity(intent);
-//                    } catch (Exception e) {
-//                        Toast.makeText(MainActivity.this, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
-//                    }
-
-
+                    try {
+                        shareDialog.show(content);
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "패이스북 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+                    }
 
 
                 } else if (mViewPager.getCurrentItem() == 1) {
 
                     Toast.makeText(getApplicationContext(), "페이스북 이달의 기도 공유하기 성공", Toast.LENGTH_SHORT).show();
 
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentTitle("이달의 기도")
+                            .setContentDescription(
+                                    month_pray_content)
+                            .setContentUrl(Uri.parse("https://www.facebook.com/111Pray/posts/1737817673214781"))
+                            .setShareHashtag(new ShareHashtag.Builder()
+                                    .setHashtag("#111기도")
+                                    .build())
+                            .build();
+
+                    try {
+                        shareDialog.show(content);
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "패이스북 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
-
-
-
-
 
             }
         });
@@ -217,21 +224,27 @@ public class MainActivity extends AppCompatActivity {
         fab_write.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(signInIntent);
+
+                if (!name.equals("")) {
+                    String password = PropertyManager.getInstance().getPassword();
+                    String profile = PropertyManager.getInstance().getUserProfile();
+                    if (!password.equals("")) {
+                        Intent writeIntent = new Intent(MainActivity.this, SignInActivity.class);
+                        Toast.makeText(MainActivity.this, "자동로그인 되었습니다.", Toast.LENGTH_SHORT).show();
+                        writeIntent.putExtra("name", name);
+                        writeIntent.putExtra("user_profile", profile);
+                        startActivity(writeIntent);
+                    }
+                } else {
+                    Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
+                    startActivity(signInIntent);
+                }
+
             }
         });
 
         Log.d("하이", "팹버튼 변경");
 
-    }
-
-    private void setTitle() {
-        Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Point deviceSize = new Point();
-        display.getSize(deviceSize);
-        float scale = getResources().getDisplayMetrics().density;
-
-        Log.d("하이", String.format("[%sx%s]px %sx -> [%sx%s]dp", deviceSize.x, deviceSize.y, scale, (int)(deviceSize.x/scale), (int)(deviceSize.y/scale)));
     }
 
     @Override
@@ -285,9 +298,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -315,7 +325,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.d("하이", "Main onStop");
-
 
 
     }

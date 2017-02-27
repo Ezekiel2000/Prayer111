@@ -46,4 +46,5 @@ dependencies {
     compile 'jp.wasabeef:glide-transformations:2.0.1'
     compile 'com.getbase:floatingactionbutton:1.10.1'
     compile group: project.KAKAO_SDK_GROUP, name: 'usermgmt', version: project.KAKAO_SDK_VERSION
+    compile group: 'com.kakao.sdk', name: 'kakaolink', version: project.KAKAO_SDK_VERSION
 }

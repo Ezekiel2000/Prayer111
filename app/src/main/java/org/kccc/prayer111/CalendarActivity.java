@@ -71,7 +71,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         mCal = Calendar.getInstance();
 
-        mCal.set(Integer.parseInt(curYearFormat.format(date)), Integer.parseInt(curMonthFormat.format(date))-1, 1);
+        mCal.set(Integer.parseInt(curYearFormat.format(date)), Integer.parseInt(curMonthFormat.format(date)) - 1, 1);
         int dayNum = mCal.get(Calendar.DAY_OF_WEEK);
 
         for (int i = 1; i < dayNum; i++) {
@@ -90,12 +90,12 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
-        Log.d("하이", String.valueOf(today_checked) + 0 );
+        Log.d("하이", String.valueOf(today_checked) + 0);
 
         Intent intent = getIntent();
         today_checked = intent.getBooleanExtra("checked", today_checked);
 
-        Log.d("하이", String.valueOf(today_checked) + 1 );
+        Log.d("하이", String.valueOf(today_checked) + 1);
 
         if (today_checked == false) {
 
@@ -137,11 +137,18 @@ public class CalendarActivity extends AppCompatActivity {
 
         mCal.set(Calendar.MONTH, month, -1);
 
-        for (int j = 0; j < mCal.getActualMaximum(Calendar.DAY_OF_MONTH) ;j++) {
-            dayList.add("" + (j+1));
+        for (int j = 0; j < mCal.getActualMaximum(Calendar.DAY_OF_MONTH); j++) {
+            dayList.add("" + (j + 1));
         }
 
     }
+
+//    private void savePreference() {
+//        SharedPreferences pref = getPreferences("pref", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = pref.edit();
+//
+//    }
+
 
     private class GridAdapter extends BaseAdapter {
 
@@ -193,10 +200,11 @@ public class CalendarActivity extends AppCompatActivity {
 
             Integer today = mCal.get(Calendar.DAY_OF_MONTH);
             String sToday = String.valueOf(today);
-            if (sToday.equals(getItem(position)) && today_checked == true ) {
+            if (sToday.equals(getItem(position)) && today_checked == true) {
 
                 holder.textItemGridView.setTextColor(getResources().getColor(R.color.colorCalender));
                 holder.textItemGridView.setBackground(getResources().getDrawable(R.drawable.calendar_stamp));
+
 
             }
 
