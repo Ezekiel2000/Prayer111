@@ -1,5 +1,6 @@
 package org.kccc.prayer111;
 
+import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,6 +40,8 @@ public class TodayFragment extends Fragment {
     String today_pray;
 
     ArrayList<HashMap<String, String>> todayPraysList;
+
+    ProgressDialog progressDialog;
 
     public TodayFragment() {
 
@@ -80,6 +83,7 @@ public class TodayFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressDialog = ProgressDialog.show(getContext(), null, "로딩중입니다.", true, false);
         }
 
         @Override
@@ -122,6 +126,7 @@ public class TodayFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            progressDialog.dismiss();
 
             long now = System.currentTimeMillis();
             Date date = new Date(now);

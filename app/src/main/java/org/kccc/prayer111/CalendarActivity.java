@@ -30,6 +30,7 @@ public class CalendarActivity extends AppCompatActivity {
     private TextView textDate;
     private GridAdapter gridAdapter;
     private ArrayList<String> dayList;
+    private ArrayList<String> dayPrayCheckedList;
     private GridView gridView;
     private Calendar mCal;
 
@@ -61,6 +62,7 @@ public class CalendarActivity extends AppCompatActivity {
         textDate.setText(curYearFormat.format(date) + "." + curMonthFormat.format(date));
 
         dayList = new ArrayList<String>();
+        dayPrayCheckedList = new ArrayList<String>();
         dayList.add("일");
         dayList.add("월");
         dayList.add("화");
@@ -107,6 +109,9 @@ public class CalendarActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "오늘 기도하였습니다", Toast.LENGTH_SHORT).show();
                     Log.d("하이", String.valueOf(today_checked) + 2);
 
+                    Log.d("하이", "오늘의 값 :" + curDayFormat.format(date));
+                    dayPrayCheckedList.add(curDayFormat.format(date));
+
                     gridView.invalidateViews();
                     gridView.setAdapter(gridAdapter);
 
@@ -139,6 +144,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         for (int j = 0; j < mCal.getActualMaximum(Calendar.DAY_OF_MONTH); j++) {
             dayList.add("" + (j + 1));
+            Log.d("하이", "j의 값 :" + j + dayList.toString());
         }
 
     }

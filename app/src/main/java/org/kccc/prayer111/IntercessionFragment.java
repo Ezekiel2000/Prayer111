@@ -1,5 +1,6 @@
 package org.kccc.prayer111;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,6 +37,8 @@ public class IntercessionFragment extends Fragment {
     private static String url = "http://api.kccc.org/a/pray111/get/together?s=0";
 
     ArrayList<HashMap<String, String>> IntercessionPraysList;
+
+    ProgressDialog progressDialog;
 
 
     public IntercessionFragment() {
@@ -74,6 +77,7 @@ public class IntercessionFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressDialog = ProgressDialog.show(getContext(), null, "로딩중입니다.", true, false);
         }
 
         @Override
@@ -128,6 +132,7 @@ public class IntercessionFragment extends Fragment {
             super.onPostExecute(aVoid);
 
             recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
+            progressDialog.dismiss();
 
         }
     }

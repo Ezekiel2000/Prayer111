@@ -74,4 +74,20 @@ public class PropertyManager {
         mEditor.commit();
     }
 
+//    private static final String KEY_CALENDAR_CHECKED = "calendar";
+//    private ArrayList<String> mUserCalendarChecked;
+//
+//    public String getCalendarChecked() {
+//        if (mUserCalendarChecked == null) {
+//            mUserCalendarChecked.add(mPrefs.getString(KEY_CALENDAR_CHECKED, ""));
+//        }
+//        return mUserName;
+//    }
+//
+//    public void setCalendarChecked(ArrayList<String> CalendarChecked) {
+//        mUserCalendarChecked = CalendarChecked;
+//        mEditor.putStringSet(KEY_CALENDAR_CHECKED, CalendarChecked.add())
+//        mEditor.commit();
+//    }
+
 }
