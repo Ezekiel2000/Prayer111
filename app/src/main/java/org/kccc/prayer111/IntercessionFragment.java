@@ -143,11 +143,6 @@ public class IntercessionFragment extends Fragment {
     @Override
     public void onResume() {
 
-//        FloatingActionButton fab_write = (FloatingActionButton) getActivity().findViewById(R.id.fab_write);
-//        FloatingActionButton fab_share = (FloatingActionButton) getActivity().findViewById(R.id.fab_share);
-//        fab_share.hide();
-//        fab_write.show();
-
         Log.d("하이", "fragment3  Resume");
 
 

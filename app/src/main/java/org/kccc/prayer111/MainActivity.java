@@ -23,8 +23,10 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.pushwoosh.fragment.PushEventListener;
+import com.pushwoosh.fragment.PushFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PushEventListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -54,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        PushFragment.init(this);
 
         // 시스템바 색상 변경 단 API Level 21이상일때만 변경
         if (Build.VERSION.SDK_INT >= 21) {
@@ -102,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         CallbackManager callbackManager = CallbackManager.Factory.create();
         ShareDialog shareDialog = new ShareDialog(this);
+
+
 
         // 카카오톡 공유 펩버튼 및 클릭시
         FloatingActionButton fab_kakao = (FloatingActionButton) findViewById(R.id.fab_share_kakao);
@@ -302,37 +309,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d("하이", "Main onStart");
-    }
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("하이", "Main onResume");
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("하이", "Main onPause");
+        PushFragment.onNewIntent(this, intent);
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d("하이", "Main onStop");
-
-
+    public void doOnRegistered(String s) {
+        Log.i("하이", "Registered for pushes: " + s);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("하이", "Main onDestroy");
+    public void doOnRegisteredError(String s) {
+        Log.e("하이", "Failed to register for pushes: " + s);
+    }
+
+    @Override
+    public void doOnMessageReceive(String s) {
+        Log.i("하이", "Notification opened: " + s);
+    }
+
+    @Override
+    public void doOnUnregistered(String s) {
+        Log.i("하이", "Unregistered from pushes: " + s);
+    }
+
+    @Override
+    public void doOnUnregisteredError(String s) {
+        Log.e("하이", "Failed to unregister from pushes: " + s);
     }
 
     @Override

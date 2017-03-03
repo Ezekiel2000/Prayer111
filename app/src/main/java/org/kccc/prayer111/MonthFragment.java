@@ -142,13 +142,6 @@ public class MonthFragment extends Fragment {
     @Override
     public void onResume() {
 
-
-
-//        FloatingActionButton fab_write = (FloatingActionButton) getActivity().findViewById(R.id.fab_write);
-//        FloatingActionButton fab_share = (FloatingActionButton) getActivity().findViewById(R.id.fab_share);
-//        fab_share.show();
-//        fab_write.hide();
-
         Log.d("하이", "fragment2  Resume");
 
 

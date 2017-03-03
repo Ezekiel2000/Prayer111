@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.kccc.prayer111">
 
+    <permission android:name="org.kccc.prayer111.permission.C2D_MESSAGE"
+                android:protectionLevel="signature" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -23,10 +25,10 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name=".LoadingActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -47,6 +49,16 @@
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_id"/>
+        <meta-data
+            android:name="PW_APPID"
+            android:value="5B4AC-805EF" />
+        <meta-data
+            android:name="PW_PROJECT_ID"
+            android:value="A942387550854" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
 
         <activity
             android:name=".CalendarActivity"

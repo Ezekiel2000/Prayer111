@@ -71,7 +71,7 @@ public class TodayFragment extends Fragment {
 
         curYearFormat = new SimpleDateFormat("yyyy");
         curMonthFormat = new SimpleDateFormat("MM");
-        curDayFormat = new SimpleDateFormat("dd");
+        curDayFormat = new SimpleDateFormat("d");
 
         new GetTodayPrays().execute();
         Log.d("하이", "fragment1  onCreateView" + today_pray);
@@ -133,7 +133,11 @@ public class TodayFragment extends Fragment {
 
             String strCurYear = curYearFormat.format(date) + curMonthFormat.format(date);
             String strCurDay = curDayFormat.format(date);
+            Log.d("하이", "날짜" +  strCurDay);
+            Log.d("하이", "날짜" +  todayPraysList.get(0).get("day"));
 
+            Log.d("하이", "날짜" +  todayPraysList.get(0).get("yymm"));
+            Log.d("하이", "날짜" +  strCurYear);
 
             if (todayPraysList.get(0).get("yymm").equals(strCurYear) && todayPraysList.get(0).get("day").equals(strCurDay)) {
                 today_pray_content.setText(todayPraysList.get(0).get("pray"));
@@ -152,11 +156,6 @@ public class TodayFragment extends Fragment {
 
     @Override
     public void onResume() {
-
-//        FloatingActionButton fab_write = (FloatingActionButton) getActivity().findViewById(R.id.fab_write);
-//        FloatingActionButton fab_share = (FloatingActionButton) getActivity().findViewById(R.id.fab_share);
-//        fab_share.show();
-//        fab_write.hide();
 
         Log.d("하이", "fragment1  Resume");
 
