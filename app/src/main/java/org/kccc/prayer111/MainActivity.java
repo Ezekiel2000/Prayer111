@@ -1,7 +1,10 @@
 package org.kccc.prayer111;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,8 +26,9 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.pushwoosh.BasePushMessageReceiver;
+import com.pushwoosh.PushManager;
 import com.pushwoosh.fragment.PushEventListener;
-import com.pushwoosh.fragment.PushFragment;
 
 public class MainActivity extends AppCompatActivity implements PushEventListener {
 
@@ -58,7 +62,17 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         setContentView(R.layout.activity_main);
 
 
-        PushFragment.init(this);
+        // Pushwoosh 기본 세팅
+        registerReceivers();
+        PushManager pushManager = PushManager.getInstance(this);
+        try {
+            pushManager.onStartup(this);
+        } catch (Exception e) {
+            Log.d("하이", e.getLocalizedMessage());
+        }
+        pushManager.registerForPushNotifications();
+        checkMessage(getIntent());
+
 
         // 시스템바 색상 변경 단 API Level 21이상일때만 변경
         if (Build.VERSION.SDK_INT >= 21) {
@@ -276,6 +290,52 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
     }
 
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            checkMessage(intent);
+        }
+    };
+
+    private BroadcastReceiver mReceiver = new BasePushMessageReceiver() {
+        @Override
+        protected void onMessageReceive(Intent intent) {
+            doOnMessageReceive(intent.getExtras().getString(JSON_DATA_KEY));
+        }
+    };
+
+    public void registerReceivers() {
+        IntentFilter intentFilter = new IntentFilter(getPackageName() + ".action.PUSH_MESSAGE_RECEIVE");
+        registerReceiver(mReceiver, intentFilter, getPackageName() + ".permission.C2D_MESSAGE", null);
+        registerReceiver(mBroadcastReceiver, new IntentFilter(getPackageName() + "." + PushManager.REGISTER_BROAD_CAST_ACTION));
+    }
+
+    public void unregisterReceivers() {
+        try {
+            unregisterReceiver(mReceiver);
+        } catch (Exception e) {
+
+        }
+
+        try {
+            unregisterReceiver(mBroadcastReceiver);
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceivers();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceivers();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -312,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        PushFragment.onNewIntent(this, intent);
+        checkMessage(intent);
     }
 
     @Override
@@ -344,4 +404,62 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     public void onBackPressed() {
         backPressCloseHandler.onBackPressed();
     }
+
+    private void checkMessage(Intent intent)
+    {
+        if (null != intent)
+        {
+            if (intent.hasExtra(PushManager.PUSH_RECEIVE_EVENT))
+            {
+                doOnMessageReceive(intent.getExtras().getString(PushManager.PUSH_RECEIVE_EVENT));
+            }
+            else if (intent.hasExtra(PushManager.REGISTER_EVENT))
+            {
+                doOnRegistered(intent.getExtras().getString(PushManager.REGISTER_EVENT));
+            }
+            else if (intent.hasExtra(PushManager.UNREGISTER_EVENT))
+            {
+                doOnUnregistered(intent.getExtras().getString(PushManager.UNREGISTER_EVENT));
+            }
+            else if (intent.hasExtra(PushManager.REGISTER_ERROR_EVENT))
+            {
+                doOnRegisteredError(intent.getExtras().getString(PushManager.REGISTER_ERROR_EVENT));
+            }
+            else if (intent.hasExtra(PushManager.UNREGISTER_ERROR_EVENT))
+            {
+                doOnUnregisteredError(intent.getExtras().getString(PushManager.UNREGISTER_ERROR_EVENT));
+            }
+
+            resetIntentValues();
+        }
+    }
+
+    private void resetIntentValues()
+    {
+        Intent mainAppIntent = getIntent();
+
+        if (mainAppIntent.hasExtra(PushManager.PUSH_RECEIVE_EVENT))
+        {
+            mainAppIntent.removeExtra(PushManager.PUSH_RECEIVE_EVENT);
+        }
+        else if (mainAppIntent.hasExtra(PushManager.REGISTER_EVENT))
+        {
+            mainAppIntent.removeExtra(PushManager.REGISTER_EVENT);
+        }
+        else if (mainAppIntent.hasExtra(PushManager.UNREGISTER_EVENT))
+        {
+            mainAppIntent.removeExtra(PushManager.UNREGISTER_EVENT);
+        }
+        else if (mainAppIntent.hasExtra(PushManager.REGISTER_ERROR_EVENT))
+        {
+            mainAppIntent.removeExtra(PushManager.REGISTER_ERROR_EVENT);
+        }
+        else if (mainAppIntent.hasExtra(PushManager.UNREGISTER_ERROR_EVENT))
+        {
+            mainAppIntent.removeExtra(PushManager.UNREGISTER_ERROR_EVENT);
+        }
+
+        setIntent(mainAppIntent);
+    }
+
 }
