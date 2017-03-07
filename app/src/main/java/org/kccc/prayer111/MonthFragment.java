@@ -30,7 +30,7 @@ public class MonthFragment extends Fragment {
 
     private String TAG = MonthFragment.class.getSimpleName();
 
-    private static String url = "http://api.kccc.org/a/pray111/get/month";
+    private static String url = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getMonth";
 
     ArrayList<HashMap<String, String>> monthPraysList;
 
@@ -93,9 +93,11 @@ public class MonthFragment extends Fragment {
 
                     JSONObject jsonObject = new JSONObject(jsonStr);
 
-                    String pray = jsonObject.getString("prayer");
-                    String yymm = jsonObject.getString("yymm");
-                    String day = jsonObject.getString("day");
+                    JSONObject object = jsonObject.getJSONObject("result");
+
+                    String pray = object.getString("prayer");
+                    String yymm = object.getString("yymm");
+                    String day = object.getString("day");
 
 
                     HashMap<String, String> monthPray = new HashMap<>();

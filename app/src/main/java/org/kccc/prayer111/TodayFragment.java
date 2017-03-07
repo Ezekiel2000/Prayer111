@@ -35,7 +35,7 @@ public class TodayFragment extends Fragment {
 
     private String TAG = TodayFragment.class.getSimpleName();
 
-    private static String url = "http://api.kccc.org/a/pray111/get/today";
+    private static String url = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getToday";
 
     String today_pray;
 
@@ -100,13 +100,15 @@ public class TodayFragment extends Fragment {
 
                     JSONObject jsonObject = new JSONObject(jsonStr);
 
-                    String pray = jsonObject.getString("prayer");
-                    String yymm = jsonObject.getString("yymm");
-                    String day = jsonObject.getString("day");
+                    JSONObject object = jsonObject.getJSONObject("result");
+
+                    String pray = object.getString("prayer");
+                    String yymm = object.getString("yymm");
+                    String day = object.getString("day");
 
                     HashMap<String, String> todayPray = new HashMap<>();
 
-                    Log.d("하이", "fragment1  doInBackground" + today_pray);
+                    Log.d("하이", "fragment1  doInBackground" + jsonObject);
 
                     todayPray.put("pray", pray);
                     todayPray.put("yymm", yymm);

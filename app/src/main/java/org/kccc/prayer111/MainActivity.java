@@ -30,6 +30,10 @@ import com.pushwoosh.BasePushMessageReceiver;
 import com.pushwoosh.PushManager;
 import com.pushwoosh.fragment.PushEventListener;
 
+import org.json.JSONException;
+
+import java.net.MalformedURLException;
+
 public class MainActivity extends AppCompatActivity implements PushEventListener {
 
     /**
@@ -61,10 +65,12 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         // Pushwoosh 기본 세팅
         registerReceivers();
         PushManager pushManager = PushManager.getInstance(this);
+
+        pushManager.setNotificationFactory(new NotificationFactory());
+
         try {
             pushManager.onStartup(this);
         } catch (Exception e) {
@@ -72,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         }
         pushManager.registerForPushNotifications();
         checkMessage(getIntent());
-
 
         // 시스템바 색상 변경 단 API Level 21이상일때만 변경
         if (Build.VERSION.SDK_INT >= 21) {
@@ -265,6 +270,22 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         });
 
         Log.d("하이", "팹버튼 변경");
+
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    SendPushNotification sendPushNotification = new SendPushNotification();
+                    sendPushNotification.SendPush();
+                } catch (MalformedURLException e) {
+
+                } catch (JSONException e) {
+
+                }
+            }
+        }.start();
+
+
 
     }
 

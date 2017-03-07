@@ -13,6 +13,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by ezekiel on 2017. 3. 6..
@@ -24,24 +26,52 @@ public class SendPushNotification {
     private static final String AUTH_TOKEN = "Q1wgPWshHYPIkqUWSJXWk2MWFMLaLnqpugKn1qUN0NGk1XqEpHf5JxRS9DY790DAgW3yBIeBT3vBRiictHbx";
     private static final String APPLICATION_CODE = "5B4AC-805EF";
 
-    public static void main(String[] args) throws JSONException, MalformedURLException {
+    ArrayList<HashMap<String, String>> todayPraysList;
+    private static String url = "http://api.kccc.org/a/pray111/get/today";
+
+    public String push_message = null;
+
+    public void SendPush() throws JSONException, MalformedURLException {
+
+        HttpHandler sh = new HttpHandler();
+
+        String jsonStr = sh.makeServiceCall(url);
+
+        if (jsonStr != null) {
+
+            try {
+
+                todayPraysList = new ArrayList<>();
+
+                JSONObject jsonObject = new JSONObject(jsonStr);
+
+                push_message= jsonObject.getString("prayer");
+                String yymm = jsonObject.getString("yymm");
+                String day = jsonObject.getString("day");
+
+            } catch (JSONException e) {
+
+
+            }
+        }
 
         String method = "createMessage";
         URL url = new URL(PUSHWOOSH_SERVICE_BASE_URL + method);
 
-        JSONArray notifi_Array = new JSONArray()
+        JSONArray notificationsArray = new JSONArray()
                 .put(new JSONObject()
                         .put("send_date", "now")
-                        .put("content", "test")
-                        .put("link", "http://pushwoosh.com/"));
+                        .put("content", push_message)
+                        .put("link", "org.kccc.prayer111"));
         JSONObject requestObj = new JSONObject()
                 .put("application", APPLICATION_CODE)
                 .put("auth", AUTH_TOKEN)
-                .put("notifications", notifi_Array);
+                .put("notifications", notificationsArray);
 
         JSONObject mainRequest = new JSONObject().put("request", requestObj);
         JSONObject response = SendServerRequest.sendJSONRequest(url, mainRequest.toString());
 
+        Log.d("하이", "push 내용 " + push_message);
         Log.d("하이", "Response " + response);
 
     }
@@ -97,4 +127,5 @@ class SendServerRequest {
         return new JSONObject(response.toString());
 
     }
+
 }
