@@ -100,7 +100,8 @@ public class IntercessionFragment extends Fragment {
                     Log.d("하이", "불러오는 값 : " + object);
 
                     String number = object.getString("no");
-                    String name = object.getString("id");
+                    String email = object.getString("id");
+                    String name = object.getString("name");
                     String content = object.getString("pray");
                     String date = object.getString("indate");
                     String profile = object.getString("photo");

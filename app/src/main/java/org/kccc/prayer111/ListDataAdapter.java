@@ -109,9 +109,27 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
         // 코멘트 버튼을 누르면 CommentListActivity로 이동함
         holder.icon_comment.setOnClickListener(v -> {
-            Intent commentIntent = new Intent(context, CommentListActivity.class);
-            commentIntent.putExtra("prayNumber", data.getNumber());
+            Intent commentIntent;
+
+            String name = PropertyManager.getInstance().getUserName();
+
+            if (name == null) {
+
+                Log.d("하이", "이름 : " +name );
+
+                commentIntent = new Intent(context, SignInActivity.class);
+                commentIntent.putExtra("position", "cmt");
+                commentIntent.putExtra("prayNumber", data.getNumber());
+            } else {
+
+                Log.d("하이", "이름 : " + name );
+
+                commentIntent = new Intent(context, CommentListActivity.class);
+                commentIntent.putExtra("prayNumber", data.getNumber());
+            }
+
             v.getContext().startActivity(commentIntent);
+
         });
 
         // 공유 버튼을 클릭해을 경우 dialog창을 뜨게 함

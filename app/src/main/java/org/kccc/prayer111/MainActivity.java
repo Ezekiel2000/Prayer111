@@ -26,6 +26,8 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.pushwoosh.BasePushMessageReceiver;
 import com.pushwoosh.PushManager;
 import com.pushwoosh.fragment.PushEventListener;
@@ -56,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
     String today_pray_content = null;
     String month_pray_content = null;
-
 
     public static final int REQUEST_MAIN = 2501;
 
@@ -102,6 +103,16 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        try {
+            String position = getIntent().getStringExtra("position");
+            if (position.equals("cmt") || position.equals("write")) {
+                mViewPager.setCurrentItem(2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         // 탭바 세팅 및 색상
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -112,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         CheckBox checked = (CheckBox) findViewById(R.id.checkBox);
 
         String name = PropertyManager.getInstance().getUserName();
+        Log.d("하이", "이름 : " + name);
+
+
+
 
         // 페이스북 공유를 위한 sdk선언 및 다이얼로그 박스
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -346,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("하이", "onResume");
+        Log.d("하이", "onPause");
         unregisterReceivers();
     }
 
@@ -354,6 +369,10 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     protected void onStart() {
         Log.d("하이", "onStart");
         super.onStart();
+
+
+
+
     }
 
     @Override
@@ -390,6 +409,15 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             startActivityForResult(calenderIntent, REQUEST_MAIN);
 
         } else if (id == R.id.action_logout) {
+
+            // 임시 강제 로그아웃
+            UserManagement.requestLogout(new LogoutResponseCallback() {
+                @Override
+                public void onCompleteLogout() {
+                    Log.d("하이", "로그아웃 성공");
+                }
+            });
+
 
         }
 

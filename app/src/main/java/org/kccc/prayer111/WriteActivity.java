@@ -85,6 +85,7 @@ public class WriteActivity extends AppCompatActivity {
 
                 // 서버로 정보값 Post 하고 MainActivity 의 중보기도로 이동
                 Intent okIntent = new Intent(getBaseContext(), MainActivity.class);
+                okIntent.putExtra("position", "write");
                 startActivity(okIntent);
                 finish();
 

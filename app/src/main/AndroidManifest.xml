@@ -60,7 +60,7 @@
             android:value="@string/kakao_app_id"/>
         <meta-data
             android:name="PW_APPID"
-            android:value="5B4AC-805EF" />
+            android:value="C7D6C-DAEB6" />
         <meta-data
             android:name="PW_PROJECT_ID"
             android:value="A942387550854" />

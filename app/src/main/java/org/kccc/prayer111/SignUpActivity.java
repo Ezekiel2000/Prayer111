@@ -36,6 +36,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     final int REQ_CODE_SELECT_IMAGE = 100;
 
+    private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=joinProcess";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,23 @@ public class SignUpActivity extends AppCompatActivity {
                     PropertyManager.getInstance().setUserName(text_sign_email.getText().toString());
                     PropertyManager.getInstance().setPassword(text_sign_password.getText().toString());
                     PropertyManager.getInstance().setUserProfile(imgPath);
+
+                    setUrl = setUrl + "&name=" + text_sign_name.getText() + "&email=" + text_sign_email.getText() + "&password=" + text_sign_password.getText() + "&method=EMAIL";
+
+                    Log.d("하이",  "setURL : " + setUrl);
+
+                    try {
+
+
+
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+
 
                     startActivity(intent);
                     finish();

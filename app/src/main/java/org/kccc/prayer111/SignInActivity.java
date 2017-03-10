@@ -26,7 +26,6 @@ import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
-import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
@@ -59,6 +58,7 @@ public class SignInActivity extends AppCompatActivity {
     private CallbackManager mFacebookcallbackManager;
     private AccessToken mToken = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,14 +68,6 @@ public class SignInActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(0xFF5f4fb2);
         }
-
-        // 임시 강제 로그아웃
-        UserManagement.requestLogout(new LogoutResponseCallback() {
-            @Override
-            public void onCompleteLogout() {
-                Log.d("하이", "로그아웃 성공");
-            }
-        });
 
         login();
 
@@ -117,16 +109,35 @@ public class SignInActivity extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
                     setLayoutText();
-                    Intent intent = new Intent(getBaseContext(), WriteActivity.class);
 
-                    intent.putExtra("user_profile", profileUrl);
-                    intent.putExtra("userId", userId);
-                    intent.putExtra("name", userName);
-                    intent.putExtra("email", email);
-                    intent.putExtra("password", password);
+                    Intent intent;
+
+                    if (getIntent().getStringExtra("position").equals("cmt")) {
+
+                        intent = new Intent(getBaseContext(), CommentListActivity.class);
+
+                        intent.putExtra("user_profile", profileUrl);
+                        intent.putExtra("userId", userId);
+                        intent.putExtra("name", userName);
+                        intent.putExtra("email", email);
+                        intent.putExtra("password", password);
+
+                    } else {
+
+                        intent = new Intent(getBaseContext(), WriteActivity.class);
+
+                        intent.putExtra("user_profile", profileUrl);
+                        intent.putExtra("userId", userId);
+                        intent.putExtra("name", userName);
+                        intent.putExtra("email", email);
+                        intent.putExtra("password", password);
+
+                    }
+
 
                     startActivity(intent);
                     finish();
+
 
                 } else {
                     Toast.makeText(getApplicationContext(), "빈칸을 입력하세요", Toast.LENGTH_SHORT).show();
@@ -187,14 +198,29 @@ public class SignInActivity extends AppCompatActivity {
                                 profileUrl = "https://graph.facebook.com/" + userId + "/picture";
 
                                 setLayoutText();
-                                Intent intent = new Intent(getBaseContext(), WriteActivity.class);
 
-                                intent.putExtra("user_profile", profileUrl);
-                                intent.putExtra("userId", userId);
-                                intent.putExtra("name", userName);
-                                intent.putExtra("email", email);
-                                intent.putExtra("password", password);
-                                startActivity(intent);
+                                if (getIntent().getStringExtra("position").equals("cmt")) {
+
+                                    Intent intent = new Intent(getBaseContext(), CommentListActivity.class);
+
+                                    intent.putExtra("user_profile", profileUrl);
+                                    intent.putExtra("userId", userId);
+                                    intent.putExtra("name", userName);
+                                    intent.putExtra("email", email);
+                                    intent.putExtra("password", password);
+                                    startActivity(intent);
+
+                                } else {
+                                    Intent intent = new Intent(getBaseContext(), WriteActivity.class);
+
+                                    intent.putExtra("user_profile", profileUrl);
+                                    intent.putExtra("userId", userId);
+                                    intent.putExtra("name", userName);
+                                    intent.putExtra("email", email);
+                                    intent.putExtra("password", password);
+                                    startActivity(intent);
+                                }
+
                                 finish();
 
                             } catch (JSONException e) {
@@ -269,15 +295,29 @@ public class SignInActivity extends AppCompatActivity {
                 userName = userProfile.getNickname();
 
                 setLayoutText();
-                Intent intent = new Intent(getBaseContext(), WriteActivity.class);
 
-                intent.putExtra("user_profile", profileUrl);
-                intent.putExtra("userId", userId);
-                intent.putExtra("name", userName);
-                intent.putExtra("email", email);
-                intent.putExtra("password", password);
+                if (getIntent().getStringExtra("position").equals("cmt")) {
 
-                startActivity(intent);
+                    Intent intent = new Intent(getBaseContext(), CommentListActivity.class);
+
+                    intent.putExtra("user_profile", profileUrl);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("name", userName);
+                    intent.putExtra("email", email);
+                    intent.putExtra("password", password);
+                    startActivity(intent);
+
+                } else {
+                    Intent intent = new Intent(getBaseContext(), WriteActivity.class);
+
+                    intent.putExtra("user_profile", profileUrl);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("name", userName);
+                    intent.putExtra("email", email);
+                    intent.putExtra("password", password);
+                    startActivity(intent);
+                }
+
                 finish();
             }
         });
