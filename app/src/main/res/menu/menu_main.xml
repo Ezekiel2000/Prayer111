@@ -9,4 +9,6 @@
         app:showAsAction="never"/>
     <item android:title="@string/action_calender"
           android:id="@+id/action_calender"/>
+    <item android:title="@string/action_logout"
+          android:id="@+id/action_logout"/>
 </menu>

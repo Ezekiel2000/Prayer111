@@ -46,8 +46,6 @@ public class HttpHandler {
             Log.e(TAG, "Exception : " + e.getMessage());
         }
 
-
-
         return response;
     }
 

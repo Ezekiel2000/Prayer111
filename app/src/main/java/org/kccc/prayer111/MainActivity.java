@@ -87,15 +87,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
         Log.d("하이", "시스템바 변경");
 
-        // 로딩 화면 띄우기
-        Intent loadingIntent = new Intent(this, LoadingActivity.class);
-        loadingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        loadingIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-
-        startActivity(loadingIntent);
-
-        Log.d("하이", "로딩");
-
         // 백버튼 두번 눌러서 꺼지게 하기 위해 핸들러 생성하여 던짐
         backPressCloseHandler = new BackPressCloseHandler(this);
 
@@ -348,13 +339,27 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("하이", "onResume");
         registerReceivers();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("하이", "onResume");
         unregisterReceivers();
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d("하이", "onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.d("하이", "onRestart");
+        super.onRestart();
     }
 
     @Override
@@ -383,6 +388,8 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             Intent calenderIntent = new Intent(this, CalendarActivity.class);
             calenderIntent.putExtra("checked", today_checked);
             startActivityForResult(calenderIntent, REQUEST_MAIN);
+
+        } else if (id == R.id.action_logout) {
 
         }
 

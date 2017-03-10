@@ -8,7 +8,7 @@ public class User {
 
     // email 가입시 필요한 내용
     String user_profile;
-    String userId;
+    String user_id;
     String name;
     String email;
     String password;
@@ -19,13 +19,14 @@ public class User {
 //    String id;
 //    String name;
 
+    public User() {}
 
     public String getName() {
         return this.name;
     }
 
     public String getUserId() {
-        return this.userId;
+        return this.user_id;
     }
 
     public String getUser_profile() {
@@ -44,9 +45,9 @@ public class User {
         return this.password_conform;
     }
 
-    User(String user_profile, String userId, String name, String email, String password, String password_conform) {
+    User(String user_profile, String user_id, String name, String email, String password, String password_conform) {
         this.user_profile = user_profile;
-        this.userId = userId;
+        this.user_id = user_id;
         this.name = name;
         this.email = email;
         this.password = password;

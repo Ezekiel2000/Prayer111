@@ -52,6 +52,7 @@ public class WriteActivity extends AppCompatActivity {
         userId = intent.getStringExtra("userId");
         userName = intent.getStringExtra("name");
         profileUrl = intent.getStringExtra("user_profile");
+        email = intent.getStringExtra("email");
 
         Typeface typeface = Typeface.createFromAsset(getAssets(), "NotoSansCJKkr_Regular.otf");
 
@@ -77,6 +78,18 @@ public class WriteActivity extends AppCompatActivity {
 
 //        Log.d("하이",  "name : " + name.toString());
 //        Log.d("하이",  "image : " + uri.toString());
+
+        btn_Ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // 서버로 정보값 Post 하고 MainActivity 의 중보기도로 이동
+                Intent okIntent = new Intent(getBaseContext(), MainActivity.class);
+                startActivity(okIntent);
+                finish();
+
+            }
+        });
 
 
         btn_Cancel.setOnClickListener(new View.OnClickListener() {

@@ -13,7 +13,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -29,9 +31,16 @@ public class SendPushNotification {
     ArrayList<HashMap<String, String>> todayPraysList;
     private static String url = "http://api.kccc.org/a/pray111/get/today";
 
+    SimpleDateFormat now;
+    String today;
     public String push_message = null;
 
     public void SendPush() throws JSONException, MalformedURLException {
+
+        now = new SimpleDateFormat("yyyy-MM-dd");
+        Date Time = new Date();
+        today = now.format(Time);
+        Log.d("하이", "지금 현재 시각은? : " + today + " 13:00");
 
         HttpHandler sh = new HttpHandler();
 
@@ -60,7 +69,7 @@ public class SendPushNotification {
 
         JSONArray notificationsArray = new JSONArray()
                 .put(new JSONObject()
-                        .put("send_date", "now")
+                        .put("send_date", today + " 13:00")
                         .put("content", push_message)
                         .put("link", "org.kccc.prayer111"));
         JSONObject requestObj = new JSONObject()

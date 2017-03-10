@@ -34,7 +34,7 @@ public class IntercessionFragment extends Fragment {
 
 
     private String TAG = IntercessionFragment.class.getSimpleName();
-    private static String url = "http://api.kccc.org/a/pray111/get/together?s=0";
+    private static String url = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getTogether";
 
     ArrayList<HashMap<String, String>> IntercessionPraysList;
 
@@ -90,7 +90,7 @@ public class IntercessionFragment extends Fragment {
             try {
 
                 JSONObject jsonObject = new JSONObject(jsonStr);
-                String dataJson = jsonObject.getString("data");
+                String dataJson = jsonObject.getString("result");
 
                 JSONArray jsonArray = new JSONArray(dataJson);
 
@@ -113,8 +113,11 @@ public class IntercessionFragment extends Fragment {
 
                     data = new ListData[jsonArray.length()];
 
-                    data[i] = new ListData(profile, name, date, content, prayNumber, commentNumber);
-                    listData.add(data[i]);
+                    // 신고당한 리스트(warn = 1인경우)는 add 하지 않음
+                    if (warn == 0) {
+                        data[i] = new ListData(number, profile, name, date, content, prayNumber, commentNumber);
+                        listData.add(data[i]);
+                    }
 
                 }
 
@@ -136,9 +139,6 @@ public class IntercessionFragment extends Fragment {
 
         }
     }
-
-
-
 
     @Override
     public void onResume() {

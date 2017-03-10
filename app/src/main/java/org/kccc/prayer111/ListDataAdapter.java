@@ -110,6 +110,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         // 코멘트 버튼을 누르면 CommentListActivity로 이동함
         holder.icon_comment.setOnClickListener(v -> {
             Intent commentIntent = new Intent(context, CommentListActivity.class);
+            commentIntent.putExtra("prayNumber", data.getNumber());
             v.getContext().startActivity(commentIntent);
         });
 

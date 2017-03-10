@@ -1,5 +1,6 @@
 package org.kccc.prayer111;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,8 @@ public class LoadingActivity extends AppCompatActivity {
         hd.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Intent mainIntent = new Intent(LoadingActivity.this, MainActivity.class);
+                startActivity(mainIntent);
                 finish();
             }
         }, 2000);

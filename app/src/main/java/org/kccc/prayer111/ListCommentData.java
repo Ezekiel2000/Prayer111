@@ -1,19 +1,23 @@
 package org.kccc.prayer111;
 
-import android.graphics.drawable.Drawable;
-
 /**
  * Created by ezekiel on 2017. 2. 7..
  */
 
 public class ListCommentData {
 
-    int comment_profileImage;
+    String pray_number;
+    String comment_profileImage;
     String comment_name;
     String comment_date;
     String comment_content;
 
-    public int getComment_profileImage() {
+    public String getPray_number() {
+        return this.pray_number;
+    }
+
+
+    public String getComment_profileImage() {
         return this.comment_profileImage;
     }
 
@@ -29,7 +33,8 @@ public class ListCommentData {
         return this.comment_content;
     }
 
-    ListCommentData(int comment_profileImage, String comment_name, String comment_date, String comment_content) {
+    ListCommentData(String pray_number, String comment_profileImage, String comment_name, String comment_date, String comment_content) {
+        this.pray_number = pray_number;
         this.comment_profileImage = comment_profileImage;
         this.comment_name = comment_name;
         this.comment_date = comment_date;

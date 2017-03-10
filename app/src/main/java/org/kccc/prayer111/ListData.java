@@ -5,12 +5,17 @@ package org.kccc.prayer111;
  */
 
 public class ListData {
+    String number;
     String profileImage;
     String name;
     String date;
     String content;
     int prayerNumber;
     int commentNumber;
+
+    public String getNumber() {
+        return this.number;
+    }
 
     public String getProfileImage() {
         return this.profileImage;
@@ -36,7 +41,8 @@ public class ListData {
         return this.commentNumber;
     }
 
-    ListData(String profileImage, String name, String date, String content, int prayerNumber, int commentNumber) {
+    ListData(String number, String profileImage, String name, String date, String content, int prayerNumber, int commentNumber) {
+        this.number = number;
         this.profileImage = profileImage;
         this.name = name;
         this.date = date;

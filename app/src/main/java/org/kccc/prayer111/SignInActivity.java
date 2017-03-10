@@ -78,22 +78,8 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         login();
-//        load();
-
 
     }
-
-//    private void save() {
-//
-//        SharedPreferences.Editor editor = appData.edit();
-//
-//        editor.putBoolean("SAVE_LOGIN_DATA", checkBox.isChecked());
-//        editor.putString("EMAIL", text_input_email.getText().toString().trim());
-//        editor.putString("PASSWORD", text_input_password.getText().toString().trim());
-//
-//        Log.d("하이", "저장 성공");
-//
-//    }
 
     private void login() {
 
@@ -112,12 +98,6 @@ public class SignInActivity extends AppCompatActivity {
             text_input_password.setText(PropertyManager.getInstance().getPassword());
         }
 
-//        if (saveLoginData) {
-//            text_input_email.setText(email);
-//            text_input_password.setText(password);
-//            checkBox.setChecked(saveLoginData);
-//        }
-
         // 일반적인 이메일 로그인 버튼 클릭 시
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +111,6 @@ public class SignInActivity extends AppCompatActivity {
                         PropertyManager.getInstance().setPassword(text_input_password.getText().toString());
 
                     }
-
 
                     // 서버에서 이메일과 비밀번호를 검색해서 일치되는 것이 있을 경우 로그인
                     // 일치되는 것이 없을 경우 Toast를 사용하여 다시 입력하
@@ -203,7 +182,7 @@ public class SignInActivity extends AppCompatActivity {
                             Log.d("하이", "에러 : " + response.getError().getErrorMessage());
                         } else {
                             try {
-                                email = object.getString("email");
+                                email = object.getString("email");      // 페이스북의 키 값
                                 userName = object.getString("name");
                                 profileUrl = "https://graph.facebook.com/" + userId + "/picture";
 

@@ -91,12 +91,12 @@ public class SignUpActivity extends AppCompatActivity {
                     Intent intent = new Intent(getBaseContext(), WriteActivity.class);
 
                     intent.putExtra("name", text_sign_name.getText().toString());
+                    intent.putExtra("email", text_sign_email.getText().toString());
                     intent.putExtra("user_profile", imgPath);
 
                     PropertyManager.getInstance().setUserName(text_sign_email.getText().toString());
                     PropertyManager.getInstance().setPassword(text_sign_password.getText().toString());
                     PropertyManager.getInstance().setUserProfile(imgPath);
-
 
                     startActivity(intent);
                     finish();

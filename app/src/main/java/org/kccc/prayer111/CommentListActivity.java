@@ -1,6 +1,9 @@
 package org.kccc.prayer111;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +19,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +43,16 @@ public class CommentListActivity extends AppCompatActivity {
 
     private EditText input_comment;
     private ImageView btn_ok;
+
+    ProgressDialog progressDialog;
+
+    private static String getUrl = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getComment";
+    private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=setComment";
+    String prayNumber;
+    String cmtNumber;
+    String cmtContent;
+
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,29 +73,133 @@ public class CommentListActivity extends AppCompatActivity {
         input_comment = (EditText) findViewById(R.id.input_comment);
         btn_ok = (ImageView) findViewById(R.id.btn_ok);
 
+        Intent intent = getIntent();
+        prayNumber = intent.getStringExtra("prayNumber");
+        email = intent.getStringExtra("email");
 
         listCommentDatas = new ArrayList<>();
-        data = new ListCommentData[ITEM_SIZE];
-        data[0] = new ListCommentData(R.drawable.a, "PSY", "2014-12-15", "뭐 이래요?");
-        data[1] = new ListCommentData(R.drawable.b, "전형배", "2015-10-25", "잘하시길..");
 
-        for (int i = 0; i < ITEM_SIZE; i++) {
-            listCommentDatas.add(data[i]);
-        }
-
-        btn_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                // 버튼을 눌렀을 때 리플을 추가해 주는 구문
-
-            }
-        });
+        new GetCommentList().execute();
 
         recyclerView.setAdapter(new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list));
 
+
+
     }
+
+    private class GetCommentList extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(CommentListActivity.this, null, "로딩중입니다.", true, false);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            HttpHandler sh = new HttpHandler();
+
+            getUrl = getUrl +"&prayNo=" + prayNumber;
+            String jsonStr = sh.makeServiceCall(getUrl);
+
+            Log.d("하이", "jsonStr : " + jsonStr);
+
+            try {
+
+                JSONObject jsonObject = new JSONObject(jsonStr);
+                Log.d("하이", "jsonStr : " + jsonObject);
+                String dataJson = jsonObject.getString("result");
+
+                JSONArray jsonArray = new JSONArray(dataJson);
+
+                Log.d("하이", "코텐트 : " + jsonArray);
+
+                for (int i = 0 ; i < jsonArray.length(); i++) {
+
+                    JSONObject object = jsonArray.getJSONObject(i);
+
+                    String commentNumber = object.getString("no");
+                    String prayNumber = object.getString("keyno");
+                    String id = object.getString("id");
+                    String name = object.getString("name");
+                    String content = object.getString("memo");
+                    String profile = object.getString("photo");
+                    String date = object.getString("indate");
+                    String chkHeart = object.getString("chkHeart");
+
+                    cmtNumber = commentNumber;
+                    cmtContent = content;
+
+                    data = new ListCommentData[jsonArray.length()];
+
+                    data[i] = new ListCommentData(prayNumber, profile, name, date, content);
+                    listCommentDatas.add(data[i]);
+
+                }
+
+
+            } catch (JSONException e) {
+
+                e.printStackTrace();
+
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            btn_ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent signInIntent = new Intent(CommentListActivity.this, SignInActivity.class);
+
+                    if (email == null) {
+
+                        signInIntent.putExtra("position", "cmt");
+                        startActivity(signInIntent);
+
+                    } else {
+
+                        try {
+
+                            setUrl = setUrl + "&UserId=" + email + "&prayNo=" + prayNumber + "&comment=" + input_comment.getText().toString() + "'\n'";
+
+                            Log.d("하이",  "setURL : " + setUrl);
+
+                            URL url = new URL(setUrl);
+                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                            conn.setRequestMethod("POST");
+
+                            OutputStream outputStream = conn.getOutputStream();
+                            outputStream.write(setUrl.getBytes());
+                            outputStream.flush();
+                            outputStream.close();
+
+                            recyclerView.invalidate();
+
+                        } catch (Exception e) {
+
+                        }
+
+                    }
+
+                    // 버튼을 눌렀을 때 리플을 추가해 주는 구문
+
+                }
+            });
+
+
+            recyclerView.setAdapter(new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list));
+            progressDialog.dismiss();
+        }
+    }
+
+
 
 
     private class CommentListViewAdapter extends RecyclerView.Adapter<CommentListViewAdapter.ViewHolder> {
@@ -114,7 +238,6 @@ public class CommentListActivity extends AppCompatActivity {
             holder.comment_name.setText(commentData.comment_name);
             holder.comment_date.setText(commentData.comment_date);
             holder.comment_content.setText(commentData.comment_content);
-
 
         }
 
