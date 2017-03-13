@@ -116,8 +116,10 @@ public class IntercessionFragment extends Fragment {
 
                     // 신고당한 리스트(warn = 1인경우)는 add 하지 않음
                     if (warn == 0) {
-                        data[i] = new ListData(number, profile, name, date, content, prayNumber, commentNumber);
+
+                        data[i] = new ListData(number, profile, email, name, date, content, warn, prayNumber, commentNumber);
                         listData.add(data[i]);
+
                     }
 
                 }
@@ -136,7 +138,17 @@ public class IntercessionFragment extends Fragment {
             super.onPostExecute(aVoid);
 
             recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
+            recyclerView.getAdapter().notifyDataSetChanged();
             progressDialog.dismiss();
+
+        }
+
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+            recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
+            recyclerView.getAdapter().notifyDataSetChanged();
 
         }
     }
@@ -145,8 +157,7 @@ public class IntercessionFragment extends Fragment {
     public void onResume() {
 
         Log.d("하이", "fragment3  Resume");
-
-
+        recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
         super.onResume();
     }
 
@@ -157,4 +168,5 @@ public class IntercessionFragment extends Fragment {
 
         super.onPause();
     }
+
 }

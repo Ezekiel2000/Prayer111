@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,19 +37,8 @@ import java.net.MalformedURLException;
 
 public class MainActivity extends AppCompatActivity implements PushEventListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
     private BackPressCloseHandler backPressCloseHandler;
 
@@ -103,16 +91,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        try {
-            String position = getIntent().getStringExtra("position");
-            if (position.equals("cmt") || position.equals("write")) {
-                mViewPager.setCurrentItem(2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
         // 탭바 세팅 및 색상
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -123,9 +101,9 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         CheckBox checked = (CheckBox) findViewById(R.id.checkBox);
 
         String name = PropertyManager.getInstance().getUserName();
+        String email = PropertyManager.getInstance().getUserEmail();
         Log.d("하이", "이름 : " + name);
-
-
+        Log.d("하이", "Id : " + email);
 
 
         // 페이스북 공유를 위한 sdk선언 및 다이얼로그 박스
@@ -142,26 +120,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             public void onClick(View v) {
 
                 if (mViewPager.getCurrentItem() == 0) {
-
-
-                    // 카카오 링크 사용할 경우(웹사이트 링크는 도메인이 없기 때문에 어려움)
-//                    try {
-//
-//                        Uri uri = Uri.parse("R.drawable.app_icon");
-//
-//                        KakaoLink kakaoLink = KakaoLink.getKakaoLink(getApplicationContext());
-//                        KakaoTalkLinkMessageBuilder kakaoTalkLinkMessageBuilder = kakaoLink.createKakaoTalkLinkMessageBuilder();
-//                        kakaoTalkLinkMessageBuilder
-//                                .addText("[오늘의 기도]\n" + today_pray_content)
-//                                .addImage("uri", 100, 100)
-//                                .addWebButton("페이지로 이동", "http://www.kakao.com/services/8")
-//                                .build();
-//                        kakaoLink.sendMessage(kakaoTalkLinkMessageBuilder, v.getContext());
-//
-//                    } catch (KakaoParameterException e) {
-//                        e.printStackTrace();
-//                        Toast.makeText(MainActivity.this, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
-//                    }
 
                     // 뷰페이저가 0일 경우(오늘의 기도) 인텐트를 통해 카카오톡 공유 실행
                     Intent intent = new Intent(Intent.ACTION_SEND);
@@ -261,14 +219,18 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
                     String password = PropertyManager.getInstance().getPassword();
                     String profile = PropertyManager.getInstance().getUserProfile();
                     if (!password.equals("")) {
-                        Intent writeIntent = new Intent(MainActivity.this, SignInActivity.class);
+                        Intent writeIntent = new Intent(MainActivity.this, WriteActivity.class);
                         Toast.makeText(MainActivity.this, "자동로그인 되었습니다.", Toast.LENGTH_SHORT).show();
                         writeIntent.putExtra("name", name);
+                        writeIntent.putExtra("password", password);
                         writeIntent.putExtra("user_profile", profile);
+                        Log.d("하이", "들어갔음?");
                         startActivity(writeIntent);
                     }
                 } else {
+
                     Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
+                    Log.d("하이", "안들어갔음?");
                     startActivity(signInIntent);
                 }
 
@@ -290,6 +252,20 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
                 }
             }
         }.start();
+
+
+        try {
+            String position = getIntent().getStringExtra("position");
+            if (position.equals("cmt") || position.equals("write")) {
+                mViewPager.setCurrentItem(2);
+                fab_write.setVisibility(View.VISIBLE);
+                findViewById(R.id.multiple_action).setVisibility(View.GONE);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
 
 

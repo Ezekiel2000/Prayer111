@@ -23,7 +23,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,7 +52,7 @@ public class CommentListActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
 
     private static String getUrl = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getComment";
-    private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=setComment";
+    private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
     String prayNumber;
     String cmtNumber;
     String cmtContent;
@@ -75,16 +80,18 @@ public class CommentListActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         prayNumber = intent.getStringExtra("prayNumber");
+
+        Log.d("하이", "클릭한 중보기도 넘버 : " + prayNumber);
         email = intent.getStringExtra("email");
+
+        email = PropertyManager.getInstance().getUserEmail();
 
         listCommentDatas = new ArrayList<>();
 
         new GetCommentList().execute();
 
+
         recyclerView.setAdapter(new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list));
-
-
-
     }
 
     private class GetCommentList extends AsyncTask<Void, Void, Void> {
@@ -129,7 +136,6 @@ public class CommentListActivity extends AppCompatActivity {
                     String chkHeart = object.getString("chkHeart");
 
                     cmtNumber = commentNumber;
-                    cmtContent = content;
 
                     data = new ListCommentData[jsonArray.length()];
 
@@ -158,6 +164,8 @@ public class CommentListActivity extends AppCompatActivity {
 
                     Intent signInIntent = new Intent(CommentListActivity.this, SignInActivity.class);
 
+                    cmtContent = ((EditText) findViewById(R.id.input_comment)).getText().toString();
+
                     if (email == null) {
 
                         signInIntent.putExtra("position", "cmt");
@@ -165,42 +173,92 @@ public class CommentListActivity extends AppCompatActivity {
 
                     } else {
 
-                        try {
+                        new Thread() {
+                            @Override
+                            public void run() {
 
-                            setUrl = setUrl + "&UserId=" + email + "&prayNo=" + prayNumber + "&comment=" + input_comment.getText().toString() + "'\n'";
+                                HttpURLConnection conn = null;
 
-                            Log.d("하이",  "setURL : " + setUrl);
+                                try {
 
-                            URL url = new URL(setUrl);
-                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                            conn.setRequestMethod("POST");
+                                    URL url = new URL(setUrl);
+                                    conn = (HttpURLConnection) url.openConnection();
+                                    conn.setDoInput(true);
+                                    conn.setDoOutput(true);
+                                    conn.setChunkedStreamingMode(0);
+                                    conn.setRequestMethod("POST");
 
-                            OutputStream outputStream = conn.getOutputStream();
-                            outputStream.write(setUrl.getBytes());
-                            outputStream.flush();
-                            outputStream.close();
+                                    OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 
-                            recyclerView.invalidate();
+                                    writer.write( "mode=setComment"
+                                            + "&userId=" + email
+                                            + "&prayNo=" + prayNumber
+                                            + "&comment=" + cmtContent);
+                                    writer.flush();
+                                    writer.close();
+                                    out.close();
 
-                        } catch (Exception e) {
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
 
-                        }
+                                    StringBuilder builder = new StringBuilder();
+                                    String line = null;
+                                    while ((line =reader.readLine()) != null) {
+                                        if (builder.length() > 0) {
+                                            builder.append("\n");
+                                        }
+                                        builder.append(line);
+                                    }
+
+                                    Log.d("하이", builder.toString());
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    if (conn != null) {
+                                        conn.disconnect();
+                                    }
+                                }
+
+                            }
+
+
+
+                        }.start();
+
+                        input_comment.setText("");
+
+                        recyclerView.setAdapter(new CommentListViewAdapter(CommentListActivity.this, listCommentDatas, R.layout.activity_comment_list));
 
                     }
 
-                    // 버튼을 눌렀을 때 리플을 추가해 주는 구문
-
                 }
+
             });
 
 
+
             recyclerView.setAdapter(new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list));
+
             progressDialog.dismiss();
+        }
+
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+            recyclerView.getAdapter().notifyDataSetChanged();
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        recyclerView.getAdapter().notifyDataSetChanged();
 
+    }
 
     private class CommentListViewAdapter extends RecyclerView.Adapter<CommentListViewAdapter.ViewHolder> {
 

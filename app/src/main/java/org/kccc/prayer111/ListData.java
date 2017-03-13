@@ -7,9 +7,11 @@ package org.kccc.prayer111;
 public class ListData {
     String number;
     String profileImage;
+    String email;
     String name;
     String date;
     String content;
+    int warn;
     int prayerNumber;
     int commentNumber;
 
@@ -19,6 +21,10 @@ public class ListData {
 
     public String getProfileImage() {
         return this.profileImage;
+    }
+
+    public String getEmail() {
+        return this.email;
     }
 
     public String getName() {
@@ -33,6 +39,10 @@ public class ListData {
         return this.date;
     }
 
+    public int getWarn() {
+        return this.warn;
+    }
+
     public int getPrayerNumber() {
         return this.prayerNumber;
     }
@@ -41,12 +51,14 @@ public class ListData {
         return this.commentNumber;
     }
 
-    ListData(String number, String profileImage, String name, String date, String content, int prayerNumber, int commentNumber) {
+    ListData(String number, String profileImage, String email, String name, String date, String content, int warn, int prayerNumber, int commentNumber) {
         this.number = number;
         this.profileImage = profileImage;
+        this.email = email;
         this.name = name;
         this.date = date;
         this.content = content;
+        this.warn = warn;
         this.prayerNumber = prayerNumber;
         this.commentNumber = commentNumber;
     }

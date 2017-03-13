@@ -2,22 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.kccc.prayer111">
 
-    <permission android:name="org.kccc.prayer111.permission.C2D_MESSAGE"
-                android:protectionLevel="signature" />
-    <uses-permission android:name="org.kccc.prayer111.permission.C2D_MESSAGE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <permission
+        android:name="org.kccc.prayer111.permission.C2D_MESSAGE"
+        android:protectionLevel="signature"/>
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="org.kccc.prayer111.permission.C2D_MESSAGE"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:name=".GlobalApplication"
@@ -31,9 +32,7 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-
         </activity>
-
         <activity
             android:name=".LoadingActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -41,6 +40,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -60,16 +60,16 @@
             android:value="@string/kakao_app_id"/>
         <meta-data
             android:name="PW_APPID"
-            android:value="C7D6C-DAEB6" />
+            android:value="C7D6C-DAEB6"/>
         <meta-data
             android:name="PW_PROJECT_ID"
-            android:value="A942387550854" />
+            android:value="A942387550854"/>
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
         <meta-data
             android:name="PW_NO_BROADCAST_PUSH"
-            android:value="false" />
+            android:value="false"/>
 
         <activity
             android:name=".CalendarActivity"
@@ -102,28 +102,31 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
 
-        <receiver android:name="com.google.android.gms.gcm.GcmReceiver"
-                  android:exported="true"
-                  android:permission="com.google.android.c2dm.permission.SEND" >
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="org.kccc.prayer111" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+
+                <category android:name="org.kccc.prayer111"/>
             </intent-filter>
         </receiver>
 
-        <service android:name="com.pushwoosh.GCMInstanceIDListenerService"
-                 android:exported="false" >
+        <service
+            android:name="com.pushwoosh.GCMInstanceIDListenerService"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
             </intent-filter>
         </service>
-
-        <service android:name="com.pushwoosh.GCMRegistrationService"
-                 android:exported="false" >
-
+        <service
+            android:name="com.pushwoosh.GCMRegistrationService"
+            android:exported="false">
         </service>
 
-
+        <activity android:name=".ProfileActivity">
+        </activity>
     </application>
 
 </manifest>

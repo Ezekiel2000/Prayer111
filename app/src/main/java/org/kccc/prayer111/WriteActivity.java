@@ -18,6 +18,17 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONObject;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class WriteActivity extends AppCompatActivity {
@@ -39,6 +50,8 @@ public class WriteActivity extends AppCompatActivity {
 
     final int REQ_CODE_SELECT_IMAGE = 100;
 
+    private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +66,10 @@ public class WriteActivity extends AppCompatActivity {
         userName = intent.getStringExtra("name");
         profileUrl = intent.getStringExtra("user_profile");
         email = intent.getStringExtra("email");
+
+        email = PropertyManager.getInstance().getUserEmail();
+        userName = PropertyManager.getInstance().getUserName();
+
 
         Typeface typeface = Typeface.createFromAsset(getAssets(), "NotoSansCJKkr_Regular.otf");
 
@@ -82,6 +99,71 @@ public class WriteActivity extends AppCompatActivity {
         btn_Ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                new Thread() {
+                    @Override
+                    public void run() {
+
+                        HttpURLConnection conn = null;
+
+                        try {
+
+                            URL url = new URL(setUrl);
+                            conn = (HttpURLConnection) url.openConnection();
+                            conn.setDoOutput(true);
+                            conn.setDoInput(true);
+                            conn.setChunkedStreamingMode(0);
+                            conn.setRequestMethod("POST");
+//                        conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+
+                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                            writer.write( "mode=setTogetherPray"
+                                    + "&pray=" + write_content.getText()
+                                    + "&id=" + email);
+                            writer.flush();
+                            writer.close();
+                            out.close();
+
+                            conn.connect();
+
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                            StringBuilder builder = new StringBuilder();
+                            String line = null;
+                            while ((line =reader.readLine()) != null) {
+                                if (builder.length() > 0) {
+                                    builder.append("\n");
+                                }
+                                builder.append(line);
+                            }
+
+                            Log.d("하이", builder.toString());
+
+                            JSONObject jsonObject = new JSONObject(builder.toString());
+                            String dataJson = jsonObject.getString("result");
+
+                            JSONObject object = new JSONObject(dataJson);
+                            String data = object.getString("ty");
+
+
+
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (conn != null) {
+                                conn.disconnect();
+                            }
+                        }
+
+                    }
+                }.start();
+
+
+
 
                 // 서버로 정보값 Post 하고 MainActivity 의 중보기도로 이동
                 Intent okIntent = new Intent(getBaseContext(), MainActivity.class);

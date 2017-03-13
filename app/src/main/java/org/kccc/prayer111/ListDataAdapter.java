@@ -15,6 +15,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONObject;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -33,6 +43,9 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
     List<ListData> listData;
     int list_intercession;
     Boolean icon_heart_clicked = false;
+    String heart_check;
+
+    private String postUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
 
     public ListDataAdapter(Context context, List<ListData> listData, int list_intercession) {
         this.context = context;
@@ -95,34 +108,114 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
         holder.text_comment_number.setText(String.valueOf(data.getCommentNumber()));
         holder.icon_heart.setOnClickListener(v -> {
-            if (icon_heart_clicked == false) {
-                holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
-                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber() + 1));
-                Log.d("하이", "선택한 놈 : "+ holder.getAdapterPosition());
-                icon_heart_clicked = true;
-            } else {
-                holder.icon_heart.setImageResource(R.drawable.ic_heart);
-                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
-                icon_heart_clicked = false;
+//            if (icon_heart_clicked == false) {
+
+//                holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
+
+                String builders = null;
+
+                new Thread() {
+                    @Override
+                    public void run() {
+
+                        HttpURLConnection conn = null;
+
+                        try {
+
+                            URL url = new URL(postUrl);
+                            conn = (HttpURLConnection) url.openConnection();
+                            conn.setDoInput(true);
+                            conn.setDoOutput(true);
+                            conn.setChunkedStreamingMode(0);
+                            conn.setRequestMethod("POST");
+
+                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                            writer.write("mode=setHeart"
+                                    + "&UserId=" + PropertyManager.getInstance().getUserEmail()
+                                    + "&prayNo=" + data.getNumber());
+                            writer.flush();
+                            writer.close();
+                            out.close();
+
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                            StringBuilder builder = new StringBuilder();
+                            String line = null;
+                            while ((line = reader.readLine()) != null) {
+                                if (builder.length() > 0) {
+                                    builder.append("\n");
+                                }
+                                builder.append(line);
+                            }
+
+                            Log.d("하이", builder.toString());
+
+                            JSONObject jsonObject = new JSONObject(builder.toString());
+                            String data = jsonObject.getString("result");
+
+                            JSONObject object = new JSONObject(data);
+                            heart_check = object.getString("chkHeart");
+
+                            Log.d("하이", "체크 하트 : " + heart_check);
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (conn != null) {
+                                conn.disconnect();
+                            }
+                        }
+
+                    }
+                }.start();
+
+            try {
+                if (heart_check.equals("0")) {
+                    Log.d("하이", "체크 하트1 : " + heart_check);
+                    icon_heart_clicked = true;
+                } else {
+                    Log.d("하이", "체크 하트2 : " + heart_check);
+                    icon_heart_clicked = false;
+                }
+
+                notifyDataSetChanged();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+
+//                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber() + 1));
+//                Log.d("하이", "선택한 놈 : "+ holder.getAdapterPosition());
+//                icon_heart_clicked = true;
+//            } else {
+//                holder.icon_heart.setImageResource(R.drawable.ic_heart);
+//                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
+//                icon_heart_clicked = false;
+//            }
         });
 
         // 코멘트 버튼을 누르면 CommentListActivity로 이동함
         holder.icon_comment.setOnClickListener(v -> {
-            Intent commentIntent;
+            Intent commentIntent = new Intent();
 
             String name = PropertyManager.getInstance().getUserName();
 
-            if (name == null) {
+            if (name.equals("")) {
 
-                Log.d("하이", "이름 : " +name );
+                Log.d("하이", "이름 널!: " + name );
 
                 commentIntent = new Intent(context, SignInActivity.class);
                 commentIntent.putExtra("position", "cmt");
                 commentIntent.putExtra("prayNumber", data.getNumber());
+
             } else {
 
-                Log.d("하이", "이름 : " + name );
+                Log.d("하이", "이름 널?: " + name );
 
                 commentIntent = new Intent(context, CommentListActivity.class);
                 commentIntent.putExtra("prayNumber", data.getNumber());
@@ -137,12 +230,20 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                builder.setTitle("공유하기");
-                builder.setItems(info, (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            Toast.makeText(context, "페이스북 공유", Toast.LENGTH_SHORT).show();
+                // 로그인을 안해서 name값이 없을 경우 로그인하라고 Toast 띄움
+                if (PropertyManager.getInstance().getUserName().equals("")) {
+
+                    Toast.makeText(context, "로그인을 하시요.", Toast.LENGTH_SHORT).show();
+
+                // 로그인을 했을 경우에만 Dialog창을 띄움
+                } else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setTitle("공유하기");
+                    builder.setItems(info, (dialog, which) -> {
+                        switch (which) {
+                            case 0:
+                                Toast.makeText(context, "페이스북 공유", Toast.LENGTH_SHORT).show();
 
 //                            ShareLinkContent content = new ShareLinkContent.Builder()
 //                            .setContentTitle("오늘의 기도")
@@ -155,48 +256,105 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 //                            .build();
 
 
-                            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                            smsIntent.putExtra("sms_body", holder.text_content.getText());
-                            smsIntent.setType("vnd.android-dir/mms-sms");
+                                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                                smsIntent.putExtra("sms_body", holder.text_content.getText());
+                                smsIntent.setType("vnd.android-dir/mms-sms");
 
-                            try {
-                                v.getContext().startActivity(smsIntent);
-                            } catch (Exception e) {
-                                Toast.makeText(context, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
-                            }
+                                try {
+                                    v.getContext().startActivity(smsIntent);
+                                } catch (Exception e) {
+                                    Toast.makeText(context, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+                                }
 
 
+                                break;
+                            case 1:
 
-                            break;
-                        case 1:
+                                Toast.makeText(context, "카카오톡 공유", Toast.LENGTH_SHORT).show();
+                                Log.d("하이", "선택한 놈 : " + holder.getAdapterPosition());
+                                Intent kakaoIntent = new Intent(Intent.ACTION_SEND);
+                                kakaoIntent.setType("text/plain");
+                                kakaoIntent.putExtra(Intent.EXTRA_SUBJECT, "[" + holder.text_name.getText() + " 의 중보 기도]\n");
 
-                            Toast.makeText(context, "카카오톡 공유", Toast.LENGTH_SHORT).show();
-                            Log.d("하이", "선택한 놈 : "+ holder.getAdapterPosition());
-                            Intent kakaoIntent = new Intent(Intent.ACTION_SEND);
-                            kakaoIntent.setType("text/plain");
-                            kakaoIntent.putExtra(Intent.EXTRA_SUBJECT, "[" + holder.text_name.getText() + " 의 중보 기도]\n");
+                                kakaoIntent.putExtra(Intent.EXTRA_TEXT, holder.text_content.getText());
+                                kakaoIntent.setPackage("com.kakao.talk");
 
-                            kakaoIntent.putExtra(Intent.EXTRA_TEXT, holder.text_content.getText());
-                            kakaoIntent.setPackage("com.kakao.talk");
+                                try {
+                                    v.getContext().startActivity(kakaoIntent);
+                                } catch (Exception e) {
+                                    Toast.makeText(context, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+                                }
 
-                            try {
-                                v.getContext().startActivity(kakaoIntent);
-                            } catch (Exception e) {
-                                Toast.makeText(context, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
-                            }
+                                break;
+                            case 2:
+                                Toast.makeText(context, "신고하기", Toast.LENGTH_SHORT).show();
 
-                            break;
-                        case 2:
-                            Toast.makeText(context, "신고하기", Toast.LENGTH_SHORT).show();
-                            break;
-                    }
-                    dialog.dismiss();
-                });
+                                new Thread() {
+                                    @Override
+                                    public void run() {
 
-                builder.show();
+                                        HttpURLConnection conn = null;
+
+                                        try {
+
+                                            URL url = new URL(postUrl);
+                                            conn = (HttpURLConnection) url.openConnection();
+                                            conn.setDoInput(true);
+                                            conn.setDoOutput(true);
+                                            conn.setChunkedStreamingMode(0);
+                                            conn.setRequestMethod("POST");
+
+                                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                                            writer.write("mode=setWarn"
+                                                    + "&userId=" + PropertyManager.getInstance().getUserEmail()
+                                                    + "&prayNo=" + data.getNumber());
+                                            writer.flush();
+                                            writer.close();
+                                            out.close();
+
+                                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                                            StringBuilder builder = new StringBuilder();
+                                            String line = null;
+                                            while ((line = reader.readLine()) != null) {
+                                                if (builder.length() > 0) {
+                                                    builder.append("\n");
+                                                }
+                                                builder.append(line);
+                                            }
+
+                                            Log.d("하이", builder.toString());
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            if (conn != null) {
+                                                conn.disconnect();
+                                            }
+                                        }
+
+                                    }
+                                }.start();
+
+                                Toast.makeText(context, "해당 기도제목을 신고하였습니다.", Toast.LENGTH_SHORT).show();
+
+                                break;
+                        }
+                        dialog.dismiss();
+                    });
+
+                    builder.show();
+                }
+
             }
 
         });
+
+
+
+
 
 //        holder.card_list.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -209,6 +367,12 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
 
     }
+
+//    public void upDateItemList(List<ListData> listData) {
+//        this.listData = listData;
+//        notifyDataSetChanged();
+//    }
+
 
     @Override
     public int getItemCount() {
@@ -237,6 +401,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             text_more = (TextView) view.findViewById(R.id.text_more);
             text_prayer_number = (TextView) view.findViewById(R.id.text_prayer_number);
             text_comment_number = (TextView) view.findViewById(R.id.text_comment_number);
+
             icon_heart = (ImageView) view.findViewById(R.id.icon_heart);
             icon_comment = (ImageView) view.findViewById(R.id.icon_speech);
             icon_share = (ImageView) view.findViewById(R.id.icon_share);

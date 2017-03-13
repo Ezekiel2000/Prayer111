@@ -58,6 +58,22 @@ public class PropertyManager {
         mEditor.commit();
     }
 
+    private static final String KEY_USER_EMAIL = "email";
+    private String mUserEmail;
+
+    public String getUserEmail() {
+        if (mUserEmail == null) {
+            mUserEmail = mPrefs.getString(KEY_USER_EMAIL, "");
+        }
+        return mUserEmail;
+    }
+
+    public void setUserEmail(String UserEmail) {
+        mUserEmail = UserEmail;
+        mEditor.putString(KEY_USER_EMAIL, UserEmail);
+        mEditor.commit();
+    }
+
     private static final String KEY_USER_PROFILE = "profile";
     private String mUserProfile;
 
@@ -73,21 +89,5 @@ public class PropertyManager {
         mEditor.putString(KEY_USER_PROFILE, UserProfile);
         mEditor.commit();
     }
-
-//    private static final String KEY_CALENDAR_CHECKED = "calendar";
-//    private ArrayList<String> mUserCalendarChecked;
-//
-//    public String getCalendarChecked() {
-//        if (mUserCalendarChecked == null) {
-//            mUserCalendarChecked.add(mPrefs.getString(KEY_CALENDAR_CHECKED, ""));
-//        }
-//        return mUserName;
-//    }
-//
-//    public void setCalendarChecked(ArrayList<String> CalendarChecked) {
-//        mUserCalendarChecked = CalendarChecked;
-//        mEditor.putStringSet(KEY_CALENDAR_CHECKED, CalendarChecked.add())
-//        mEditor.commit();
-//    }
 
 }

@@ -20,6 +20,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -36,7 +45,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     final int REQ_CODE_SELECT_IMAGE = 100;
 
-    private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=joinProcess";
+    private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
 
 
     @Override
@@ -93,29 +102,70 @@ public class SignUpActivity extends AppCompatActivity {
                     Intent intent = new Intent(getBaseContext(), WriteActivity.class);
 
                     intent.putExtra("name", text_sign_name.getText().toString());
-                    intent.putExtra("email", text_sign_email.getText().toString());
+                    intent.putExtra("userId", text_sign_email.getText().toString());
                     intent.putExtra("user_profile", imgPath);
 
-                    PropertyManager.getInstance().setUserName(text_sign_email.getText().toString());
+                    PropertyManager.getInstance().setUserName(text_sign_name.getText().toString());
+                    PropertyManager.getInstance().setUserEmail(text_sign_email.getText().toString());
                     PropertyManager.getInstance().setPassword(text_sign_password.getText().toString());
                     PropertyManager.getInstance().setUserProfile(imgPath);
 
-                    setUrl = setUrl + "&name=" + text_sign_name.getText() + "&email=" + text_sign_email.getText() + "&password=" + text_sign_password.getText() + "&method=EMAIL";
-
                     Log.d("하이",  "setURL : " + setUrl);
 
-                    try {
 
+                    new Thread() {
+                        @Override
+                        public void run() {
 
+                            HttpURLConnection conn = null;
 
+                            try {
 
+                                URL url = new URL(setUrl);
+                                conn = (HttpURLConnection) url.openConnection();
+                                conn.setDoOutput(true);
+                                conn.setDoInput(true);
+                                conn.setChunkedStreamingMode(0);
+                                conn.setRequestMethod("POST");
+//                        conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                                OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 
+                                writer.write( "mode=joinProcess"
+                                        + "&name=" + text_sign_name.getText()
+                                        + "&email=" + text_sign_email.getText()
+                                        + "&password=" + text_sign_password.getText()
+                                        + "&method=EMAIL");
+                                writer.flush();
+                                writer.close();
+                                out.close();
 
+                                conn.connect();
 
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                                StringBuilder builder = new StringBuilder();
+                                String line = null;
+                                while ((line =reader.readLine()) != null) {
+                                    if (builder.length() > 0) {
+                                        builder.append("\n");
+                                    }
+                                    builder.append(line);
+                                }
+
+                                Log.d("하이", builder.toString());
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                if (conn != null) {
+                                    conn.disconnect();
+                                }
+                            }
+
+                        }
+                    }.start();
 
                     startActivity(intent);
                     finish();

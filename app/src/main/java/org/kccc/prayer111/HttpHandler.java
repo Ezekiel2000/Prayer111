@@ -62,6 +62,7 @@ public class HttpHandler {
             conn.setDoInput(true);
             conn.setChunkedStreamingMode(0);
             conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 
             OutputStream out = new BufferedOutputStream(conn.getOutputStream());
 
