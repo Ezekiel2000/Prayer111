@@ -386,6 +386,10 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
         } else if (id == R.id.action_logout) {
 
+            Intent infoIntent = new Intent(this, ProfileActivity.class);
+            startActivity(infoIntent);
+
+
             // 임시 강제 로그아웃
             UserManagement.requestLogout(new LogoutResponseCallback() {
                 @Override

@@ -125,7 +125,10 @@
             android:exported="false">
         </service>
 
-        <activity android:name=".ProfileActivity">
+        <activity
+            android:name=".ProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

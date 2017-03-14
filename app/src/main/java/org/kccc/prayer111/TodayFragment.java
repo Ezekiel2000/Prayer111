@@ -135,11 +135,6 @@ public class TodayFragment extends Fragment {
 
             String strCurYear = curYearFormat.format(date) + curMonthFormat.format(date);
             String strCurDay = curDayFormat.format(date);
-            Log.d("하이", "날짜" +  strCurDay);
-            Log.d("하이", "날짜" +  todayPraysList.get(0).get("day"));
-
-            Log.d("하이", "날짜" +  todayPraysList.get(0).get("yymm"));
-            Log.d("하이", "날짜" +  strCurYear);
 
             if (todayPraysList.get(0).get("yymm").equals(strCurYear) && todayPraysList.get(0).get("day").equals(strCurDay)) {
                 today_pray_content.setText(todayPraysList.get(0).get("pray"));

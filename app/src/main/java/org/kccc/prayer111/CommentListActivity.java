@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -56,8 +57,9 @@ public class CommentListActivity extends AppCompatActivity {
     String prayNumber;
     String cmtNumber;
     String cmtContent;
-
     String email;
+
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,6 +176,8 @@ public class CommentListActivity extends AppCompatActivity {
                     } else {
 
                         new Thread() {
+
+
                             @Override
                             public void run() {
 
@@ -220,7 +224,20 @@ public class CommentListActivity extends AppCompatActivity {
                                     }
                                 }
 
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        recyclerView.getAdapter().notifyDataSetChanged();
+                                        recyclerView.setAdapter(new CommentListViewAdapter(CommentListActivity.this, listCommentDatas, R.layout.activity_comment_list));
+
+                                    }
+                                });
+
+
+
+
                             }
+
 
 
 
@@ -237,7 +254,7 @@ public class CommentListActivity extends AppCompatActivity {
             });
 
 
-
+            recyclerView.getAdapter().notifyDataSetChanged();
             recyclerView.setAdapter(new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list));
 
             progressDialog.dismiss();
@@ -247,7 +264,7 @@ public class CommentListActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
-
+            recyclerView.setAdapter(new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list));
             recyclerView.getAdapter().notifyDataSetChanged();
         }
     }
@@ -290,9 +307,6 @@ public class CommentListActivity extends AppCompatActivity {
                     .bitmapTransform(new CropCircleTransformation(context))
                     .into(holder.comment_profile);
 
-//            Drawable drawable = ContextCompat.getDrawable(context, commentData.getComment_profileImage());
-//            holder.comment_profile.setBackground(drawable);
-
             holder.comment_name.setText(commentData.comment_name);
             holder.comment_date.setText(commentData.comment_date);
             holder.comment_content.setText(commentData.comment_content);
@@ -320,13 +334,6 @@ public class CommentListActivity extends AppCompatActivity {
                 comment_name = (TextView) view.findViewById(R.id.comment_name);
                 comment_date = (TextView) view.findViewById(R.id.comment_date);
                 comment_content = (TextView) view.findViewById(R.id.comment_content);
-//
-//                Typeface typefaceLight = Typeface.createFromAsset(getAssets(), "NotoSansCJKkr_Light.otf");
-//                Typeface typefaceRegular = Typeface.createFromAsset(getAssets(), "NotoSansCJKkr_Regular.otf");
-//
-//                comment_name.setTypeface(typefaceLight);
-//                comment_date.setTypeface(typefaceLight);
-//                comment_content.setTypeface(typefaceRegular);
 
             }
 

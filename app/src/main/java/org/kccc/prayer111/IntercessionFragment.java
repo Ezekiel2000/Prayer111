@@ -3,6 +3,7 @@ package org.kccc.prayer111;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +41,7 @@ public class IntercessionFragment extends Fragment {
 
     ProgressDialog progressDialog;
 
+    Handler handler = new Handler();
 
     public IntercessionFragment() {
 
@@ -121,8 +123,15 @@ public class IntercessionFragment extends Fragment {
                         listData.add(data[i]);
 
                     }
-
                 }
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
+                    }
+                });
 
             } catch (JSONException e) {
 
@@ -147,8 +156,8 @@ public class IntercessionFragment extends Fragment {
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
-            recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
             recyclerView.getAdapter().notifyDataSetChanged();
+            recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
 
         }
     }
