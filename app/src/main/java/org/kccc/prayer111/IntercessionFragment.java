@@ -17,6 +17,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,6 +38,8 @@ public class IntercessionFragment extends Fragment {
 
     private String TAG = IntercessionFragment.class.getSimpleName();
     private static String url = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getTogether";
+
+    ListDataAdapter listDataAdapter;
 
     ArrayList<HashMap<String, String>> IntercessionPraysList;
 
@@ -66,6 +70,7 @@ public class IntercessionFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         listData = new ArrayList<>();
+        listDataAdapter = new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession);
 
         new GetIntercessionPrays().execute();
 
@@ -96,7 +101,10 @@ public class IntercessionFragment extends Fragment {
 
                 JSONArray jsonArray = new JSONArray(dataJson);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                // 내림차순으로 정렬하기
+                jsonArray = soryJsonArray(jsonArray);
+
+                for (int i = 0; i < jsonArray.length() ; i++) {
                     JSONObject object = jsonArray.getJSONObject(i);
 
                     Log.d("하이", "불러오는 값 : " + object);
@@ -128,8 +136,8 @@ public class IntercessionFragment extends Fragment {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
+                        listDataAdapter.notifyDataSetChanged();
+                        recyclerView.setAdapter(listDataAdapter);
                     }
                 });
 
@@ -146,8 +154,8 @@ public class IntercessionFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
-            recyclerView.getAdapter().notifyDataSetChanged();
+            recyclerView.setAdapter(listDataAdapter);
+            listDataAdapter.notifyDataSetChanged();
             progressDialog.dismiss();
 
         }
@@ -156,17 +164,43 @@ public class IntercessionFragment extends Fragment {
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
-            recyclerView.getAdapter().notifyDataSetChanged();
-            recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
+            listDataAdapter.notifyDataSetChanged();
+            recyclerView.setAdapter(listDataAdapter);
 
         }
+    }
+
+    // 내림차순으로 정렬하는 함수
+    public static JSONArray soryJsonArray(JSONArray array) {
+        List<JSONObject> objects = new ArrayList<JSONObject>();
+        try {
+            for (int i = 0 ; i < array.length() ; i++) {
+                objects.add(array.getJSONObject(i));
+            }
+            Collections.sort(objects, new Comparator<JSONObject>() {
+                @Override
+                public int compare(JSONObject o1, JSONObject o2) {
+                    String lid = "", rid = "";
+                    try {
+                        lid = o1.getString("no");
+                        rid = o2.getString("no");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return  rid.compareTo(lid);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return new JSONArray(objects);
     }
 
     @Override
     public void onResume() {
 
         Log.d("하이", "fragment3  Resume");
-        recyclerView.setAdapter(new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession));
         super.onResume();
     }
 
@@ -177,5 +211,6 @@ public class IntercessionFragment extends Fragment {
 
         super.onPause();
     }
+
 
 }

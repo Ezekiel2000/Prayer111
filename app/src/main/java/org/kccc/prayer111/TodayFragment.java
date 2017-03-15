@@ -133,6 +133,8 @@ public class TodayFragment extends Fragment {
             long now = System.currentTimeMillis();
             Date date = new Date(now);
 
+            Log.d("하이", "날짜  :" + date);
+
             String strCurYear = curYearFormat.format(date) + curMonthFormat.format(date);
             String strCurDay = curDayFormat.format(date);
 

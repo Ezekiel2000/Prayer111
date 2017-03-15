@@ -18,8 +18,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import org.json.JSONObject;
-
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -141,16 +139,6 @@ public class WriteActivity extends AppCompatActivity {
 
                             Log.d("하이", builder.toString());
 
-                            JSONObject jsonObject = new JSONObject(builder.toString());
-                            String dataJson = jsonObject.getString("result");
-
-                            JSONObject object = new JSONObject(dataJson);
-                            String data = object.getString("ty");
-
-
-
-
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         } finally {
@@ -199,7 +187,7 @@ public class WriteActivity extends AppCompatActivity {
 
     public void setDisplay() {
 
-        write_name.setText(userName);
+        write_name.setText(PropertyManager.getInstance().getUserName());
 
         Log.d("하이",  "setText 후 ");
 

@@ -17,6 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.facebook.login.LoginManager;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -89,7 +92,28 @@ public class ProfileActivity extends AppCompatActivity {
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // 카카오톡 강제 로그아웃
+                UserManagement.requestLogout(new LogoutResponseCallback() {
+                    @Override
+                    public void onCompleteLogout() {
+                        Log.d("하이", "로그아웃 성공");
+                    }
+                });
+
+                // 페이스북 로그아웃
+                LoginManager.getInstance().logOut();
+
+                // PropertyManager 초기화
+                PropertyManager.getInstance().setUserProfile("");
+                PropertyManager.getInstance().setUserName("");
+                PropertyManager.getInstance().setUserEmail("");
+                PropertyManager.getInstance().setPassword("");
+
                 Toast.makeText(v.getContext(), "로그아웃", Toast.LENGTH_SHORT).show();
+
+                finish();
+
             }
         });
 
@@ -127,6 +151,8 @@ public class ProfileActivity extends AppCompatActivity {
                 PropertyManager.getInstance().setPassword("");
 
                 Toast.makeText(v.getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+
+                finish();
 
             }
         });

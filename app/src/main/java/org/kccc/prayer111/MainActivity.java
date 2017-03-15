@@ -25,8 +25,6 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.kakao.usermgmt.UserManagement;
-import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.pushwoosh.BasePushMessageReceiver;
 import com.pushwoosh.PushManager;
 import com.pushwoosh.fragment.PushEventListener;
@@ -230,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
                 } else {
 
                     Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
+                    signInIntent.putExtra("position", "write");
                     Log.d("하이", "안들어갔음?");
                     startActivity(signInIntent);
                 }
@@ -388,16 +387,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
             Intent infoIntent = new Intent(this, ProfileActivity.class);
             startActivity(infoIntent);
-
-
-            // 임시 강제 로그아웃
-            UserManagement.requestLogout(new LogoutResponseCallback() {
-                @Override
-                public void onCompleteLogout() {
-                    Log.d("하이", "로그아웃 성공");
-                }
-            });
-
 
         }
 

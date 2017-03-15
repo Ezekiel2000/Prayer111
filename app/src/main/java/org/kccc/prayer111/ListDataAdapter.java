@@ -25,6 +25,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -44,6 +47,12 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
     int list_intercession;
     Boolean icon_heart_clicked = false;
     String heart_check;
+
+    SimpleDateFormat curMonthFormat;
+    SimpleDateFormat curDayFormat;
+
+    String dateMonth;
+    String dateDay;
 
     private String postUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
 
@@ -68,6 +77,24 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
         CharSequence info[] = new CharSequence[] {"메세지로 공유하기", "카카오톡 공유하기", "기도제목 신고하기"};
         ListData data = listData.get(position);
+
+        SimpleDateFormat original_format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+        curMonthFormat = new SimpleDateFormat("M");
+        curDayFormat = new SimpleDateFormat("d");
+
+        try {
+            Date original_date = original_format.parse(data.getDate());
+            dateMonth = curMonthFormat.format(original_date);
+            dateDay = curDayFormat.format(original_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("하이", "원래 날짜 : " + data.getDate() );
+        Log.d("하이", "날짜 : " + dateMonth + dateDay);
+
+        holder.text_date.setText(dateMonth + "월 " + dateDay + "일");
 
         // glide 라이브러리 사용하여 원형 프로필 만들기
         Glide.with(context)
@@ -382,6 +409,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView profile;
+        TextView text_date;
         TextView text_name;
         TextView text_content;
         TextView text_prayer_number;
@@ -396,6 +424,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             super(view);
 
             profile = (ImageView) view.findViewById(R.id.image_profile);
+            text_date = (TextView) view.findViewById(R.id.text_date);
             text_name = (TextView) view.findViewById(R.id.text_name);
             text_content = (TextView) view.findViewById(R.id.text_content);
             text_more = (TextView) view.findViewById(R.id.text_more);

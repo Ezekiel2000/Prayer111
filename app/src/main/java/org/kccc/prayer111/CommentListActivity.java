@@ -33,6 +33,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -122,7 +124,7 @@ public class CommentListActivity extends AppCompatActivity {
 
                 JSONArray jsonArray = new JSONArray(dataJson);
 
-                Log.d("하이", "코텐트 : " + jsonArray);
+                jsonArray = soryJsonArray(jsonArray);
 
                 for (int i = 0 ; i < jsonArray.length(); i++) {
 
@@ -267,6 +269,33 @@ public class CommentListActivity extends AppCompatActivity {
             recyclerView.setAdapter(new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list));
             recyclerView.getAdapter().notifyDataSetChanged();
         }
+    }
+
+    // 내림차순으로 정렬하는 함수
+    public static JSONArray soryJsonArray(JSONArray array) {
+        List<JSONObject> objects = new ArrayList<JSONObject>();
+        try {
+            for (int i = 0 ; i < array.length() ; i++) {
+                objects.add(array.getJSONObject(i));
+            }
+            Collections.sort(objects, new Comparator<JSONObject>() {
+                @Override
+                public int compare(JSONObject o1, JSONObject o2) {
+                    String lid = "", rid = "";
+                    try {
+                        lid = o1.getString("no");
+                        rid = o2.getString("no");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return  rid.compareTo(lid);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return new JSONArray(objects);
     }
 
     @Override

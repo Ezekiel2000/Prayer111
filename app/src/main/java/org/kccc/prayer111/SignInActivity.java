@@ -33,6 +33,14 @@ import com.kakao.util.exception.KakaoException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
 
 public class SignInActivity extends AppCompatActivity {
@@ -58,6 +66,7 @@ public class SignInActivity extends AppCompatActivity {
     private CallbackManager mFacebookcallbackManager;
     private AccessToken mToken = null;
 
+    private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +110,7 @@ public class SignInActivity extends AppCompatActivity {
 
                         PropertyManager.getInstance().setUserName(text_input_email.getText().toString());
                         PropertyManager.getInstance().setPassword(text_input_password.getText().toString());
+                        PropertyManager.getInstance().setUserProfile(profileUrl);
 
                     }
 
@@ -108,6 +118,11 @@ public class SignInActivity extends AppCompatActivity {
                     // 일치되는 것이 없을 경우 Toast를 사용하여 다시 입력하
 
                     Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
+
+
+
+
+
                     setLayoutText();
 
                     Intent intent;
@@ -197,7 +212,69 @@ public class SignInActivity extends AppCompatActivity {
                                 userName = object.getString("name");
                                 profileUrl = "https://graph.facebook.com/" + userId + "/picture";
 
+                                PropertyManager.getInstance().setUserProfile(profileUrl);
+                                PropertyManager.getInstance().setUserName(userName);
+                                PropertyManager.getInstance().setUserEmail(email);
+
                                 setLayoutText();
+
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+
+                                        HttpURLConnection conn = null;
+
+                                        try {
+
+                                            URL url = new URL(setUrl);
+                                            conn = (HttpURLConnection) url.openConnection();
+                                            conn.setDoInput(true);
+                                            conn.setDoOutput(true);
+                                            conn.setChunkedStreamingMode(0);
+                                            conn.setRequestMethod("POST");
+
+                                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                                            writer.write( "mode=joinProcess"
+                                                    + "&name" + userName
+                                                    + "&email" + userId
+                                                    + "&method=facebook" );
+                                            writer.flush();
+                                            writer.close();
+                                            out.close();
+
+                                            Log.d("하이", "이름 : " + userName);
+                                            Log.d("하이", "이메일 : " + email);
+
+                                            conn.connect();
+
+                                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                                            StringBuilder builder = new StringBuilder();
+                                            String line = null;
+                                            while ((line =reader.readLine()) != null) {
+                                                if (builder.length() > 0) {
+                                                    builder.append("\n");
+                                                }
+                                                builder.append(line);
+                                            }
+
+                                            Log.d("하이", builder.toString());
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            if (conn != null) {
+                                                conn.disconnect();
+                                            }
+                                        }
+
+                                    }
+                                }.start();
+
+
+
 
                                 if (getIntent().getStringExtra("position").equals("cmt")) {
 
@@ -208,6 +285,7 @@ public class SignInActivity extends AppCompatActivity {
                                     intent.putExtra("name", userName);
                                     intent.putExtra("email", email);
                                     intent.putExtra("password", password);
+
                                     startActivity(intent);
 
                                 } else {
@@ -218,6 +296,7 @@ public class SignInActivity extends AppCompatActivity {
                                     intent.putExtra("name", userName);
                                     intent.putExtra("email", email);
                                     intent.putExtra("password", password);
+
                                     startActivity(intent);
                                 }
 
@@ -295,6 +374,65 @@ public class SignInActivity extends AppCompatActivity {
                 userName = userProfile.getNickname();
 
                 setLayoutText();
+
+                new Thread() {
+                    @Override
+                    public void run() {
+
+                        HttpURLConnection conn = null;
+
+                        try {
+
+                            URL url = new URL(setUrl);
+                            conn = (HttpURLConnection) url.openConnection();
+                            conn.setDoInput(true);
+                            conn.setDoOutput(true);
+                            conn.setChunkedStreamingMode(0);
+                            conn.setRequestMethod("POST");
+
+                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                            writer.write( "mode=joinProcess"
+                                    + "&name" + userName
+                                    + "&email" + userId
+                                    + "&method=kakao" );
+                            writer.flush();
+                            writer.close();
+                            out.close();
+
+                            Log.d("하이", "이름 : " + userName);
+                            Log.d("하이", "이메일 : " + email);
+
+                            conn.connect();
+
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                            StringBuilder builder = new StringBuilder();
+                            String line = null;
+                            while ((line =reader.readLine()) != null) {
+                                if (builder.length() > 0) {
+                                    builder.append("\n");
+                                }
+                                builder.append(line);
+                            }
+
+                            Log.d("하이", builder.toString());
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (conn != null) {
+                                conn.disconnect();
+                            }
+                        }
+
+                    }
+                }.start();
+
+
+
+
 
                 if (getIntent().getStringExtra("position").equals("cmt")) {
 
