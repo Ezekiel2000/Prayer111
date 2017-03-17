@@ -2,7 +2,6 @@ package org.kccc.prayer111;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,36 +97,36 @@ public class CalendarActivity extends AppCompatActivity {
 
         Log.d("하이", String.valueOf(today_checked) + 1);
 
-        if (today_checked == false) {
-
-            alert_today = new AlertDialog.Builder(this);
-            alert_today.setMessage("오늘 기도하셨습니까?").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    today_checked = true;
-                    Toast.makeText(getApplicationContext(), "오늘 기도하였습니다", Toast.LENGTH_SHORT).show();
-                    Log.d("하이", String.valueOf(today_checked) + 2);
-
-                    Log.d("하이", "오늘의 값 :" + curDayFormat.format(date));
-                    dayPrayCheckedList.add(curDayFormat.format(date));
-
-                    gridView.invalidateViews();
-                    gridView.setAdapter(gridAdapter);
-
-                }
-            }).setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    today_checked = false;
-                    Log.d("하이", String.valueOf(today_checked) + 2.1);
-
-                    return;
-                }
-
-            });
-
-            alert_today.show();
-        }
+//        if (today_checked == false) {
+//
+//            alert_today = new AlertDialog.Builder(this);
+//            alert_today.setMessage("오늘 기도하셨습니까?").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    today_checked = true;
+//                    Toast.makeText(getApplicationContext(), "오늘 기도하였습니다", Toast.LENGTH_SHORT).show();
+//                    Log.d("하이", String.valueOf(today_checked) + 2);
+//
+//                    Log.d("하이", "오늘의 값 :" + curDayFormat.format(date));
+//                    dayPrayCheckedList.add(curDayFormat.format(date));
+//
+//                    gridView.invalidateViews();
+//                    gridView.setAdapter(gridAdapter);
+//
+//                }
+//            }).setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    today_checked = false;
+//                    Log.d("하이", String.valueOf(today_checked) + 2.1);
+//
+//                    return;
+//                }
+//
+//            });
+//
+//            alert_today.show();
+//        }
 
         Log.d("하이", String.valueOf(today_checked) + 3);
 

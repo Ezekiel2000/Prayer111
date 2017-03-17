@@ -132,6 +132,8 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             }
         });
 
+
+
         holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
         holder.text_comment_number.setText(String.valueOf(data.getCommentNumber()));
         holder.icon_heart.setOnClickListener(v -> {
@@ -290,7 +292,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                 try {
                                     v.getContext().startActivity(smsIntent);
                                 } catch (Exception e) {
-                                    Toast.makeText(context, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
                                 }
 
 
@@ -415,6 +417,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         TextView text_prayer_number;
         TextView text_comment_number;
         TextView text_more;
+        ImageView image_input;
         ImageView icon_heart;
         ImageView icon_comment;
         ImageView icon_share;
@@ -430,6 +433,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             text_more = (TextView) view.findViewById(R.id.text_more);
             text_prayer_number = (TextView) view.findViewById(R.id.text_prayer_number);
             text_comment_number = (TextView) view.findViewById(R.id.text_comment_number);
+            image_input = (ImageView) view.findViewById(R.id.image_input);
 
             icon_heart = (ImageView) view.findViewById(R.id.icon_heart);
             icon_comment = (ImageView) view.findViewById(R.id.icon_speech);

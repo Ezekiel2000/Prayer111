@@ -41,8 +41,6 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class CommentListActivity extends AppCompatActivity {
 
-    int ITEM_SIZE = 2;
-
     List<ListCommentData> listCommentDatas;
     ListCommentData[] data;
 
@@ -61,6 +59,7 @@ public class CommentListActivity extends AppCompatActivity {
     String cmtContent;
     String email;
 
+    CommentListViewAdapter commentListViewAdapter;
     Handler handler = new Handler();
 
     @Override
@@ -91,11 +90,10 @@ public class CommentListActivity extends AppCompatActivity {
         email = PropertyManager.getInstance().getUserEmail();
 
         listCommentDatas = new ArrayList<>();
+        commentListViewAdapter = new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list);
 
         new GetCommentList().execute();
 
-
-        recyclerView.setAdapter(new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list));
     }
 
     private class GetCommentList extends AsyncTask<Void, Void, Void> {
@@ -229,9 +227,9 @@ public class CommentListActivity extends AppCompatActivity {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        recyclerView.getAdapter().notifyDataSetChanged();
-                                        recyclerView.setAdapter(new CommentListViewAdapter(CommentListActivity.this, listCommentDatas, R.layout.activity_comment_list));
-
+                                        commentListViewAdapter.notifyDataSetChanged();
+                                        recyclerView.setAdapter(commentListViewAdapter);
+                                        input_comment.setText("");
                                     }
                                 });
 
@@ -245,20 +243,14 @@ public class CommentListActivity extends AppCompatActivity {
 
                         }.start();
 
-                        input_comment.setText("");
-
-                        recyclerView.setAdapter(new CommentListViewAdapter(CommentListActivity.this, listCommentDatas, R.layout.activity_comment_list));
-
                     }
 
                 }
 
             });
 
-
-            recyclerView.getAdapter().notifyDataSetChanged();
-            recyclerView.setAdapter(new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list));
-
+            recyclerView.setAdapter(commentListViewAdapter);
+            commentListViewAdapter.notifyDataSetChanged();
             progressDialog.dismiss();
         }
 
@@ -301,8 +293,6 @@ public class CommentListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        recyclerView.getAdapter().notifyDataSetChanged();
 
     }
 

@@ -189,7 +189,7 @@ public class WriteActivity extends AppCompatActivity {
 
         write_name.setText(PropertyManager.getInstance().getUserName());
 
-        Log.d("하이",  "setText 후 ");
+        Log.d("하이",  "setText 후 :" + profileUrl);
 
         Glide.with(this)
                 .load(profileUrl)

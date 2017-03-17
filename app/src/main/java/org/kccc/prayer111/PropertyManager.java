@@ -90,4 +90,19 @@ public class PropertyManager {
         mEditor.commit();
     }
 
+    private static final String KEY_USER_LOGIN_TYPE = "type";
+    private String mUserType;
+
+    public String getUserLoginType() {
+        if (mUserType == null) {
+            mUserType = mPrefs.getString(KEY_USER_LOGIN_TYPE, "");
+        }
+        return mUserName;
+    }
+
+    public void setUserLoginType(String UserLoginType) {
+        mUserType = UserLoginType;
+        mEditor.putString(KEY_USER_LOGIN_TYPE, UserLoginType);
+        mEditor.commit();
+    }
 }

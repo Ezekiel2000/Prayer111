@@ -214,7 +214,8 @@ public class SignInActivity extends AppCompatActivity {
 
                                 PropertyManager.getInstance().setUserProfile(profileUrl);
                                 PropertyManager.getInstance().setUserName(userName);
-                                PropertyManager.getInstance().setUserEmail(email);
+                                PropertyManager.getInstance().setUserEmail(userId);
+                                PropertyManager.getInstance().setUserLoginType("facebook");
 
                                 setLayoutText();
 
@@ -237,15 +238,12 @@ public class SignInActivity extends AppCompatActivity {
                                             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 
                                             writer.write( "mode=joinProcess"
-                                                    + "&name" + userName
-                                                    + "&email" + userId
+                                                    + "&name=" + userName
+                                                    + "&email=" + userId
                                                     + "&method=facebook" );
                                             writer.flush();
                                             writer.close();
                                             out.close();
-
-                                            Log.d("하이", "이름 : " + userName);
-                                            Log.d("하이", "이메일 : " + email);
 
                                             conn.connect();
 
@@ -373,6 +371,11 @@ public class SignInActivity extends AppCompatActivity {
                 userId = String.valueOf(userProfile.getId());
                 userName = userProfile.getNickname();
 
+                PropertyManager.getInstance().setUserProfile(profileUrl);
+                PropertyManager.getInstance().setUserName(userName);
+                PropertyManager.getInstance().setUserEmail(userId);
+                PropertyManager.getInstance().setUserLoginType("kakao");
+
                 setLayoutText();
 
                 new Thread() {
@@ -394,8 +397,8 @@ public class SignInActivity extends AppCompatActivity {
                             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 
                             writer.write( "mode=joinProcess"
-                                    + "&name" + userName
-                                    + "&email" + userId
+                                    + "&name=" + userName
+                                    + "&email=" + userId
                                     + "&method=kakao" );
                             writer.flush();
                             writer.close();

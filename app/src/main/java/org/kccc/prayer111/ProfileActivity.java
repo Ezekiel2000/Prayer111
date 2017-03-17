@@ -2,17 +2,21 @@ package org.kccc.prayer111;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,26 +93,68 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        text_my_password_change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showAlertDialog();
+
+
+
+            }
+        });
+
+        text_write_intercession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntercessionIntent = new Intent(ProfileActivity.this, MyIntercessionActivity.class);
+                myIntercessionIntent.putExtra("my", "intercession");
+                startActivity(myIntercessionIntent);
+            }
+        });
+
+        text_write_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myCommentIntent = new Intent(ProfileActivity.this, MyCommentActivity.class);
+                myCommentIntent.putExtra("my", "comment");
+                startActivity(myCommentIntent);
+            }
+        });
+
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                // 카카오톡 강제 로그아웃
-                UserManagement.requestLogout(new LogoutResponseCallback() {
-                    @Override
-                    public void onCompleteLogout() {
-                        Log.d("하이", "로그아웃 성공");
-                    }
-                });
+                if (PropertyManager.getInstance().getUserLoginType().equals("kakao")) {
 
-                // 페이스북 로그아웃
-                LoginManager.getInstance().logOut();
+                    // 카카오톡 강제 로그아웃
+                    UserManagement.requestLogout(new LogoutResponseCallback() {
+                        @Override
+                        public void onCompleteLogout() {
+                            Log.d("하이", "로그아웃 성공");
+                        }
+                    });
+
+
+                } else if (PropertyManager.getInstance().getUserLoginType().equals("facebook")) {
+
+                    // 페이스북 로그아웃
+                    LoginManager.getInstance().logOut();
+
+
+                } else if (PropertyManager.getInstance().getUserLoginType().equals("EMAIL")) {
+
+
+
+                }
 
                 // PropertyManager 초기화
                 PropertyManager.getInstance().setUserProfile("");
                 PropertyManager.getInstance().setUserName("");
                 PropertyManager.getInstance().setUserEmail("");
                 PropertyManager.getInstance().setPassword("");
+                PropertyManager.getInstance().setUserLoginType("");
 
                 Toast.makeText(v.getContext(), "로그아웃", Toast.LENGTH_SHORT).show();
 
@@ -156,6 +202,32 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+
+
+    }
+
+
+    private void showAlertDialog() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout pwdChangeLayout = (LinearLayout) inflater.inflate(R.layout.dialog_password_change, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setView(pwdChangeLayout);
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext() ,"확인", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.show();
+
 
 
     }

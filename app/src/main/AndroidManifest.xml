@@ -130,6 +130,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".MyCommentActivity">
+        </activity>
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".MyIntercessionActivity">
+        </activity>
     </application>
 
 </manifest>

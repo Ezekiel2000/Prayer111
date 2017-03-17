@@ -7,6 +7,7 @@ android {
     }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "org.kccc.prayer111"
         minSdkVersion 19
@@ -43,6 +44,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     testCompile 'junit:junit:4.12'
     compile 'com.facebook.android:facebook-android-sdk:4.19.0'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'jp.wasabeef:glide-transformations:2.0.1'
     compile 'com.getbase:floatingactionbutton:1.10.1'
     compile 'com.pushwoosh:pushwoosh:4.12.1'

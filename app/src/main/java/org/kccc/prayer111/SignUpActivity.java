@@ -3,7 +3,6 @@ package org.kccc.prayer111;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -20,15 +19,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -42,10 +32,17 @@ public class SignUpActivity extends AppCompatActivity {
     Button btn_sign;
 
     String imgPath;
+    String realPath;
 
     final int REQ_CODE_SELECT_IMAGE = 100;
 
     private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
+
+    String attachmentName = "bitmap";
+    String attachmentFileName = "bitmap.bmp";
+    String crlf = "\r\n";
+    String twoHyphens = "--";
+    String boundary =  "*****";
 
 
     @Override
@@ -96,7 +93,7 @@ public class SignUpActivity extends AppCompatActivity {
                 } else if (text_sign_password_conform.getText().length() == 0) {
                     Toast.makeText(v.getContext(), "패스워드 확인을 입력하세요", Toast.LENGTH_SHORT).show();
                 } else if (text_sign_password.getText().toString().equals(text_sign_password_conform.getText().toString())) {
-                    sign();
+
                     Toast.makeText(v.getContext(), "성공", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(getBaseContext(), WriteActivity.class);
@@ -108,64 +105,72 @@ public class SignUpActivity extends AppCompatActivity {
                     PropertyManager.getInstance().setUserName(text_sign_name.getText().toString());
                     PropertyManager.getInstance().setUserEmail(text_sign_email.getText().toString());
                     PropertyManager.getInstance().setPassword(text_sign_password.getText().toString());
+                    PropertyManager.getInstance().setUserLoginType("EMAIL");
                     PropertyManager.getInstance().setUserProfile(imgPath);
 
                     Log.d("하이",  "setURL : " + setUrl);
 
 
-                    new Thread() {
-                        @Override
-                        public void run() {
+//                    new Thread() {
+//                        @Override
+//                        public void run() {
+//
+//
+//                            HttpURLConnection conn = null;
+//
+//                            try {
+//
+//                                URL url = new URL(setUrl);
+//                                conn = (HttpURLConnection) url.openConnection();
+//                                conn.setDoOutput(true);
+//                                conn.setDoInput(true);
+//                                conn.setChunkedStreamingMode(0);
+//                                conn.setRequestMethod("POST");
+//
+//
+//
+//                                OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+//                                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+//
+//                                writer.write( "mode=joinProcess"
+//                                        + "&name=" + text_sign_name.getText()
+//                                        + "&email=" + text_sign_email.getText()
+//                                        + "&password=" + text_sign_password.getText()
+//                                        + "&method=EMAIL");
+//                                writer.flush();
+//                                writer.close();
+//                                out.close();
+//
+//                                conn.connect();
+//
+//                                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+//
+//                                StringBuilder builder = new StringBuilder();
+//                                String line = null;
+//                                while ((line =reader.readLine()) != null) {
+//                                    if (builder.length() > 0) {
+//                                        builder.append("\n");
+//                                    }
+//                                    builder.append(line);
+//                                }
+//
+//                                Log.d("하이", builder.toString());
+//
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            } finally {
+//                                if (conn != null) {
+//                                    conn.disconnect();
+//                                }
+//                            }
+//
+//                        }
+//                    }.start();
+                    new MultiPartUpload().execute(
+                            PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserEmail(),
+                            PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType(), realPath);
 
-                            HttpURLConnection conn = null;
 
-                            try {
-
-                                URL url = new URL(setUrl);
-                                conn = (HttpURLConnection) url.openConnection();
-                                conn.setDoOutput(true);
-                                conn.setDoInput(true);
-                                conn.setChunkedStreamingMode(0);
-                                conn.setRequestMethod("POST");
-//                        conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-
-                                OutputStream out = new BufferedOutputStream(conn.getOutputStream());
-                                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-
-                                writer.write( "mode=joinProcess"
-                                        + "&name=" + text_sign_name.getText()
-                                        + "&email=" + text_sign_email.getText()
-                                        + "&password=" + text_sign_password.getText()
-                                        + "&method=EMAIL");
-                                writer.flush();
-                                writer.close();
-                                out.close();
-
-                                conn.connect();
-
-                                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-
-                                StringBuilder builder = new StringBuilder();
-                                String line = null;
-                                while ((line =reader.readLine()) != null) {
-                                    if (builder.length() > 0) {
-                                        builder.append("\n");
-                                    }
-                                    builder.append(line);
-                                }
-
-                                Log.d("하이", builder.toString());
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                if (conn != null) {
-                                    conn.disconnect();
-                                }
-                            }
-
-                        }
-                    }.start();
 
                     startActivity(intent);
                     finish();
@@ -197,7 +202,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
                     Log.d("하이", "data.getData :" + data.getData());
-
+                    Log.d("하이", "imgPath : " + this.imgPath);
                     Log.d("하이", "파일 이름 : " + nameImage);
 
                     image_select.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -226,18 +231,14 @@ public class SignUpActivity extends AppCompatActivity {
 
         imgPath = cursor.getString(column_index);
 
+        Log.d("하이", "imgPath : " + this.imgPath);
+        realPath = this.imgPath;
+
         String imgName = imgPath.substring(imgPath.lastIndexOf("/") + 1);
 
-        return imgPath;
-    }
+        Log.d("하이", "imgName : " + imgName);
 
-    private void sign() {
-        SharedPreferences userInfo = getSharedPreferences("USER", Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = userInfo.edit();
-        editor.putString("name", text_sign_name.getText().toString());
-        editor.putString("email", text_sign_email.getText().toString());
-        editor.putString("password", text_sign_password.getText().toString());
-        editor.commit();
+        return imgPath;
     }
 
 
