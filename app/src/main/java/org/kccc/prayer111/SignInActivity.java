@@ -1,6 +1,7 @@
 package org.kccc.prayer111;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -61,6 +62,8 @@ public class SignInActivity extends AppCompatActivity {
     private String email;
     private String password;
 
+    Bitmap mSaved;
+
     private SessionCallback mKakaocallback;
 
     private CallbackManager mFacebookcallbackManager;
@@ -104,15 +107,67 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                PropertyManager.getInstance().setUserEmail(text_input_email.getText().toString());
+                PropertyManager.getInstance().setPassword(text_input_password.getText().toString());
+
+
                 if (text_input_email.getText().length() != 0 && text_input_password.getText().length() != 0) {
 
-                    if (checkBox.isChecked()) {
+                    new Thread() {
+                        @Override
+                        public void run() {
 
-                        PropertyManager.getInstance().setUserName(text_input_email.getText().toString());
-                        PropertyManager.getInstance().setPassword(text_input_password.getText().toString());
-                        PropertyManager.getInstance().setUserProfile(profileUrl);
+                            HttpURLConnection conn = null;
 
-                    }
+                            try {
+
+                                URL url = new URL(setUrl);
+                                conn = (HttpURLConnection) url.openConnection();
+                                conn.setDoInput(true);
+                                conn.setDoOutput(true);
+                                conn.setChunkedStreamingMode(0);
+                                conn.setRequestMethod("POST");
+
+                                OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                                writer.write( "mode=joinProcess"
+                                        + "&email=" + PropertyManager.getInstance().getUserEmail()
+                                        + "&password=" + PropertyManager.getInstance().getPassword()
+                                        + "&method=EMAIL" );
+                                writer.flush();
+                                writer.close();
+                                out.close();
+
+                                Log.d("하이", "이름 : " + userName);
+                                Log.d("하이", "이메일 : " + email);
+
+                                conn.connect();
+
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                                StringBuilder builder = new StringBuilder();
+                                String line = null;
+                                while ((line =reader.readLine()) != null) {
+                                    if (builder.length() > 0) {
+                                        builder.append("\n");
+                                    }
+                                    builder.append(line);
+                                }
+
+                                Log.d("하이", builder.toString());
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                if (conn != null) {
+                                    conn.disconnect();
+                                }
+                            }
+
+                        }
+                    }.start();
+
 
                     // 서버에서 이메일과 비밀번호를 검색해서 일치되는 것이 있을 경우 로그인
                     // 일치되는 것이 없을 경우 Toast를 사용하여 다시 입력하

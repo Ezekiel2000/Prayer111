@@ -69,6 +69,16 @@
 
                 </LinearLayout>
 
+                <ImageView
+                    android:src="@drawable/ic_close"
+                    card_view:layout_constraintRight_toRightOf="parent"
+                    android:paddingRight="10dp"
+                    card_view:layout_constraintTop_toTopOf="parent"
+                    android:paddingTop="10dp"
+                    android:id="@+id/pray_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
             </android.support.constraint.ConstraintLayout>
 
             <LinearLayout
@@ -99,8 +109,6 @@
                     android:id="@+id/image_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
                     />
 
             </LinearLayout>

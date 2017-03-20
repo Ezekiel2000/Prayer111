@@ -114,7 +114,8 @@ public class IntercessionFragment extends Fragment {
                     String name = object.getString("name");
                     String content = object.getString("pray");
                     String date = object.getString("indate");
-                    String profile = object.getString("photo");
+                    String profile = object.getString("prayPhoto");
+                    String imageInput = object.getString("photo");
                     int warn = object.getInt("warn");
                     int prayNumber = object.getInt("heart");
                     int commentNumber = object.getInt("comment");
@@ -127,7 +128,7 @@ public class IntercessionFragment extends Fragment {
                     // 신고당한 리스트(warn = 1인경우)는 add 하지 않음
                     if (warn == 0) {
 
-                        data[i] = new ListData(number, profile, email, name, date, content, warn, prayNumber, commentNumber);
+                        data[i] = new ListData(number, profile, email, name, date, content, imageInput, warn, prayNumber, commentNumber);
                         listData.add(data[i]);
 
                     }
@@ -184,6 +185,8 @@ public class IntercessionFragment extends Fragment {
                     try {
                         lid = o1.getString("no");
                         rid = o2.getString("no");
+                        Log.d("하이", "lid : " + lid);
+                        Log.d("하이", "rid : " + rid);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

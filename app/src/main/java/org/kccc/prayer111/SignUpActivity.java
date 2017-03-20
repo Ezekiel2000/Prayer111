@@ -168,7 +168,8 @@ public class SignUpActivity extends AppCompatActivity {
 //                    }.start();
                     new MultiPartUpload().execute(
                             PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserEmail(),
-                            PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType(), realPath);
+                            PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType(), realPath
+                    );
 
 
 

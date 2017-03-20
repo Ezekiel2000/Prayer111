@@ -1,7 +1,9 @@
 package org.kccc.prayer111;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
@@ -31,6 +34,8 @@ import java.util.Date;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
+import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 
 /**
@@ -53,6 +58,8 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
     String dateMonth;
     String dateDay;
+
+    Handler handler = new Handler();
 
     private String postUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
 
@@ -132,7 +139,82 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             }
         });
 
+        // 이미지가 있을 경우 이미지 뷰를 보여줌
+        if (holder.image_input.getDrawable() != null) {
+            Glide.with(context)
+                    .load(data.getImageInput())
+                    .into(holder.image_input);
+            holder.image_input.setVisibility(View.VISIBLE);
+        }
 
+        holder.card_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserEmail());
+                Log.d("하이", "Id : " + data.getEmail());
+
+                if (PropertyManager.getInstance().getUserEmail().equals(data.getEmail()))
+                {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+                    builder.setTitle("중보기도 삭제")
+                            .setMessage("중보기도를 삭제하시겠습니까?")
+                            .setCancelable(false)
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+
+                                            HttpHandler sh = new HttpHandler();
+
+                                            String url = postUrl + "?mode=removeTogetherPray" + "&userId=" + PropertyManager.getInstance().getUserEmail() + "&prayNo=" + data.getNumber();
+
+                                            String jsonStr = sh.makeServiceCall(url);
+
+                                            if (jsonStr != null) {
+
+                                                try {
+
+                                                    JSONObject jsonObject = new JSONObject(jsonStr);
+                                                    JSONObject object = jsonObject.getJSONObject("result");
+
+                                                    String result = object.getString("msg");
+
+
+                                                } catch (JSONException e) {
+                                                    Log.e(TAG, "Json parsing error:" + e.getMessage());
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }.start();
+                                    notifyItemRemoved(holder.getAdapterPosition());
+                                    notifyDataSetChanged();
+                                }
+                            })
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                } else {
+                    Toast.makeText(v.getContext(), "내가 쓴 글이 아닙니다. 삭제 불가능", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
         holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
         holder.text_comment_number.setText(String.valueOf(data.getCommentNumber()));
@@ -418,6 +500,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         TextView text_comment_number;
         TextView text_more;
         ImageView image_input;
+        ImageView card_delete;
         ImageView icon_heart;
         ImageView icon_comment;
         ImageView icon_share;
@@ -434,6 +517,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             text_prayer_number = (TextView) view.findViewById(R.id.text_prayer_number);
             text_comment_number = (TextView) view.findViewById(R.id.text_comment_number);
             image_input = (ImageView) view.findViewById(R.id.image_input);
+            card_delete = (ImageView) view.findViewById(R.id.pray_delete);
 
             icon_heart = (ImageView) view.findViewById(R.id.icon_heart);
             icon_comment = (ImageView) view.findViewById(R.id.icon_speech);

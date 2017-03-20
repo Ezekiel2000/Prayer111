@@ -11,6 +11,7 @@ public class ListData {
     String name;
     String date;
     String content;
+    String imageInput;
     int warn;
     int prayerNumber;
     int commentNumber;
@@ -35,6 +36,10 @@ public class ListData {
         return this.content;
     }
 
+    public String getImageInput() {
+        return this.imageInput;
+    }
+
     public String getDate() {
         return this.date;
     }
@@ -51,13 +56,14 @@ public class ListData {
         return this.commentNumber;
     }
 
-    ListData(String number, String profileImage, String email, String name, String date, String content, int warn, int prayerNumber, int commentNumber) {
+    ListData(String number, String profileImage, String email, String name, String date, String content, String imageInput, int warn, int prayerNumber, int commentNumber) {
         this.number = number;
         this.profileImage = profileImage;
         this.email = email;
         this.name = name;
         this.date = date;
         this.content = content;
+        this.imageInput = imageInput;
         this.warn = warn;
         this.prayerNumber = prayerNumber;
         this.commentNumber = commentNumber;

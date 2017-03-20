@@ -50,10 +50,18 @@
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_action"
         android:layout_gravity="end|bottom"
-        fab:fab_addButtonColorNormal="#ff8965"
+        fab:fab_addButtonColorNormal="#8e80d2"
         fab:fab_addButtonColorPressed="#ff817a"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_check_today"
+            fab:fab_colorNormal="#fe4565"
+            fab:fab_icon="@drawable/ic_btn_prayheart"
+            app:fab_size="mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_share_kakao"
@@ -79,7 +87,7 @@
         android:layout_gravity="end|bottom"
         android:visibility="gone"
         android:id="@+id/fab_write"
-        fab:fab_colorNormal="#ff8965"
+        fab:fab_colorNormal="#8e80d2"
         fab:fab_icon="@drawable/ic_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

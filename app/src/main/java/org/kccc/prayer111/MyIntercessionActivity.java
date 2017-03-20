@@ -83,7 +83,8 @@ public class MyIntercessionActivity extends AppCompatActivity {
                     String name = object.getString("name");
                     String content = object.getString("pray");
                     String date = object.getString("indate");
-                    String profile = object.getString("photo");
+                    String profile = object.getString("prayPhoto");
+                    String imageInput = object.getString("photo");
                     int warn = object.getInt("warn");
                     int prayNumber = object.getInt("heart");
                     int commentNumber = object.getInt("comment");
@@ -93,7 +94,7 @@ public class MyIntercessionActivity extends AppCompatActivity {
 
                     data = new ListData[jsonArray.length()];
 
-                    data[i] = new ListData(number, profile, email, name, date, content, warn, prayNumber, commentNumber);
+                    data[i] = new ListData(number, profile, email, name, date, content, imageInput, warn, prayNumber, commentNumber);
                     listData.add(data[i]);
 
                 }

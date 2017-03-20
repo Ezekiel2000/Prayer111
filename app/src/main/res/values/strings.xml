@@ -6,6 +6,7 @@
     <string name="title_activity_main">111Prayer</string>
     <string name="action_intro">111 소개</string>
     <string name="action_calender">기도한 날짜</string>
-    <string name="action_logout">로그아웃</string>
+    <string name="action_login">로그인</string>
+    <string name="action_logout">회원정보</string>
     <string name="pray">PRAY FOR</string>
 </resources>
