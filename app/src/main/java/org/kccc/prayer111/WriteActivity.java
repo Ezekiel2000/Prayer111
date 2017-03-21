@@ -189,13 +189,14 @@ public class WriteActivity extends AppCompatActivity {
 
         write_name.setText(PropertyManager.getInstance().getUserName());
 
-        Log.d("하이",  "setText 후 :" + profileUrl);
+        Log.d("하이",  "setText 후 :" + profileUrl + userName + email + password);
 
-        Glide.with(this)
-                .load(profileUrl)
-                .error(R.drawable.write_pro_default)
-                .bitmapTransform(new CropCircleTransformation(getBaseContext()))
-                .into(write_profile);
+            Glide.with(this)
+                    .load(profileUrl)
+                    .override(200, 200)
+                    .error(R.drawable.write_pro_default)
+                    .bitmapTransform(new CropCircleTransformation(getBaseContext()))
+                    .into(write_profile);
 
         Log.d("하이",  "glide 후 ");
 

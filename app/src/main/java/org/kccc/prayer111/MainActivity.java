@@ -49,6 +49,13 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     String today_pray_content = null;
     String month_pray_content = null;
 
+    String name;
+    String password;
+    String profile;
+    String email;
+
+    Boolean loginCheck = false;
+
     public static final int REQUEST_MAIN = 2501;
 
     private static final int REQUEST_CODE_EXTERNAL_STORAGE_CONTACTS = 251;
@@ -112,12 +119,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         Log.d("하이", "탭바 변경");
 
         CheckBox checked = (CheckBox) findViewById(R.id.checkBox);
-
-        String name = PropertyManager.getInstance().getUserName();
-        String email = PropertyManager.getInstance().getUserEmail();
-        Log.d("하이", "이름 : " + name);
-        Log.d("하이", "Id : " + email);
-
 
         // 페이스북 공유를 위한 sdk선언 및 다이얼로그 박스
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -236,17 +237,14 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             public void onClick(View v) {
 
                 if (!name.equals("")) {
-                    String password = PropertyManager.getInstance().getPassword();
-                    String profile = PropertyManager.getInstance().getUserProfile();
-                    if (!password.equals("")) {
-                        Intent writeIntent = new Intent(MainActivity.this, WriteActivity.class);
-                        Toast.makeText(MainActivity.this, "자동로그인 되었습니다.", Toast.LENGTH_SHORT).show();
-                        writeIntent.putExtra("name", name);
-                        writeIntent.putExtra("password", password);
-                        writeIntent.putExtra("user_profile", profile);
-                        Log.d("하이", "들어갔음?");
-                        startActivity(writeIntent);
-                    }
+
+                    Intent writeIntent = new Intent(MainActivity.this, WriteActivity.class);
+                    Toast.makeText(MainActivity.this, "자동로그인 되었습니다.", Toast.LENGTH_SHORT).show();
+                    writeIntent.putExtra("name", name);
+                    writeIntent.putExtra("password", password);
+                    writeIntent.putExtra("user_profile", profile);
+                    Log.d("하이", "들어갔음?");
+                    startActivity(writeIntent);
                 } else {
 
                     Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
@@ -281,6 +279,8 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
                 mViewPager.setCurrentItem(2);
                 fab_write.setVisibility(View.VISIBLE);
                 findViewById(R.id.multiple_action).setVisibility(View.GONE);
+
+            } else if (position.equals("main")){
 
             }
         } catch (Exception e) {
@@ -365,10 +365,20 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     @Override
     protected void onStart() {
         Log.d("하이", "onStart");
+
+        loginCheck = getIntent().getBooleanExtra("check", false);
+        name = getIntent().getStringExtra("name");
+        email = getIntent().getStringExtra("email");
+        password = getIntent().getStringExtra("password");
+        profile = getIntent().getStringExtra("user_profile");
+        Log.d("하이", "이름 : " + name);
+        Log.d("하이", "Id : " + email);
+        Log.d("하이", "pw : " + password);
+        Log.d("하이", "photo : " + profile);
+        Log.d("하이", "check : " + loginCheck );
+
+
         super.onStart();
-
-
-
 
     }
 
@@ -382,7 +392,18 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (!loginCheck) {
+            menu.removeItem(R.id.action_logout);
+        } else {
+            menu.removeItem(R.id.action_login);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -398,7 +419,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             Intent introduceIntent = new Intent(this, IntroduceActivity.class);
             startActivity(introduceIntent);
 
-            return true;
         } else if (id == R.id.action_calender) {
 
             Intent calenderIntent = new Intent(this, CalendarActivity.class);
@@ -409,6 +429,18 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
             Intent infoIntent = new Intent(this, ProfileActivity.class);
             startActivity(infoIntent);
+
+        } else if (id == R.id.action_licence) {
+
+            Intent licenceIntent = new Intent(this, LicenceActivity.class);
+            startActivity(licenceIntent);
+
+        } else if (id == R.id.action_login) {
+
+            Intent loginIntent = new Intent(this, SignInActivity.class);
+            loginIntent.putExtra("position", "main");
+            loginIntent.putExtra("check", loginCheck);
+            startActivity(loginIntent);
 
         }
 

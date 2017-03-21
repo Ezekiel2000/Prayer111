@@ -140,9 +140,10 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         });
 
         // 이미지가 있을 경우 이미지 뷰를 보여줌
-        if (holder.image_input.getDrawable() != null) {
+        if (data.getImageInput() != null) {
             Glide.with(context)
                     .load(data.getImageInput())
+                    .override(1500, 1500)
                     .into(holder.image_input);
             holder.image_input.setVisibility(View.VISIBLE);
         }

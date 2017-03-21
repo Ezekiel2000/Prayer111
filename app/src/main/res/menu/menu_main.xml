@@ -10,7 +10,13 @@
     <item android:title="@string/action_calender"
           android:id="@+id/action_calender"
           android:orderInCategory="101"/>
+    <item android:title="@string/action_login"
+          android:id="@+id/action_login"
+          android:orderInCategory="102"/>
     <item android:title="@string/action_logout"
           android:id="@+id/action_logout"
-          android:orderInCategory="102"/>
+          android:orderInCategory="103"/>
+    <item android:title="@string/action_licence"
+          android:id="@+id/action_licence"
+          android:orderInCategory="104"/>
 </menu>

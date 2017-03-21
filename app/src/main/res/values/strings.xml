@@ -9,4 +9,5 @@
     <string name="action_login">로그인</string>
     <string name="action_logout">회원정보</string>
     <string name="pray">PRAY FOR</string>
+    <string name="action_licence">라이센스 관련</string>
 </resources>

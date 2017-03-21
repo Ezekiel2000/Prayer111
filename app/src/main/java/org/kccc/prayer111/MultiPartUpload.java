@@ -1,6 +1,7 @@
 package org.kccc.prayer111;
 
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
@@ -39,15 +40,9 @@ public class MultiPartUpload extends AsyncTask<String, Integer, String> {
             String method = params[3];
             String image = params[4];
 
-            Log.d("하이", "image : " + image);
 
-//            String[] proj = {MediaStore.Images.Media.DATA};
-//            Cursor cursor = managedQuery(data, proj, null, null, null);
-//            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-//
-//            cursor.moveToFirst();
-//
-//            imgPath = cursor.getString(column_index);
+
+            Log.d("하이", "image : " + image);
 
             File file = new File(image);
 
@@ -58,15 +53,34 @@ public class MultiPartUpload extends AsyncTask<String, Integer, String> {
 
             Log.d("하이", "filename : " + filename);
 
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("mode", "joinProcess")
-                    .addFormDataPart("name", name)
-                    .addFormDataPart("email", email)
-                    .addFormDataPart("password", password)
-                    .addFormDataPart("method", method)
-                    .addFormDataPart("up", filename, RequestBody.create(MEDIA_TYPE_PNG, file))
-                    .build();
+            RequestBody requestBody;
+
+            if (TextUtils.isEmpty(password)) {
+
+                requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("mode", "joinProcess")
+                        .addFormDataPart("name", name)
+                        .addFormDataPart("email", email)
+                        .addFormDataPart("method", method)
+                        .addFormDataPart("up", filename, RequestBody.create(MEDIA_TYPE_PNG, file))
+                        .build();
+
+
+            } else {
+
+                requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("mode", "joinProcess")
+                        .addFormDataPart("name", name)
+                        .addFormDataPart("email", email)
+                        .addFormDataPart("password", password)
+                        .addFormDataPart("method", method)
+                        .addFormDataPart("up", filename, RequestBody.create(MEDIA_TYPE_PNG, file))
+                        .build();
+
+
+            }
 
             Log.d("하이", "바디 : " + requestBody.toString());
 

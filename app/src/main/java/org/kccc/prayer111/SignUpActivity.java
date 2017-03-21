@@ -2,6 +2,7 @@ package org.kccc.prayer111;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -35,15 +37,9 @@ public class SignUpActivity extends AppCompatActivity {
     String realPath;
 
     final int REQ_CODE_SELECT_IMAGE = 100;
+    final int REQ_CODE_CAPTRUE_IMAGE = 200;
 
     private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
-
-    String attachmentName = "bitmap";
-    String attachmentFileName = "bitmap.bmp";
-    String crlf = "\r\n";
-    String twoHyphens = "--";
-    String boundary =  "*****";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +69,33 @@ public class SignUpActivity extends AppCompatActivity {
         image_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+                builder.setTitle("사진 선택")
+                        .setNegativeButton("사진첩", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                Intent intent = new Intent(Intent.ACTION_PICK);
+                                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
+
+                            }
+                        })
+                        .setPositiveButton("카메라", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(intent, REQ_CODE_CAPTRUE_IMAGE);
+
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             }
         });
 
@@ -218,6 +237,17 @@ public class SignUpActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+        } else if (requestCode == REQ_CODE_CAPTRUE_IMAGE) {
+
+            if (resultCode == Activity.RESULT_OK) {
+
+                Log.d("하이", "data.getData :" + data.getData());
+                image_select.setImageURI(data.getData());
+
+            }
+
+
+
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

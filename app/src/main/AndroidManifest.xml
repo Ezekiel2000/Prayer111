@@ -13,8 +13,8 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.SEND_SMS"/>
@@ -132,12 +132,16 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
-            android:name=".MyCommentActivity">
+            android:name=".MyCommentActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
-            android:name=".MyIntercessionActivity">
+            android:name=".MyIntercessionActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".LicenceActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

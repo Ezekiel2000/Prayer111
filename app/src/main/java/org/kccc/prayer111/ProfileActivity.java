@@ -76,7 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
             Uri uri = Uri.parse(PropertyManager.getInstance().getUserProfile());
 
             Glide.with(this)
-                    .load(uri)
+                    .load(getIntent().getStringExtra("user_profile"))
                     .error(R.drawable.signup_profile)
                     .bitmapTransform(new CropCircleTransformation(this))
                     .into(image_profile_chage);
@@ -158,6 +158,9 @@ public class ProfileActivity extends AppCompatActivity {
 
                 Toast.makeText(v.getContext(), "로그아웃", Toast.LENGTH_SHORT).show();
 
+                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                intent.putExtra("check", false);
+                startActivity(intent);
                 finish();
 
             }
