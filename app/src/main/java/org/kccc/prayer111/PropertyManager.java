@@ -105,4 +105,5 @@ public class PropertyManager {
         mEditor.putString(KEY_USER_LOGIN_TYPE, UserLoginType);
         mEditor.commit();
     }
+
 }

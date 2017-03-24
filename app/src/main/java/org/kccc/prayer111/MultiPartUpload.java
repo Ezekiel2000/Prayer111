@@ -1,8 +1,10 @@
 package org.kccc.prayer111;
 
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -48,39 +50,34 @@ public class MultiPartUpload extends AsyncTask<String, Integer, String> {
 
             Log.d("하이", "file : " + file.toString());
 
-            final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/*");
+            final MediaType MEDIA_TYPE = MediaType.parse("image/*");
+            final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+            final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
             String filename = image.substring(image.lastIndexOf("/") + 1);
 
             Log.d("하이", "filename : " + filename);
 
             RequestBody requestBody;
+            RequestBody fileBody = RequestBody.create(MEDIA_TYPE, file);
 
-            if (TextUtils.isEmpty(password)) {
-
-                requestBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("mode", "joinProcess")
-                        .addFormDataPart("name", name)
-                        .addFormDataPart("email", email)
-                        .addFormDataPart("method", method)
-                        .addFormDataPart("up", filename, RequestBody.create(MEDIA_TYPE_PNG, file))
-                        .build();
-
-
-            } else {
-
-                requestBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("mode", "joinProcess")
-                        .addFormDataPart("name", name)
-                        .addFormDataPart("email", email)
-                        .addFormDataPart("password", password)
-                        .addFormDataPart("method", method)
-                        .addFormDataPart("up", filename, RequestBody.create(MEDIA_TYPE_PNG, file))
-                        .build();
-
-
+            if (image.endsWith("png")) {
+                Log.d("하이", "png임");
+                fileBody = RequestBody.create(MEDIA_TYPE_PNG, file);
+            } else if (image.endsWith("jpg")) {
+                Log.d("하이", "jpg임");
+                fileBody = RequestBody.create(MEDIA_TYPE_JPG, file);
             }
+
+            requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("mode", "joinProcess")
+                    .addFormDataPart("name", name)
+                    .addFormDataPart("email", email)
+                    .addFormDataPart("password", password)
+                    .addFormDataPart("method", method)
+                    .addFormDataPart("up", filename, fileBody)
+                    .build();
+
 
             Log.d("하이", "바디 : " + requestBody.toString());
 
@@ -91,9 +88,8 @@ public class MultiPartUpload extends AsyncTask<String, Integer, String> {
 
             OkHttpClient client = new OkHttpClient();
             Response response = client.newCall(request).execute();
-            res = response.body().toString();
+            res = response.body().string();
             Log.d("하이", "response : " + res);
-            return res;
 
         } catch (UnknownHostException | UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -107,5 +103,23 @@ public class MultiPartUpload extends AsyncTask<String, Integer, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+
+        try {
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject object = jsonObject.getJSONObject("result");
+            String ty = object.getString("ty");
+
+            Log.d("하이", "ty : " + ty);
+
+            if (ty.equals("old")) {
+
+//                Toast.makeText(this, "이미 있는 계정입니다.", Toast.LENGTH_SHORT).show();
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }

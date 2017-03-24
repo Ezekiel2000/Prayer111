@@ -17,7 +17,7 @@
 
             <TextView
                 android:gravity="center_horizontal"
-                android:text="내가 작성한 중보기도"
+                android:text="내가 작성한 댓글"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

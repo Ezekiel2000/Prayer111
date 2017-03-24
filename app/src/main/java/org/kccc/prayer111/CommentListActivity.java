@@ -91,9 +91,87 @@ public class CommentListActivity extends AppCompatActivity {
 
         listCommentDatas = new ArrayList<>();
         commentListViewAdapter = new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list);
-
         new GetCommentList().execute();
 
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent signInIntent = new Intent(CommentListActivity.this, SignInActivity.class);
+
+                cmtContent = ((EditText) findViewById(R.id.input_comment)).getText().toString();
+
+                if (email == null) {
+
+                    signInIntent.putExtra("position", "cmt");
+                    startActivity(signInIntent);
+
+                } else {
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+
+                            HttpURLConnection conn = null;
+
+                            try {
+
+                                URL url = new URL(setUrl);
+                                conn = (HttpURLConnection) url.openConnection();
+                                conn.setDoInput(true);
+                                conn.setDoOutput(true);
+                                conn.setChunkedStreamingMode(0);
+                                conn.setRequestMethod("POST");
+
+                                OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                                writer.write( "mode=setComment"
+                                        + "&userId=" + email
+                                        + "&prayNo=" + prayNumber
+                                        + "&comment=" + cmtContent);
+                                writer.flush();
+                                writer.close();
+                                out.close();
+
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                                StringBuilder builder = new StringBuilder();
+                                String line = null;
+                                while ((line =reader.readLine()) != null) {
+                                    if (builder.length() > 0) {
+                                        builder.append("\n");
+                                    }
+                                    builder.append(line);
+                                }
+
+                                Log.d("하이", builder.toString());
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                if (conn != null) {
+                                    conn.disconnect();
+                                }
+                            }
+
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+//                                    ListCommentData data = new ListCommentData(prayNumber, profile, name, date, content);
+//                                    listCommentDatas.add(data);
+
+                                    commentListViewAdapter.notifyDataSetChanged();
+                                    recyclerView.setAdapter(commentListViewAdapter);
+                                    input_comment.setText("");
+                                }
+                            });
+                        }
+                    }.start();
+                }
+            }
+        });
     }
 
     private class GetCommentList extends AsyncTask<Void, Void, Void> {
@@ -159,96 +237,6 @@ public class CommentListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
-            btn_ok.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Intent signInIntent = new Intent(CommentListActivity.this, SignInActivity.class);
-
-                    cmtContent = ((EditText) findViewById(R.id.input_comment)).getText().toString();
-
-                    if (email == null) {
-
-                        signInIntent.putExtra("position", "cmt");
-                        startActivity(signInIntent);
-
-                    } else {
-
-                        new Thread() {
-
-
-                            @Override
-                            public void run() {
-
-                                HttpURLConnection conn = null;
-
-                                try {
-
-                                    URL url = new URL(setUrl);
-                                    conn = (HttpURLConnection) url.openConnection();
-                                    conn.setDoInput(true);
-                                    conn.setDoOutput(true);
-                                    conn.setChunkedStreamingMode(0);
-                                    conn.setRequestMethod("POST");
-
-                                    OutputStream out = new BufferedOutputStream(conn.getOutputStream());
-                                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-
-                                    writer.write( "mode=setComment"
-                                            + "&userId=" + email
-                                            + "&prayNo=" + prayNumber
-                                            + "&comment=" + cmtContent);
-                                    writer.flush();
-                                    writer.close();
-                                    out.close();
-
-                                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-
-                                    StringBuilder builder = new StringBuilder();
-                                    String line = null;
-                                    while ((line =reader.readLine()) != null) {
-                                        if (builder.length() > 0) {
-                                            builder.append("\n");
-                                        }
-                                        builder.append(line);
-                                    }
-
-                                    Log.d("하이", builder.toString());
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                } finally {
-                                    if (conn != null) {
-                                        conn.disconnect();
-                                    }
-                                }
-
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        commentListViewAdapter.notifyDataSetChanged();
-                                        recyclerView.setAdapter(commentListViewAdapter);
-                                        input_comment.setText("");
-                                    }
-                                });
-
-
-
-
-                            }
-
-
-
-
-                        }.start();
-
-
-                    }
-
-                }
-
-            });
 
             recyclerView.setAdapter(commentListViewAdapter);
             commentListViewAdapter.notifyDataSetChanged();

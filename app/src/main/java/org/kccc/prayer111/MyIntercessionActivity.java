@@ -109,8 +109,8 @@ public class MyIntercessionActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
 
             myListDataAdapter.notifyDataSetChanged();
             recyclerView.setAdapter(myListDataAdapter);

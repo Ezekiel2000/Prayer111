@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,6 +26,12 @@ import com.facebook.login.LoginManager;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -36,14 +43,18 @@ public class ProfileActivity extends AppCompatActivity {
 
     ImageView image_profile_chage;
     TextView text_my_name;
-    TextView text_my_email;
     TextView text_my_password_change;
     TextView text_write_intercession;
     TextView text_write_comment;
+    EditText input_password_change;
+    EditText input_password_change_conform;
     Button btn_signout;
     Button btn_logout;
 
     String imgPath;
+
+    String after_password;
+    String after_password_conform;
 
     final int REQ_CODE_SELECT_IMAGE = 100;
 
@@ -61,7 +72,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         image_profile_chage = (ImageView) findViewById(R.id.image_profile_chage);
         text_my_name = (TextView) findViewById(R.id.my_name);
-        text_my_email = (TextView) findViewById(R.id.my_email);
         text_my_password_change = (TextView) findViewById(R.id.my_password_change);
         text_write_intercession = (TextView) findViewById(R.id.text_write_intercession);
         text_write_comment = (TextView) findViewById(R.id.text_write_comment);
@@ -69,18 +79,14 @@ public class ProfileActivity extends AppCompatActivity {
         btn_logout = (Button) findViewById(R.id.btn_logout);
 
         text_my_name.setText(PropertyManager.getInstance().getUserName());
-        text_my_email.setText(PropertyManager.getInstance().getUserEmail());
 
-        if (PropertyManager.getInstance().getUserProfile().isEmpty()) {
-
-            Uri uri = Uri.parse(PropertyManager.getInstance().getUserProfile());
-
-            Glide.with(this)
-                    .load(getIntent().getStringExtra("user_profile"))
-                    .error(R.drawable.signup_profile)
-                    .bitmapTransform(new CropCircleTransformation(this))
-                    .into(image_profile_chage);
-        }
+        Log.d("하이", "이미지 나옴 : " + getIntent().getStringExtra("user_profile"));
+        Glide.with(this)
+                .load(getIntent().getStringExtra("user_profile"))
+                .override(200, 200)
+                .error(R.drawable.signup_profile)
+                .bitmapTransform(new CropCircleTransformation(this))
+                .into(image_profile_chage);
 
         image_profile_chage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,8 +105,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                 showAlertDialog();
 
-
-
             }
         });
 
@@ -117,6 +121,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myCommentIntent = new Intent(ProfileActivity.this, MyCommentActivity.class);
+                myCommentIntent.putExtra("user_profile", getIntent().getStringExtra("user_profile"));
                 myCommentIntent.putExtra("my", "comment");
                 startActivity(myCommentIntent);
             }
@@ -227,11 +232,77 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(getApplicationContext() ,"확인", Toast.LENGTH_SHORT).show();
+                input_password_change = (EditText) pwdChangeLayout.findViewById(R.id.input_password_change);
+                input_password_change_conform = (EditText) pwdChangeLayout.findViewById(R.id.input_password_change_conform);
+
+                after_password = input_password_change.getText().toString();
+                after_password_conform = input_password_change_conform.getText().toString();
+
+                Log.d("하이", "패스워드 : " + after_password);
+
+                if ( !after_password.isEmpty() && !after_password_conform.isEmpty()) {
+
+                    if ( after_password.equals(after_password_conform )) {
+
+                        new Thread() {
+                            @Override
+                            public void run() {
+
+                                HttpURLConnection conn = null;
+
+                                try {
+                                    URL url = new URL(setUrl);
+                                    conn = (HttpURLConnection) url.openConnection();
+                                    conn.setDoInput(true);
+                                    conn.setDoOutput(true);
+                                    conn.setChunkedStreamingMode(0);
+                                    conn.setRequestMethod("POST");
+
+                                    OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                                    writer.write( "&id=" + getIntent().getStringExtra("userId")
+                                            + "&passwd=" + after_password);
+                                    writer.flush();
+                                    writer.close();
+                                    out.close();
+
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                                    StringBuilder builder = new StringBuilder();
+                                    String line = null;
+                                    while ((line = reader.readLine()) != null) {
+                                        if (builder.length() > 0) {
+                                            builder.append("\n");
+                                        }
+                                        builder.append(line);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    if (conn != null) {
+                                        conn.disconnect();
+                                    }
+                                }
+
+                            }
+                        }.start();
+
+                    } else {
+
+                        Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), "빈칸을 채워주세요.", Toast.LENGTH_SHORT).show();
+
+                }
+
             }
         });
         builder.show();
-
-
 
     }
 

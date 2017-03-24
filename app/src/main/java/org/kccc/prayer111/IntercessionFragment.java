@@ -101,13 +101,17 @@ public class IntercessionFragment extends Fragment {
 
                 JSONArray jsonArray = new JSONArray(dataJson);
 
+                Log.d("하이", "소트전 값 : " + jsonArray);
+
                 // 내림차순으로 정렬하기
-                jsonArray = soryJsonArray(jsonArray);
+//                jsonArray = soryJsonArray(jsonArray);
+
+                Log.d("하이", "소트후 값 : " + jsonArray);
 
                 for (int i = 0; i < jsonArray.length() ; i++) {
                     JSONObject object = jsonArray.getJSONObject(i);
 
-                    Log.d("하이", "불러오는 값 : " + object);
+
 
                     String number = object.getString("no");
                     String email = object.getString("id");
@@ -185,8 +189,6 @@ public class IntercessionFragment extends Fragment {
                     try {
                         lid = o1.getString("no");
                         rid = o2.getString("no");
-                        Log.d("하이", "lid : " + lid);
-                        Log.d("하이", "rid : " + rid);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -204,6 +206,8 @@ public class IntercessionFragment extends Fragment {
     public void onResume() {
 
         Log.d("하이", "fragment3  Resume");
+        listDataAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(listDataAdapter);
         super.onResume();
     }
 

@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     String today_pray_content = null;
     String month_pray_content = null;
 
+    String userId;
     String name;
     String password;
     String profile;
@@ -236,10 +238,11 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             @Override
             public void onClick(View v) {
 
-                if (!name.equals("")) {
+                if (!TextUtils.isEmpty(name)) {
 
                     Intent writeIntent = new Intent(MainActivity.this, WriteActivity.class);
                     Toast.makeText(MainActivity.this, "자동로그인 되었습니다.", Toast.LENGTH_SHORT).show();
+                    writeIntent.putExtra("userId", userId);
                     writeIntent.putExtra("name", name);
                     writeIntent.putExtra("password", password);
                     writeIntent.putExtra("user_profile", profile);
@@ -367,16 +370,18 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         Log.d("하이", "onStart");
 
         loginCheck = getIntent().getBooleanExtra("check", false);
+
+        userId = getIntent().getStringExtra("userId");
         name = getIntent().getStringExtra("name");
         email = getIntent().getStringExtra("email");
         password = getIntent().getStringExtra("password");
         profile = getIntent().getStringExtra("user_profile");
         Log.d("하이", "이름 : " + name);
-        Log.d("하이", "Id : " + email);
+        Log.d("하이", "Id : " + userId);
+        Log.d("하이", "email : " + email);
         Log.d("하이", "pw : " + password);
         Log.d("하이", "photo : " + profile);
         Log.d("하이", "check : " + loginCheck );
-
 
         super.onStart();
 
@@ -428,6 +433,8 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         } else if (id == R.id.action_logout) {
 
             Intent infoIntent = new Intent(this, ProfileActivity.class);
+            infoIntent.putExtra("name", name);
+            infoIntent.putExtra("user_profile", profile);
             startActivity(infoIntent);
 
         } else if (id == R.id.action_licence) {

@@ -12,7 +12,6 @@ public class User {
     String name;
     String email;
     String password;
-    String password_conform;
 
     // 카카오톡 로그인시 필요한 내용
 //    int user_profile;
@@ -41,17 +40,12 @@ public class User {
         return this.password;
     }
 
-    public String getPassword_conform() {
-        return this.password_conform;
-    }
-
-    User(String user_profile, String user_id, String name, String email, String password, String password_conform) {
+    User(String user_profile, String user_id, String name, String email, String password) {
         this.user_profile = user_profile;
         this.user_id = user_id;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.password_conform = password_conform;
     }
 
 

@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -114,6 +113,7 @@ public class SignInActivity extends AppCompatActivity {
 
                 Log.d("하이", "암호값 : " + text_input_password.getText().toString() );
                 password = text_input_password.getText().toString();
+                email = text_input_email.getText().toString();
 
                 if (text_input_email.getText().length() != 0 && text_input_password.getText().length() != 0) {
 
@@ -136,6 +136,7 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent signIntent = new Intent(getApplicationContext(), SignUpActivity.class);
+                signIntent.putExtra("position", getIntent().getStringExtra("position"));
                 startActivity(signIntent);
             }
         });
@@ -183,15 +184,12 @@ public class SignInActivity extends AppCompatActivity {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 
                 writer.write( "mode=loginProcess"
-                        + "&email=" + PropertyManager.getInstance().getUserEmail()
+                        + "&email=" + email
                         + "&password=" + password
                         + "&method=EMAIL" );
                 writer.flush();
                 writer.close();
                 out.close();
-
-                Log.d("하이", "이름 : " + userName);
-                Log.d("하이", "이메일 : " + email);
 
                 conn.connect();
 
@@ -228,12 +226,19 @@ public class SignInActivity extends AppCompatActivity {
             try {
 
                 JSONObject jsonObject = new JSONObject(result);
-                JSONObject object = jsonObject.getJSONObject("result");
 
-                if (TextUtils.isEmpty(object.toString())) {
+                Log.d("하이", "jsonObject : " + jsonObject);
+
+                String resultData = jsonObject.getString("result");
+
+                Log.d("하이", "resultData : " + resultData);
+
+                JSONObject object = new JSONObject(resultData);
+
+                if (resultData == null) {
 
                     Log.d("하이", "onPost null: " + object.toString());
-                    Toast.makeText(getBaseContext(), "아이디 또는 패스워드가 틀렸습니다.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getBaseContext(), "아이디 또는 패스워드가 틀렸습니다.", Toast.LENGTH_SHORT).show();
 
                 } else {
 
@@ -307,6 +312,7 @@ public class SignInActivity extends AppCompatActivity {
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(getBaseContext(), "아이디 또는 패스워드가 틀렸습니다.", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -362,6 +368,7 @@ public class SignInActivity extends AppCompatActivity {
                                             writer.write( "mode=joinProcess"
                                                     + "&name=" + userName
                                                     + "&email=" + userId
+                                                    + "&photo=" + profileUrl
                                                     + "&method=facebook" );
                                             writer.flush();
                                             writer.close();
@@ -515,67 +522,63 @@ public class SignInActivity extends AppCompatActivity {
 
                 setLayoutText();
 
-//                new Thread() {
-//                    @Override
-//                    public void run() {
-//
-//                        HttpURLConnection conn = null;
-//
-//                        try {
-//
-//                            URL url = new URL(setUrl);
-//                            conn = (HttpURLConnection) url.openConnection();
-//                            conn.setDoInput(true);
-//                            conn.setDoOutput(true);
-//                            conn.setChunkedStreamingMode(0);
-//                            conn.setRequestMethod("POST");
-//
-//                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
-//                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-//
-//                            writer.write( "mode=joinProcess"
-//                                    + "&name=" + userName
-//                                    + "&email=" + userId
-//                                    + "&method=kakao" );
-//                            writer.flush();
-//                            writer.close();
-//                            out.close();
-//
-//                            Log.d("하이", "이름 : " + userName);
-//                            Log.d("하이", "이메일 : " + email);
-//
-//                            conn.connect();
-//
-//                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-//
-//                            StringBuilder builder = new StringBuilder();
-//                            String line = null;
-//                            while ((line =reader.readLine()) != null) {
-//                                if (builder.length() > 0) {
-//                                    builder.append("\n");
-//                                }
-//                                builder.append(line);
-//                            }
-//
-//                            Log.d("하이", builder.toString());
-//
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        } finally {
-//                            if (conn != null) {
-//                                conn.disconnect();
-//                            }
-//                        }
-//
-//                    }
-//                }.start();
+                new Thread() {
+                    @Override
+                    public void run() {
 
-                new MultiPartUpload().execute(
-                        PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserEmail(),
-                        null, PropertyManager.getInstance().getUserLoginType(), profileUrl
-                );
+                        HttpURLConnection conn = null;
 
+                        try {
 
+                            URL url = new URL(setUrl);
+                            conn = (HttpURLConnection) url.openConnection();
+                            conn.setDoInput(true);
+                            conn.setDoOutput(true);
+                            conn.setChunkedStreamingMode(0);
+                            conn.setRequestMethod("POST");
+
+                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                            writer.write( "mode=joinProcess"
+                                    + "&name=" + userName
+                                    + "&email=" + userId
+                                    + "&photo=" + profileUrl
+                                    + "&method=kakao" );
+                            writer.flush();
+                            writer.close();
+                            out.close();
+
+                            Log.d("하이", "이름 : " + userName);
+                            Log.d("하이", "이메일 : " + email);
+
+                            conn.connect();
+
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                            StringBuilder builder = new StringBuilder();
+                            String line = null;
+                            while ((line =reader.readLine()) != null) {
+                                if (builder.length() > 0) {
+                                    builder.append("\n");
+                                }
+                                builder.append(line);
+                            }
+
+                            Log.d("하이", builder.toString());
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (conn != null) {
+                                conn.disconnect();
+                            }
+                        }
+
+                    }
+                }.start();
+
+                Log.d("하이", "그래서 Id는 : " + userId);
 
                 if (getIntent().getStringExtra("position").equals("cmt")) {
 

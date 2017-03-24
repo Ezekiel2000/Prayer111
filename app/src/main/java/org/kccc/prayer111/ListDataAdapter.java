@@ -50,7 +50,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
     Context context;
     List<ListData> listData;
     int list_intercession;
-    Boolean icon_heart_clicked = false;
+    Boolean icon_heart_clicked = true;
     String heart_check;
 
     SimpleDateFormat curMonthFormat;
@@ -185,7 +185,6 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
                                                     String result = object.getString("msg");
 
-
                                                 } catch (JSONException e) {
                                                     Log.e(TAG, "Json parsing error:" + e.getMessage());
                                                 } catch (Exception e) {
@@ -197,9 +196,12 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                         }
 
                                     }.start();
+
                                     notifyItemRemoved(holder.getAdapterPosition());
                                     notifyDataSetChanged();
+                                    Toast.makeText(context, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                                 }
+
                             })
                             .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                                 @Override
@@ -219,97 +221,164 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
         holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
         holder.text_comment_number.setText(String.valueOf(data.getCommentNumber()));
-        holder.icon_heart.setOnClickListener(v -> {
-//            if (icon_heart_clicked == false) {
+        holder.icon_heart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-//                holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
+                if (icon_heart_clicked) {
 
-                String builders = null;
-
-                new Thread() {
-                    @Override
-                    public void run() {
-
-                        HttpURLConnection conn = null;
-
-                        try {
-
-                            URL url = new URL(postUrl);
-                            conn = (HttpURLConnection) url.openConnection();
-                            conn.setDoInput(true);
-                            conn.setDoOutput(true);
-                            conn.setChunkedStreamingMode(0);
-                            conn.setRequestMethod("POST");
-
-                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
-                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-
-                            writer.write("mode=setHeart"
-                                    + "&UserId=" + PropertyManager.getInstance().getUserEmail()
-                                    + "&prayNo=" + data.getNumber());
-                            writer.flush();
-                            writer.close();
-                            out.close();
-
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-
-                            StringBuilder builder = new StringBuilder();
-                            String line = null;
-                            while ((line = reader.readLine()) != null) {
-                                if (builder.length() > 0) {
-                                    builder.append("\n");
-                                }
-                                builder.append(line);
-                            }
-
-                            Log.d("하이", builder.toString());
-
-                            JSONObject jsonObject = new JSONObject(builder.toString());
-                            String data = jsonObject.getString("result");
-
-                            JSONObject object = new JSONObject(data);
-                            heart_check = object.getString("chkHeart");
-
-                            Log.d("하이", "체크 하트 : " + heart_check);
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            if (conn != null) {
-                                conn.disconnect();
-                            }
-                        }
-
-                    }
-                }.start();
-
-            try {
-                if (heart_check.equals("0")) {
-                    Log.d("하이", "체크 하트1 : " + heart_check);
-                    icon_heart_clicked = true;
-                } else {
-                    Log.d("하이", "체크 하트2 : " + heart_check);
+                    Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked );
+                    holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
                     icon_heart_clicked = false;
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+
+                            HttpURLConnection conn = null;
+
+                            try {
+
+                                URL url = new URL(postUrl);
+                                conn = (HttpURLConnection) url.openConnection();
+                                conn.setDoInput(true);
+                                conn.setDoOutput(true);
+                                conn.setChunkedStreamingMode(0);
+                                conn.setRequestMethod("POST");
+
+                                OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                                writer.write("mode=setHeart"
+                                        + "&UserId=" + PropertyManager.getInstance().getUserEmail()
+                                        + "&prayNo=" + data.getNumber());
+                                writer.flush();
+                                writer.close();
+                                out.close();
+
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                                StringBuilder builder = new StringBuilder();
+                                String line = null;
+                                while ((line = reader.readLine()) != null) {
+                                    if (builder.length() > 0) {
+                                        builder.append("\n");
+                                    }
+                                    builder.append(line);
+                                }
+
+                                Log.d("하이", builder.toString());
+
+                                JSONObject jsonObject = new JSONObject(builder.toString());
+                                String data = jsonObject.getString("result");
+
+                                JSONObject object = new JSONObject(data);
+                                heart_check = object.getString("chkHeart");
+
+                                Log.d("하이", "체크 하트 : " + heart_check);
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                if (conn != null) {
+                                    conn.disconnect();
+                                }
+                            }
+
+                        }
+                    }.start();
+
+
+                } else {
+
+                    Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked );
+                    holder.icon_heart.setImageResource(R.drawable.ic_heart);
+                    icon_heart_clicked = true;
+
                 }
 
-                notifyDataSetChanged();
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-
-
-//                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber() + 1));
-//                Log.d("하이", "선택한 놈 : "+ holder.getAdapterPosition());
-//                icon_heart_clicked = true;
-//            } else {
-//                holder.icon_heart.setImageResource(R.drawable.ic_heart);
-//                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
-//                icon_heart_clicked = false;
-//            }
         });
+//        holder.icon_heart.setOnClickListener(v -> {
+//
+//                String builders = null;
+//
+//                new Thread() {
+//                    @Override
+//                    public void run() {
+//
+//                        HttpURLConnection conn = null;
+//
+//                        try {
+//
+//                            URL url = new URL(postUrl);
+//                            conn = (HttpURLConnection) url.openConnection();
+//                            conn.setDoInput(true);
+//                            conn.setDoOutput(true);
+//                            conn.setChunkedStreamingMode(0);
+//                            conn.setRequestMethod("POST");
+//
+//                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+//                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+//
+//                            writer.write("mode=setHeart"
+//                                    + "&UserId=" + PropertyManager.getInstance().getUserEmail()
+//                                    + "&prayNo=" + data.getNumber());
+//                            writer.flush();
+//                            writer.close();
+//                            out.close();
+//
+//                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+//
+//                            StringBuilder builder = new StringBuilder();
+//                            String line = null;
+//                            while ((line = reader.readLine()) != null) {
+//                                if (builder.length() > 0) {
+//                                    builder.append("\n");
+//                                }
+//                                builder.append(line);
+//                            }
+//
+//                            Log.d("하이", builder.toString());
+//
+//                            JSONObject jsonObject = new JSONObject(builder.toString());
+//                            String data = jsonObject.getString("result");
+//
+//                            JSONObject object = new JSONObject(data);
+//                            heart_check = object.getString("chkHeart");
+//
+//                            Log.d("하이", "체크 하트 : " + heart_check);
+//
+//
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        } finally {
+//                            if (conn != null) {
+//                                conn.disconnect();
+//                            }
+//                        }
+//
+//                    }
+//                }.start();
+//
+//            try {
+//                if (heart_check.equals("0")) {
+//                    Log.d("하이", "체크 하트1 : " + heart_check);
+//                    icon_heart_clicked = true;
+//                } else {
+//                    Log.d("하이", "체크 하트2 : " + heart_check);
+//                    icon_heart_clicked = false;
+//                }
+//
+//                notifyDataSetChanged();
+//
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//        });
 
         // 코멘트 버튼을 누르면 CommentListActivity로 이동함
         holder.icon_comment.setOnClickListener(v -> {
@@ -319,18 +388,15 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
             if (name.equals("")) {
 
-                Log.d("하이", "이름 널!: " + name );
-
                 commentIntent = new Intent(context, SignInActivity.class);
                 commentIntent.putExtra("position", "cmt");
                 commentIntent.putExtra("prayNumber", data.getNumber());
 
             } else {
 
-                Log.d("하이", "이름 널?: " + name );
-
                 commentIntent = new Intent(context, CommentListActivity.class);
                 commentIntent.putExtra("prayNumber", data.getNumber());
+
             }
 
             v.getContext().startActivity(commentIntent);
@@ -464,21 +530,8 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
         });
 
-
-
-
-
-//        holder.card_list.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(context, data.getName(), Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
-
-
-
     }
+
 
 //    public void upDateItemList(List<ListData> listData) {
 //        this.listData = listData;

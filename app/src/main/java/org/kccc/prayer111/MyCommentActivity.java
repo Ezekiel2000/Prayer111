@@ -101,7 +101,7 @@ public class MyCommentActivity extends AppCompatActivity {
                     String id = object.getString("id");
                     String name = PropertyManager.getInstance().getUserName();
                     String content = object.getString("memo");
-                    String profile = PropertyManager.getInstance().getUserProfile();
+                    String profile =  getIntent().getStringExtra("user_profile");
                     String date = object.getString("indate");
 
                     data = new ListCommentData[jsonArray.length()];
@@ -156,7 +156,9 @@ public class MyCommentActivity extends AppCompatActivity {
             ListCommentData commentData = listCommentDatas.get(position);
 
             Glide.with(context)
-                    .load(commentData.getComment_profileImage())
+                    .load(getIntent().getStringExtra("user_profile"))
+                    .override(200, 200)
+                    .error(R.drawable.ic_profile_default)
                     .bitmapTransform(new CropCircleTransformation(context))
                     .into(holder.comment_profile);
 
