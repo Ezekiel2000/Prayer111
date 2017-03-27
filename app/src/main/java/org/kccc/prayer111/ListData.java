@@ -15,6 +15,7 @@ public class ListData {
     int warn;
     int prayerNumber;
     int commentNumber;
+    int chkHeart;
 
     public String getNumber() {
         return this.number;
@@ -48,6 +49,10 @@ public class ListData {
         return this.warn;
     }
 
+    public int getChkHeart() {
+        return this.chkHeart;
+    }
+
     public int getPrayerNumber() {
         return this.prayerNumber;
     }
@@ -56,7 +61,7 @@ public class ListData {
         return this.commentNumber;
     }
 
-    ListData(String number, String profileImage, String email, String name, String date, String content, String imageInput, int warn, int prayerNumber, int commentNumber) {
+    ListData(String number, String profileImage, String email, String name, String date, String content, String imageInput, int warn, int prayerNumber, int commentNumber, int chkHeart) {
         this.number = number;
         this.profileImage = profileImage;
         this.email = email;
@@ -67,6 +72,7 @@ public class ListData {
         this.warn = warn;
         this.prayerNumber = prayerNumber;
         this.commentNumber = commentNumber;
+        this.chkHeart = chkHeart;
     }
 
 }

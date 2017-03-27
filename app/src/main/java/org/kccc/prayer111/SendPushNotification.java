@@ -40,9 +40,11 @@ public class SendPushNotification {
         now = new SimpleDateFormat("yyyy-MM-dd");
         Date Time = new Date();
         today = now.format(Time);
-        Log.d("하이", "지금 현재 시각은? : " + today + " 13:00");
 
+        today = today + " 15:40";
         HttpHandler sh = new HttpHandler();
+
+        Log.d("하이", "지금 현재 시각은? : " + today );
 
         String jsonStr = sh.makeServiceCall(url);
 
@@ -70,7 +72,7 @@ public class SendPushNotification {
 
         JSONArray notificationsArray = new JSONArray()
                 .put(new JSONObject()
-                        .put("send_date", today)
+                        .put("send_date", now)
                         .put("content", push_message)
                         .put("link", "org.kccc.prayer111"));
         JSONObject requestObj = new JSONObject()
@@ -78,11 +80,13 @@ public class SendPushNotification {
                 .put("auth", AUTH_TOKEN)
                 .put("notifications", notificationsArray);
 
+        Log.d("하이", "보내는 내용 :  " + notificationsArray.toString());
+
         JSONObject mainRequest = new JSONObject().put("request", requestObj);
         JSONObject response = SendServerRequest.sendJSONRequest(url, mainRequest.toString());
 
-        Log.d("하이", "push 내용 " + push_message);
-        Log.d("하이", "Response " + response);
+        Log.d("하이", "push 내용 : " + push_message);
+        Log.d("하이", "Response : " + response);
 
     }
 }

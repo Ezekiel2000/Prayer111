@@ -157,6 +157,7 @@
         <service
             android:name=".NotiService"
             android:enabled="true"
+            android:process=""
             android:exported="true">
         </service>
     </application>

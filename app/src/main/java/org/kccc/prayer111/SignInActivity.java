@@ -97,6 +97,9 @@ public class SignInActivity extends AppCompatActivity {
 
         signtext = (TextView) findViewById(R.id.text_sign_up);
 
+        text_input_email.setText(PropertyManager.getInstance().getUserId());
+        text_input_password.setText(PropertyManager.getInstance().getPassword());
+
 //        if (checkBox.isChecked()) {
 //            text_input_email.setText(PropertyManager.getInstance().getUserName());
 //            text_input_password.setText(PropertyManager.getInstance().getPassword());
@@ -248,7 +251,7 @@ public class SignInActivity extends AppCompatActivity {
                     userId = object.getString("id");
                     userName = object.getString("name");
                     password = object.getString("passwd");
-                    userId = object.getString("userId");
+                    userId = object.getString("email");
 
                     setLayoutText();
 

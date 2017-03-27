@@ -94,7 +94,17 @@ public class IntercessionFragment extends Fragment {
 
             HttpHandler sh = new HttpHandler();
 
+            if ( PropertyManager.getInstance().getUserId() != null ) {
+
+                url = url +"&userId=" + PropertyManager.getInstance().getUserId();
+
+            }
+
+
+
             String jsonStr = sh.makeServiceCall(url);
+
+            Log.d("하이", "체크체크 : " +url);
 
             try {
 
@@ -121,13 +131,16 @@ public class IntercessionFragment extends Fragment {
                     int warn = object.getInt("warn");
                     int prayNumber = object.getInt("heart");
                     int commentNumber = object.getInt("comment");
+                    int chkHeart = object.getInt("chkHeart");
+
+                    Log.d("하이", "체크체크 : " + object.toString());
 
                     data = new ListData[jsonArray.length()];
 
                     // 신고당한 리스트(warn = 1인경우)는 add 하지 않음
                     if (warn == 0) {
 
-                        data[i] = new ListData(number, profile, email, name, date, content, imageInput, warn, prayNumber, commentNumber);
+                        data[i] = new ListData(number, profile, email, name, date, content, imageInput, warn, prayNumber, commentNumber, chkHeart);
                         listData.add(data[i]);
 
                     }

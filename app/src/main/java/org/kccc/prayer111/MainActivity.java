@@ -38,7 +38,6 @@ import com.pushwoosh.fragment.PushEventListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -321,19 +320,19 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
         Log.d("하이", "팹버튼 변경");
 
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    SendPushNotification sendPushNotification = new SendPushNotification();
-                    sendPushNotification.SendPush();
-                } catch (MalformedURLException e) {
-
-                } catch (JSONException e) {
-
-                }
-            }
-        }.start();
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    SendPushNotification sendPushNotification = new SendPushNotification();
+//                    sendPushNotification.SendPush();
+//                } catch (MalformedURLException e) {
+//
+//                } catch (JSONException e) {
+//
+//                }
+//            }
+//        }.start();
 
 
         try {
@@ -442,7 +441,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         Log.d("하이", "pw : " + password);
         Log.d("하이", "photo : " + profile);
         Log.d("하이", "check : " + loginCheck );
-
 
         Log.d("하이", "이미지 : " + PropertyManager.getInstance().getUserProfile());
         Log.d("하이", "아이디 : " + PropertyManager.getInstance().getUserId());

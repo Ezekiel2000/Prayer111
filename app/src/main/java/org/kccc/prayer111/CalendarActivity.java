@@ -217,7 +217,7 @@ public class CalendarActivity extends AppCompatActivity {
 
                 }
 
-                Log.d("하이", "안찍힌 날 : " + checkday.get(i) + i);
+//                Log.d("하이", "안찍힌 날 : " + checkday.get(i) + i);
 
             }
 

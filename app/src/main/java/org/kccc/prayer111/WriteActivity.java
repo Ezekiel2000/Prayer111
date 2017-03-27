@@ -78,11 +78,12 @@ public class WriteActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userId = intent.getStringExtra("userId");
         userName = intent.getStringExtra("name");
-        profileUrl = intent.getStringExtra("user_profile");
+//        profileUrl = intent.getStringExtra("user_profile");
         email = intent.getStringExtra("email");
 
         email = PropertyManager.getInstance().getUserId();
         userName = PropertyManager.getInstance().getUserName();
+        profileUrl = PropertyManager.getInstance().getUserProfile();
 
 
         Typeface typeface = Typeface.createFromAsset(getAssets(), "NotoSansCJKkr_Regular.otf");

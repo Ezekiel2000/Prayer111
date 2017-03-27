@@ -28,7 +28,8 @@
                 android:layout_marginLeft="9dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -67,6 +68,12 @@
 
 
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/comment_delete"
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_close"/>
 
         </LinearLayout>
 

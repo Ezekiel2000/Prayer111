@@ -88,13 +88,14 @@ public class MyIntercessionActivity extends AppCompatActivity {
                     int warn = object.getInt("warn");
                     int prayNumber = object.getInt("heart");
                     int commentNumber = object.getInt("comment");
+                    int chkHeart = object.getInt("chkHeart");
 
                     Log.d("하이", "불러오는 값 : " + number);
                     Log.d("하이", "사진값 : " + profile);
 
                     data = new ListData[jsonArray.length()];
 
-                    data[i] = new ListData(number, profile, email, name, date, content, imageInput, warn, prayNumber, commentNumber);
+                    data[i] = new ListData(number, profile, email, name, date, content, imageInput, warn, prayNumber, commentNumber, chkHeart);
                     listData.add(data[i]);
 
                 }

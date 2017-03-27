@@ -221,6 +221,17 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
         holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
         holder.text_comment_number.setText(String.valueOf(data.getCommentNumber()));
+
+        if (data.getChkHeart() == 1 ) {
+
+            holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
+
+        } else if (data.getChkHeart() == 0 ) {
+
+            holder.icon_heart.setImageResource(R.drawable.ic_heart);
+
+        }
+
         holder.icon_heart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -6,9 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,16 +29,31 @@ import com.facebook.login.LoginManager;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -52,12 +70,17 @@ public class ProfileActivity extends AppCompatActivity {
     Button btn_logout;
 
     String imgPath;
+    String realPath;
 
     String userId;
     String after_password;
     String after_password_conform;
 
+    String ty;
+    Uri mImageCaptureUri;
+
     final int REQ_CODE_SELECT_IMAGE = 100;
+    final int REQ_CODE_CAPTRUE_IMAGE = 200;
 
     private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
 
@@ -98,10 +121,36 @@ public class ProfileActivity extends AppCompatActivity {
         image_profile_chage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+                builder.setTitle("사진 선택")
+                        .setNegativeButton("사진첩", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                Intent intent = new Intent(Intent.ACTION_PICK);
+                                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
+
+                            }
+                        })
+                        .setPositiveButton("카메라", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+
+                                    doTakePhotoAction();
+
+                                } catch (IOException e) {
+
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
 
             }
         });
@@ -349,7 +398,26 @@ public class ProfileActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+        } else if (requestCode == REQ_CODE_CAPTRUE_IMAGE) {
+
+            if (resultCode == Activity.RESULT_OK) {
+
+                Uri imageUri = Uri.parse(imgPath);
+                File file = new File(imageUri.getPath());
+
+                Log.d("하이", "imageUri : " + imageUri);
+                Log.d("하이", "file : " + file.getPath());
+
+                image_profile_chage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                Glide.with(this)
+                        .load(imageUri)
+                        .error(R.drawable.ic_myinfo)
+                        .bitmapTransform(new CropCircleTransformation(this))
+                        .into(image_profile_chage);
+
+            }
         }
+
         PropertyManager.getInstance().setUserProfile(imgPath);
         Log.d("하이", "이미지 : " + PropertyManager.getInstance().getUserProfile());
         super.onActivityResult(requestCode, resultCode, data);
@@ -368,6 +436,153 @@ public class ProfileActivity extends AppCompatActivity {
         String imgName = imgPath.substring(imgPath.lastIndexOf("/") + 1);
 
         return imgPath;
+    }
+
+    private File createImageFile() throws IOException {
+
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        Log.d("하이", "image : " + image.getPath());
+
+        realPath = image.getPath();
+
+        imgPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+
+    public void doTakePhotoAction() throws IOException {
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+//        String url = "tep_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+
+        mImageCaptureUri = FileProvider.getUriForFile(ProfileActivity.this,
+                "org.kccc.prayer111.provider",
+                createImageFile());
+
+        Log.d("하이", "mImageCaptureUri : " + mImageCaptureUri);
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
+        startActivityForResult(intent, REQ_CODE_CAPTRUE_IMAGE);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Intent reIntent = new Intent();
+        PropertyManager.getInstance().setUserProfile(imgPath);
+        setResult(Activity.RESULT_OK, reIntent);
+        finish();
+
+    }
+
+
+    public class MultiPartUpload extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String res = null;
+
+            try {
+                String name = params[0];
+                String email = params[1];
+                String password = params[2];
+                String method = params[3];
+                String image = params[4];
+
+
+
+                Log.d("하이", "image : " + image);
+
+                File file = new File(image);
+
+                Log.d("하이", "file : " + file.toString());
+
+                final MediaType MEDIA_TYPE = MediaType.parse("image/*");
+                final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+                final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
+                String filename = image.substring(image.lastIndexOf("/") + 1);
+
+                Log.d("하이", "filename : " + filename);
+
+                RequestBody requestBody;
+                RequestBody fileBody = RequestBody.create(MEDIA_TYPE, file);
+
+                if (image.endsWith("png")) {
+                    Log.d("하이", "png임");
+                    fileBody = RequestBody.create(MEDIA_TYPE_PNG, file);
+                } else if (image.endsWith("jpg")) {
+                    Log.d("하이", "jpg임");
+                    fileBody = RequestBody.create(MEDIA_TYPE_JPG, file);
+                }
+
+                requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("mode", "joinProcess")
+                        .addFormDataPart("name", name)
+                        .addFormDataPart("email", email)
+                        .addFormDataPart("password", password)
+                        .addFormDataPart("method", method)
+                        .addFormDataPart("up", filename, fileBody)
+                        .build();
+
+
+                Log.d("하이", "바디 : " + requestBody.toString());
+
+                Request request = new Request.Builder()
+                        .url(setUrl)
+                        .post(requestBody)
+                        .build();
+
+                OkHttpClient client = new OkHttpClient();
+                Response response = client.newCall(request).execute();
+                res = response.body().string();
+                Log.d("하이", "response : " + res);
+
+            } catch (UnknownHostException | UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                JSONObject object = jsonObject.getJSONObject("result");
+                ty = object.getString("ty");
+
+                Log.d("하이", "ty : " + ty);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Intent imageChangeIntent = new Intent(ProfileActivity.this, MainActivity.class);
+            imageChangeIntent.putExtra("user_profile", imgPath);
+            startActivity(imageChangeIntent);
+
+        }
     }
 
 
