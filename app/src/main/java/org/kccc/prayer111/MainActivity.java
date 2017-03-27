@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -34,9 +35,13 @@ import com.pushwoosh.BasePushMessageReceiver;
 import com.pushwoosh.PushManager;
 import com.pushwoosh.fragment.PushEventListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements PushEventListener {
 
@@ -50,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     String today_pray_content = null;
     String month_pray_content = null;
 
+    String day;
+
     String userId;
     String name;
     String password;
@@ -57,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     String email;
 
     Boolean loginCheck = false;
+
+    SharedPreferences mPref;
+    Boolean bFirst;
 
     public static final int REQUEST_MAIN = 2501;
 
@@ -96,6 +106,17 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         }
         today_checked = false;
 
+        // 첫 실행 판단
+        try {
+
+            mPref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
+            bFirst = mPref.getBoolean("isFirst", false);
+
+        } catch (Exception e) {
+
+        }
+
+
         Log.d("하이", "시스템바 변경");
 
         // 백버튼 두번 눌러서 꺼지게 하기 위해 핸들러 생성하여 던짐
@@ -130,11 +151,50 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         FloatingActionButton fab_pray = (FloatingActionButton) findViewById(R.id.fab_check_today);
         if (mViewPager.getCurrentItem() == 0) {
             fab_pray.setVisibility(View.VISIBLE);
-        } else {
-            fab_pray.setVisibility(View.GONE);
+            Log.d("하이", "나타났음 : " + mViewPager.getCurrentItem());
         }
 
 
+        fab_pray.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, day + "일, 오늘 기도를 하였습니다.", Toast.LENGTH_SHORT).show();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        long now = System.currentTimeMillis();
+                        Date date = new Date(now);
+
+                        SimpleDateFormat dd = new SimpleDateFormat("d", Locale.KOREA);
+                        day = dd.format(date);
+
+                        int days = Integer.parseInt(day);
+
+                        if (days == 1) {
+
+                            PropertyManager.getInstance().setUserCalendarCheck("");
+
+                        }
+
+                        Log.d("하이", "오늘의 날짜 : " + day);
+
+                        try {
+
+                            JSONArray array = new JSONArray();
+                            array.put(days, true);
+
+                            Log.d("하이", "어레이 : " + array.toString());
+
+                            PropertyManager.getInstance().setUserCalendarCheck(array.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+                Log.d("하이", "클릭한 날짜 : " + PropertyManager.getInstance().getUserCalendarCheck());
+            }
+        });
 
         // 카카오톡 공유 펩버튼 및 클릭시
         FloatingActionButton fab_kakao = (FloatingActionButton) findViewById(R.id.fab_share_kakao);
@@ -383,6 +443,12 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         Log.d("하이", "photo : " + profile);
         Log.d("하이", "check : " + loginCheck );
 
+
+        Log.d("하이", "이미지 : " + PropertyManager.getInstance().getUserProfile());
+        Log.d("하이", "아이디 : " + PropertyManager.getInstance().getUserId());
+        Log.d("하이", "이름 : " + PropertyManager.getInstance().getUserName());
+        Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserId());
+
         super.onStart();
 
     }
@@ -434,6 +500,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
             Intent infoIntent = new Intent(this, ProfileActivity.class);
             infoIntent.putExtra("name", name);
+            infoIntent.putExtra("userId", userId);
             infoIntent.putExtra("user_profile", profile);
             startActivity(infoIntent);
 
@@ -590,14 +657,27 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
                 Log.d("하이", "grantResults : " + grantResults[0] + grantResults[1] + grantResults[2]);
 
-                if (grantResults.length == 3 && grantResults[0] + grantResults[1] + grantResults[2]
-                        == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this,
-                            "'저장소 읽기'와 '주소록 읽기'가 모두 승인되었습니다", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this,
-                            "'저장소 읽기'와 '주소록 읽기'요청을 모두 혹은 일부 거부하셨습니다", Toast.LENGTH_SHORT).show();
+                if (bFirst == false) {
+                    Log.d("하이", "first");
+
+                    if (grantResults.length == 3 && grantResults[0] + grantResults[1] + grantResults[2]
+                            == PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(this,
+                                "'저장소 읽기'와 '주소록 읽기'가 모두 승인되었습니다", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this,
+                                "'저장소 읽기'와 '주소록 읽기'요청을 모두 혹은 일부 거부하셨습니다", Toast.LENGTH_SHORT).show();
+                    }
+
+                    SharedPreferences.Editor editor = mPref.edit();
+                    editor.putBoolean("isFirst", true);
+                    editor.commit();
                 }
+
+                if (bFirst == true) {
+                    Log.d("하이", "not first");
+                }
+
                 break;
 
             default:

@@ -143,17 +143,22 @@
             android:name=".LicenceActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
         <provider
-            android:authorities="org.kccc.prayer111.provider"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="org.kccc.prayer111.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
+                android:resource="@xml/provider_paths"/>
         </provider>
+
+        <service
+            android:name=".NotiService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
     </application>
-
-
 
 </manifest>

@@ -60,7 +60,6 @@ public class SignInActivity extends AppCompatActivity {
     private String userName;
     private String userId;
     private String profileUrl;
-    private String email;
     private String password;
 
     Bitmap mSaved;
@@ -108,12 +107,12 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                PropertyManager.getInstance().setUserEmail(text_input_email.getText().toString());
+                PropertyManager.getInstance().setUserId(text_input_email.getText().toString());
                 PropertyManager.getInstance().setPassword(text_input_password.getText().toString());
 
                 Log.d("하이", "암호값 : " + text_input_password.getText().toString() );
                 password = text_input_password.getText().toString();
-                email = text_input_email.getText().toString();
+                userId = text_input_email.getText().toString();
 
                 if (text_input_email.getText().length() != 0 && text_input_password.getText().length() != 0) {
 
@@ -184,7 +183,7 @@ public class SignInActivity extends AppCompatActivity {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 
                 writer.write( "mode=loginProcess"
-                        + "&email=" + email
+                        + "&email=" + userId
                         + "&password=" + password
                         + "&method=EMAIL" );
                 writer.flush();
@@ -249,12 +248,12 @@ public class SignInActivity extends AppCompatActivity {
                     userId = object.getString("id");
                     userName = object.getString("name");
                     password = object.getString("passwd");
-                    email = object.getString("email");
+                    userId = object.getString("userId");
 
                     setLayoutText();
 
                     PropertyManager.getInstance().setUserName(userName);
-                    PropertyManager.getInstance().setUserEmail(userId);
+                    PropertyManager.getInstance().setUserId(userId);
                     PropertyManager.getInstance().setPassword(password);
                     PropertyManager.getInstance().setUserProfile(profileUrl);
                     PropertyManager.getInstance().setUserLoginType("EMAIL");
@@ -272,8 +271,8 @@ public class SignInActivity extends AppCompatActivity {
                         intent.putExtra("user_profile", profileUrl);
                         intent.putExtra("userId", userId);
                         intent.putExtra("name", userName);
-                        intent.putExtra("email", email);
                         intent.putExtra("password", password);
+                        intent.putExtra("prayNumber", getIntent().getStringExtra("prayNumber"));
 
                     } else if (getIntent().getStringExtra("position").equals("write")){
 
@@ -284,7 +283,6 @@ public class SignInActivity extends AppCompatActivity {
                         intent.putExtra("user_profile", profileUrl);
                         intent.putExtra("userId", userId);
                         intent.putExtra("name", userName);
-                        intent.putExtra("email", email);
                         intent.putExtra("password", password);
 
                     } else if (getIntent().getStringExtra("position").equals("main")) {
@@ -296,14 +294,13 @@ public class SignInActivity extends AppCompatActivity {
                         intent.putExtra("user_profile", profileUrl);
                         intent.putExtra("userId", userId);
                         intent.putExtra("name", userName);
-                        intent.putExtra("email", email);
                         intent.putExtra("password", password);
                         intent.putExtra("position", "main");
                         intent.putExtra("check", true);
 
                     }
 
-                    Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), userName + "님. 반갑습니다.", Toast.LENGTH_SHORT).show();
                     setLayoutText();
                     startActivity(intent);
                     finish();
@@ -336,14 +333,9 @@ public class SignInActivity extends AppCompatActivity {
                             Log.d("하이", "에러 : " + response.getError().getErrorMessage());
                         } else {
                             try {
-                                email = object.getString("email");      // 페이스북의 키 값
+                                userId = object.getString("email");      // 페이스북의 키 값
                                 userName = object.getString("name");
                                 profileUrl = "https://graph.facebook.com/" + userId + "/picture";
-
-                                PropertyManager.getInstance().setUserProfile(profileUrl);
-                                PropertyManager.getInstance().setUserName(userName);
-                                PropertyManager.getInstance().setUserEmail(userId);
-                                PropertyManager.getInstance().setUserLoginType("facebook");
 
                                 setLayoutText();
 
@@ -400,8 +392,14 @@ public class SignInActivity extends AppCompatActivity {
                                     }
                                 }.start();
 
+                                PropertyManager.getInstance().setUserProfile(profileUrl);
+                                PropertyManager.getInstance().setUserName(userName);
+                                PropertyManager.getInstance().setUserId(userId);
+                                PropertyManager.getInstance().setPassword(password);
+                                PropertyManager.getInstance().setUserLoginType("facebook");
 
 
+                                Toast.makeText(getApplicationContext(), userName + "님. 반갑습니다.", Toast.LENGTH_SHORT).show();
 
                                 if (getIntent().getStringExtra("position").equals("cmt")) {
 
@@ -410,8 +408,8 @@ public class SignInActivity extends AppCompatActivity {
                                     intent.putExtra("user_profile", profileUrl);
                                     intent.putExtra("userId", userId);
                                     intent.putExtra("name", userName);
-                                    intent.putExtra("email", email);
                                     intent.putExtra("password", password);
+                                    intent.putExtra("prayNumber", getIntent().getStringExtra("prayNumber"));
 
                                     startActivity(intent);
 
@@ -421,7 +419,6 @@ public class SignInActivity extends AppCompatActivity {
                                     intent.putExtra("user_profile", profileUrl);
                                     intent.putExtra("userId", userId);
                                     intent.putExtra("name", userName);
-                                    intent.putExtra("email", email);
                                     intent.putExtra("password", password);
 
                                     startActivity(intent);
@@ -434,7 +431,6 @@ public class SignInActivity extends AppCompatActivity {
                                     intent.putExtra("user_profile", profileUrl);
                                     intent.putExtra("userId", userId);
                                     intent.putExtra("name", userName);
-                                    intent.putExtra("email", email);
                                     intent.putExtra("password", password);
                                     intent.putExtra("position", "main");
                                     intent.putExtra("check", true);
@@ -517,7 +513,7 @@ public class SignInActivity extends AppCompatActivity {
 
                 PropertyManager.getInstance().setUserProfile(profileUrl);
                 PropertyManager.getInstance().setUserName(userName);
-                PropertyManager.getInstance().setUserEmail(userId);
+                PropertyManager.getInstance().setUserId(userId);
                 PropertyManager.getInstance().setUserLoginType("kakao");
 
                 setLayoutText();
@@ -550,7 +546,7 @@ public class SignInActivity extends AppCompatActivity {
                             out.close();
 
                             Log.d("하이", "이름 : " + userName);
-                            Log.d("하이", "이메일 : " + email);
+                            Log.d("하이", "이메일 : " + userId);
 
                             conn.connect();
 
@@ -578,7 +574,14 @@ public class SignInActivity extends AppCompatActivity {
                     }
                 }.start();
 
+                PropertyManager.getInstance().setUserProfile(profileUrl);
+                PropertyManager.getInstance().setUserName(userName);
+                PropertyManager.getInstance().setUserId(userId);
+                PropertyManager.getInstance().setPassword(password);
+                PropertyManager.getInstance().setUserLoginType("kakao");
+
                 Log.d("하이", "그래서 Id는 : " + userId);
+                Toast.makeText(getApplicationContext(), userName + "님. 반갑습니다.", Toast.LENGTH_SHORT).show();
 
                 if (getIntent().getStringExtra("position").equals("cmt")) {
 
@@ -587,8 +590,8 @@ public class SignInActivity extends AppCompatActivity {
                     intent.putExtra("user_profile", profileUrl);
                     intent.putExtra("userId", userId);
                     intent.putExtra("name", userName);
-                    intent.putExtra("email", email);
                     intent.putExtra("password", password);
+                    intent.putExtra("prayNumber", getIntent().getStringExtra("prayNumber"));
                     startActivity(intent);
 
                 } else if (getIntent().getStringExtra("position").equals("write")) {
@@ -597,7 +600,6 @@ public class SignInActivity extends AppCompatActivity {
                     intent.putExtra("user_profile", profileUrl);
                     intent.putExtra("userId", userId);
                     intent.putExtra("name", userName);
-                    intent.putExtra("email", email);
                     intent.putExtra("password", password);
                     startActivity(intent);
                 } else if (getIntent().getStringExtra("position").equals("main")) {
@@ -609,7 +611,6 @@ public class SignInActivity extends AppCompatActivity {
                     intent.putExtra("user_profile", profileUrl);
                     intent.putExtra("userId", userId);
                     intent.putExtra("name", userName);
-                    intent.putExtra("email", email);
                     intent.putExtra("password", password);
                     intent.putExtra("position", "main");
                     intent.putExtra("check", true);
@@ -625,9 +626,8 @@ public class SignInActivity extends AppCompatActivity {
     private void setLayoutText() {
 
         Log.d("하이", "이미지 : " + PropertyManager.getInstance().getUserProfile());
-        Log.d("하이", "아이디 : " + PropertyManager.getInstance().getUserEmail());
+        Log.d("하이", "아이디 : " + PropertyManager.getInstance().getUserId());
         Log.d("하이", "이름 : " + PropertyManager.getInstance().getUserName());
-        Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserEmail());
 
 
     }

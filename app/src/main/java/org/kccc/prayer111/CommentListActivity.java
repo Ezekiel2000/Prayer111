@@ -57,7 +57,7 @@ public class CommentListActivity extends AppCompatActivity {
     String prayNumber;
     String cmtNumber;
     String cmtContent;
-    String email;
+    String userId;
 
     CommentListViewAdapter commentListViewAdapter;
     Handler handler = new Handler();
@@ -85,9 +85,7 @@ public class CommentListActivity extends AppCompatActivity {
         prayNumber = intent.getStringExtra("prayNumber");
 
         Log.d("하이", "클릭한 중보기도 넘버 : " + prayNumber);
-        email = intent.getStringExtra("email");
-
-        email = PropertyManager.getInstance().getUserEmail();
+        userId = PropertyManager.getInstance().getUserId();
 
         listCommentDatas = new ArrayList<>();
         commentListViewAdapter = new CommentListViewAdapter(getApplicationContext(), listCommentDatas, R.layout.activity_comment_list);
@@ -101,7 +99,7 @@ public class CommentListActivity extends AppCompatActivity {
 
                 cmtContent = ((EditText) findViewById(R.id.input_comment)).getText().toString();
 
-                if (email == null) {
+                if (userId == null) {
 
                     signInIntent.putExtra("position", "cmt");
                     startActivity(signInIntent);
@@ -127,7 +125,7 @@ public class CommentListActivity extends AppCompatActivity {
                                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 
                                 writer.write( "mode=setComment"
-                                        + "&userId=" + email
+                                        + "&userId=" + userId
                                         + "&prayNo=" + prayNumber
                                         + "&comment=" + cmtContent);
                                 writer.flush();
@@ -167,6 +165,10 @@ public class CommentListActivity extends AppCompatActivity {
                                     input_comment.setText("");
                                 }
                             });
+
+                            Intent okIntent = new Intent(getBaseContext(), MainActivity.class);
+                            okIntent.putExtra("position", "cmt");
+                            startActivity(okIntent);
                         }
                     }.start();
                 }

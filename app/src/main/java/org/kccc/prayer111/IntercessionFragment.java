@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,12 +103,8 @@ public class IntercessionFragment extends Fragment {
 
                 JSONArray jsonArray = new JSONArray(dataJson);
 
-                Log.d("하이", "소트전 값 : " + jsonArray);
-
                 // 내림차순으로 정렬하기
 //                jsonArray = soryJsonArray(jsonArray);
-
-                Log.d("하이", "소트후 값 : " + jsonArray);
 
                 for (int i = 0; i < jsonArray.length() ; i++) {
                     JSONObject object = jsonArray.getJSONObject(i);
@@ -123,9 +121,6 @@ public class IntercessionFragment extends Fragment {
                     int warn = object.getInt("warn");
                     int prayNumber = object.getInt("heart");
                     int commentNumber = object.getInt("comment");
-
-                    Log.d("하이", "불러오는 값 : " + number);
-                    Log.d("하이", "사진값 : " + profile);
 
                     data = new ListData[jsonArray.length()];
 
@@ -208,12 +203,18 @@ public class IntercessionFragment extends Fragment {
         Log.d("하이", "fragment3  Resume");
         listDataAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(listDataAdapter);
+
+        FloatingActionButton fab_pray = (FloatingActionButton) getActivity().findViewById(R.id.fab_check_today);
+        fab_pray.setVisibility(View.GONE);
+
         super.onResume();
     }
 
     @Override
     public void onPause() {
 
+        FloatingActionButton fab_pray = (FloatingActionButton) getActivity().findViewById(R.id.fab_check_today);
+        fab_pray.setVisibility(View.VISIBLE);
         Log.d("하이", "fragment3  onPause");
 
         super.onPause();

@@ -49,7 +49,7 @@ public class PropertyManager {
         if (mUserPassword == null) {
             mUserPassword = mPrefs.getString(KEY_USER_PASSWORD, "");
         }
-        return mUserName;
+        return mUserPassword;
     }
 
     public void setPassword(String UserPassword) {
@@ -58,19 +58,19 @@ public class PropertyManager {
         mEditor.commit();
     }
 
-    private static final String KEY_USER_EMAIL = "email";
-    private String mUserEmail;
+    private static final String KEY_USER_ID = "id";
+    private String mUserId;
 
-    public String getUserEmail() {
-        if (mUserEmail == null) {
-            mUserEmail = mPrefs.getString(KEY_USER_EMAIL, "");
+    public String getUserId() {
+        if (mUserId == null) {
+            mUserId = mPrefs.getString(KEY_USER_ID, "");
         }
-        return mUserEmail;
+        return mUserId;
     }
 
-    public void setUserEmail(String UserEmail) {
-        mUserEmail = UserEmail;
-        mEditor.putString(KEY_USER_EMAIL, UserEmail);
+    public void setUserId(String UserId) {
+        mUserId = UserId;
+        mEditor.putString(KEY_USER_ID, UserId);
         mEditor.commit();
     }
 
@@ -79,9 +79,9 @@ public class PropertyManager {
 
     public String getUserProfile() {
         if (mUserProfile == null) {
-            mUserProfile = mPrefs.getString(KEY_USER_PASSWORD, "");
+            mUserProfile = mPrefs.getString(KEY_USER_PROFILE, "");
         }
-        return mUserName;
+        return mUserProfile;
     }
 
     public void setUserProfile(String UserProfile) {
@@ -97,12 +97,28 @@ public class PropertyManager {
         if (mUserType == null) {
             mUserType = mPrefs.getString(KEY_USER_LOGIN_TYPE, "");
         }
-        return mUserName;
+        return mUserType;
     }
 
     public void setUserLoginType(String UserLoginType) {
         mUserType = UserLoginType;
         mEditor.putString(KEY_USER_LOGIN_TYPE, UserLoginType);
+        mEditor.commit();
+    }
+
+    private static final String KEY_CALENDAR_CHECK = "calendar";
+    private String mTodayCheck;
+
+    public String getUserCalendarCheck() {
+        if (mTodayCheck == null) {
+            mTodayCheck = mPrefs.getString(KEY_CALENDAR_CHECK, "");
+        }
+        return mTodayCheck;
+    }
+
+    public void setUserCalendarCheck(String UserCalendarCheck) {
+        mTodayCheck = UserCalendarCheck;
+        mEditor.putString(KEY_CALENDAR_CHECK, UserCalendarCheck);
         mEditor.commit();
     }
 

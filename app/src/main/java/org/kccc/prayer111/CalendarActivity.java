@@ -16,6 +16,9 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +37,9 @@ public class CalendarActivity extends AppCompatActivity {
 
     private AlertDialog.Builder alert_today;
 
+    String json;
+    ArrayList checkday = new ArrayList();
+
     private boolean today_checked;
 
     @Override
@@ -49,9 +55,8 @@ public class CalendarActivity extends AppCompatActivity {
         textDate = (TextView) findViewById(R.id.text_date);
         gridView = (GridView) findViewById(R.id.grid_view);
 
-
         long now = System.currentTimeMillis();
-        final Date date = new Date();
+        final Date date = new Date(now);
 
         final SimpleDateFormat curYearFormat = new SimpleDateFormat("yyyy", Locale.KOREA);
         final SimpleDateFormat curMonthFormat = new SimpleDateFormat("MM", Locale.KOREA);
@@ -69,6 +74,28 @@ public class CalendarActivity extends AppCompatActivity {
         dayList.add("금");
         dayList.add("토");
 
+        json = PropertyManager.getInstance().getUserCalendarCheck();
+
+        Log.d("하이", "json 의 값 : " + json);
+
+        if (json != null) {
+
+            try {
+                JSONArray array = new JSONArray(json);
+                for (int i = 0 ; i < array.length(); i++) {
+                    String check = array.getString(i);
+                    if (check.isEmpty()) {
+                        check = "false";
+                    }
+                    checkday.add(i, check);
+                }
+
+            } catch (JSONException e) {
+
+            }
+
+        }
+
         mCal = Calendar.getInstance();
 
         mCal.set(Integer.parseInt(curYearFormat.format(date)), Integer.parseInt(curMonthFormat.format(date)) - 1, 1);
@@ -80,7 +107,8 @@ public class CalendarActivity extends AppCompatActivity {
 
         setCalendarDate(mCal.get(Calendar.MONTH) + 1);
 
-        gridView.setOnTouchListener(new View.OnTouchListener() {
+
+       gridView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -97,36 +125,6 @@ public class CalendarActivity extends AppCompatActivity {
 
         Log.d("하이", String.valueOf(today_checked) + 1);
 
-//        if (today_checked == false) {
-//
-//            alert_today = new AlertDialog.Builder(this);
-//            alert_today.setMessage("오늘 기도하셨습니까?").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    today_checked = true;
-//                    Toast.makeText(getApplicationContext(), "오늘 기도하였습니다", Toast.LENGTH_SHORT).show();
-//                    Log.d("하이", String.valueOf(today_checked) + 2);
-//
-//                    Log.d("하이", "오늘의 값 :" + curDayFormat.format(date));
-//                    dayPrayCheckedList.add(curDayFormat.format(date));
-//
-//                    gridView.invalidateViews();
-//                    gridView.setAdapter(gridAdapter);
-//
-//                }
-//            }).setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    today_checked = false;
-//                    Log.d("하이", String.valueOf(today_checked) + 2.1);
-//
-//                    return;
-//                }
-//
-//            });
-//
-//            alert_today.show();
-//        }
 
         Log.d("하이", String.valueOf(today_checked) + 3);
 
@@ -203,14 +201,26 @@ public class CalendarActivity extends AppCompatActivity {
             mCal = Calendar.getInstance();
 
             Integer today = mCal.get(Calendar.DAY_OF_MONTH);
-            String sToday = String.valueOf(today);
-            if (sToday.equals(getItem(position)) && today_checked == true) {
+            String sToday = String.valueOf(1);
 
-                holder.textItemGridView.setTextColor(getResources().getColor(R.color.colorCalender));
-                holder.textItemGridView.setBackground(getResources().getDrawable(R.drawable.calendar_stamp));
+            for (int i = 0; i < checkday.size(); i++) {
 
+                if (getItem(position).toString().equals(String.valueOf(i))) {
+
+                    if (checkday.get(i).toString().equals("true")) {
+
+                        Log.d("하이", "찍힌 날 : " + checkday.get(i) + i);
+                        holder.textItemGridView.setTextColor(getResources().getColor(R.color.colorCalender));
+                        holder.textItemGridView.setBackground(getResources().getDrawable(R.drawable.calendar_stamp));
+
+                    }
+
+                }
+
+                Log.d("하이", "안찍힌 날 : " + checkday.get(i) + i);
 
             }
+
 
             return convertView;
         }

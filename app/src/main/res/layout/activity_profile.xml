@@ -128,12 +128,6 @@
                 android:textColor="@color/colorBlack"
                 android:drawableRight="@drawable/ic_my_down"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#c8c8c8"/>
-
-
         </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>

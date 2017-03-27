@@ -78,7 +78,7 @@ public class MyCommentActivity extends AppCompatActivity {
 
             HttpHandler sh = new HttpHandler();
 
-            getUrl = getUrl + "&userId=" + PropertyManager.getInstance().getUserEmail();
+            getUrl = getUrl + "&userId=" + PropertyManager.getInstance().getUserId();
             String jsonStr = sh.makeServiceCall(getUrl);
 
             Log.d("하이", "getURL : " + getUrl);

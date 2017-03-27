@@ -53,6 +53,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     String imgPath;
 
+    String userId;
     String after_password;
     String after_password_conform;
 
@@ -79,6 +80,12 @@ public class ProfileActivity extends AppCompatActivity {
         btn_logout = (Button) findViewById(R.id.btn_logout);
 
         text_my_name.setText(PropertyManager.getInstance().getUserName());
+
+        if (!PropertyManager.getInstance().getUserLoginType().equals("EMAIL")) {
+            text_my_password_change.setVisibility(View.GONE);
+        }
+
+        userId = getIntent().getStringExtra("userId");
 
         Log.d("하이", "이미지 나옴 : " + getIntent().getStringExtra("user_profile"));
         Glide.with(this)
@@ -157,7 +164,7 @@ public class ProfileActivity extends AppCompatActivity {
                 // PropertyManager 초기화
                 PropertyManager.getInstance().setUserProfile("");
                 PropertyManager.getInstance().setUserName("");
-                PropertyManager.getInstance().setUserEmail("");
+                PropertyManager.getInstance().setUserId("");
                 PropertyManager.getInstance().setPassword("");
                 PropertyManager.getInstance().setUserLoginType("");
 
@@ -182,7 +189,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         try {
 
-                            setUrl = setUrl + "?mode=signoutProcess" + "&userId=" + PropertyManager.getInstance().getUserEmail();
+                            setUrl = setUrl + "?mode=signoutProcess" + "&userId=" + PropertyManager.getInstance().getUserId();
 
                             URL url = new URL(setUrl);
                             conn = (HttpURLConnection) url.openConnection();
@@ -201,7 +208,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 PropertyManager.getInstance().setUserProfile("");
                 PropertyManager.getInstance().setUserName("");
-                PropertyManager.getInstance().setUserEmail("");
+                PropertyManager.getInstance().setUserId("");
                 PropertyManager.getInstance().setPassword("");
 
                 Toast.makeText(v.getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
@@ -261,8 +268,9 @@ public class ProfileActivity extends AppCompatActivity {
                                     OutputStream out = new BufferedOutputStream(conn.getOutputStream());
                                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 
-                                    writer.write( "&id=" + getIntent().getStringExtra("userId")
-                                            + "&passwd=" + after_password);
+                                    writer.write( "mode=changePassword"
+                                            + "&id=" + userId
+                                            + "&password=" + after_password);
                                     writer.flush();
                                     writer.close();
                                     out.close();
@@ -277,6 +285,9 @@ public class ProfileActivity extends AppCompatActivity {
                                         }
                                         builder.append(line);
                                     }
+
+                                    Log.d("하이", builder.toString());
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 } finally {
@@ -287,6 +298,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                             }
                         }.start();
+
+                        Toast.makeText(getApplicationContext(), "비밀번호가 변경되었습니다." , Toast.LENGTH_SHORT).show();
 
                     } else {
 

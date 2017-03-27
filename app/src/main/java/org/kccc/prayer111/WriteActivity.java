@@ -81,7 +81,7 @@ public class WriteActivity extends AppCompatActivity {
         profileUrl = intent.getStringExtra("user_profile");
         email = intent.getStringExtra("email");
 
-        email = PropertyManager.getInstance().getUserEmail();
+        email = PropertyManager.getInstance().getUserId();
         userName = PropertyManager.getInstance().getUserName();
 
 

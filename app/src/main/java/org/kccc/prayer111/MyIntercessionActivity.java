@@ -62,7 +62,7 @@ public class MyIntercessionActivity extends AppCompatActivity {
 
             HttpHandler sh = new HttpHandler();
 
-            getUrl = getUrl + "&userId=" + PropertyManager.getInstance().getUserEmail();
+            getUrl = getUrl + "&userId=" + PropertyManager.getInstance().getUserId();
             String jsonStr = sh.makeServiceCall(getUrl);
 
             try {

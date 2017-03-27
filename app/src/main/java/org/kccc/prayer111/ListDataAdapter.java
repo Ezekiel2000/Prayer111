@@ -152,10 +152,10 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             @Override
             public void onClick(View v) {
 
-                Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserEmail());
+                Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserId());
                 Log.d("하이", "Id : " + data.getEmail());
 
-                if (PropertyManager.getInstance().getUserEmail().equals(data.getEmail()))
+                if (PropertyManager.getInstance().getUserId().equals(data.getEmail()))
                 {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -172,7 +172,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
                                             HttpHandler sh = new HttpHandler();
 
-                                            String url = postUrl + "?mode=removeTogetherPray" + "&userId=" + PropertyManager.getInstance().getUserEmail() + "&prayNo=" + data.getNumber();
+                                            String url = postUrl + "?mode=removeTogetherPray" + "&userId=" + PropertyManager.getInstance().getUserId() + "&prayNo=" + data.getNumber();
 
                                             String jsonStr = sh.makeServiceCall(url);
 
@@ -250,7 +250,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 
                                 writer.write("mode=setHeart"
-                                        + "&UserId=" + PropertyManager.getInstance().getUserEmail()
+                                        + "&UserId=" + PropertyManager.getInstance().getUserId()
                                         + "&prayNo=" + data.getNumber());
                                 writer.flush();
                                 writer.close();
@@ -421,18 +421,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                     builder.setItems(info, (dialog, which) -> {
                         switch (which) {
                             case 0:
-                                Toast.makeText(context, "페이스북 공유", Toast.LENGTH_SHORT).show();
-
-//                            ShareLinkContent content = new ShareLinkContent.Builder()
-//                            .setContentTitle("오늘의 기도")
-//                            .setContentDescription(
-//                                    "테스트중입니다")
-//                            .setContentUrl(Uri.parse("https://www.facebook.com/111Pray/"))
-//                            .setShareHashtag(new ShareHashtag.Builder()
-//                                    .setHashtag("#111기도")
-//                                    .build())
-//                            .build();
-
+                                Toast.makeText(context, "메세지 공유", Toast.LENGTH_SHORT).show();
 
                                 Intent smsIntent = new Intent(Intent.ACTION_VIEW);
                                 smsIntent.putExtra("sms_body", holder.text_content.getText());
@@ -486,7 +475,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 
                                             writer.write("mode=setWarn"
-                                                    + "&userId=" + PropertyManager.getInstance().getUserEmail()
+                                                    + "&userId=" + PropertyManager.getInstance().getUserId()
                                                     + "&prayNo=" + data.getNumber());
                                             writer.flush();
                                             writer.close();

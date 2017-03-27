@@ -143,7 +143,7 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(v.getContext(), "성공", Toast.LENGTH_SHORT).show();
 
                     PropertyManager.getInstance().setUserName(text_sign_name.getText().toString());
-                    PropertyManager.getInstance().setUserEmail(text_sign_email.getText().toString());
+                    PropertyManager.getInstance().setUserId(text_sign_email.getText().toString());
                     PropertyManager.getInstance().setPassword(text_sign_password.getText().toString());
                     PropertyManager.getInstance().setUserLoginType("EMAIL");
                     PropertyManager.getInstance().setUserProfile(imgPath);
@@ -151,7 +151,7 @@ public class SignUpActivity extends AppCompatActivity {
                     Log.d("하이", "setURL : " + setUrl);
 
                     new MultiPartUpload().execute(
-                            PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserEmail(),
+                            PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserId(),
                             PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType(), realPath
                     );
 

@@ -58,8 +58,9 @@ public class SendPushNotification {
                 String yymm = jsonObject.getString("yymm");
                 String day = jsonObject.getString("day");
 
-            } catch (JSONException e) {
+                Log.d("하이", "오늘의 날짜 : " + yymm + day);
 
+            } catch (JSONException e) {
 
             }
         }
@@ -69,7 +70,7 @@ public class SendPushNotification {
 
         JSONArray notificationsArray = new JSONArray()
                 .put(new JSONObject()
-                        .put("send_date", today + " 13:00")
+                        .put("send_date", today)
                         .put("content", push_message)
                         .put("link", "org.kccc.prayer111"));
         JSONObject requestObj = new JSONObject()
