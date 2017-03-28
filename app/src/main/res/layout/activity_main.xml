@@ -21,15 +21,13 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorTitle"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:weightSum="1"
             >
 
             <ImageView
+                android:gravity="center_horizontal"
+                android:src="@drawable/title"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/title_background"
-                android:layout_weight="1"/>
+                android:layout_height="56dp"/>
 
         </android.support.v7.widget.Toolbar>
 

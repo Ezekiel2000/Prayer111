@@ -2,11 +2,13 @@ package org.kccc.prayer111;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -176,6 +179,9 @@ public class CommentListActivity extends AppCompatActivity {
         });
     }
 
+
+
+
     private class GetCommentList extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -215,7 +221,6 @@ public class CommentListActivity extends AppCompatActivity {
                     String content = object.getString("memo");
                     String profile = object.getString("photo");
                     String date = object.getString("indate");
-                    String chkHeart = object.getString("chkHeart");
 
                     cmtNumber = commentNumber;
 
@@ -321,11 +326,102 @@ public class CommentListActivity extends AppCompatActivity {
             holder.comment_date.setText(commentData.comment_date);
             holder.comment_content.setText(commentData.comment_content);
 
+            holder.comment_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+                    builder.setTitle("댓글 삭제")
+                            .setMessage("댓글을 삭제하시겠습니까?")
+                            .setCancelable(false)
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+
+                                            HttpURLConnection conn = null;
+
+                                            String url = setUrl;
+
+                                            try {
+
+                                                URL url1 = new URL(setUrl);
+                                                conn = (HttpURLConnection) url1.openConnection();
+                                                conn.setDoInput(true);
+                                                conn.setDoOutput(true);
+                                                conn.setChunkedStreamingMode(0);
+                                                conn.setRequestMethod("POST");
+
+                                                OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                                                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                                                writer.write("mode=removeComment"
+                                                        + "&userId=" + PropertyManager.getInstance().getUserId()
+                                                        + "&commentNo=" + commentData.getPray_number());
+                                                writer.flush();
+                                                writer.close();
+                                                out.close();
+
+                                                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                                                StringBuilder builder = new StringBuilder();
+                                                String line = null;
+                                                while ((line = reader.readLine()) != null) {
+                                                    if (builder.length() > 0) {
+                                                        builder.append("\n");
+                                                    }
+                                                    builder.append(line);
+                                                }
+
+                                                Log.d("하이", builder.toString());
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            } finally {
+                                                if (conn != null) {
+                                                    conn.disconnect();
+                                                }
+                                            }
+                                        }
+                                    }.start();
+
+                                    Toast.makeText(context, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                                    commentListViewAdapter.remove(new ListCommentData(commentData.getPray_number(),
+                                            commentData.getComment_profileImage(), commentData.getComment_name(), commentData.getComment_date(), commentData.getComment_content()));
+
+                                }
+                            })
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                }
+            });
+
         }
 
         @Override
         public int getItemCount() {
             return this.listCommentDatas.size();
+        }
+
+
+        public void remove(ListCommentData data) {
+
+            Log.d("하이", "리스트 번호" + listCommentDatas.indexOf(data));
+
+            int position = listCommentDatas.indexOf(data);
+            listCommentDatas.remove(position+1);
+            notifyItemRemoved(position);
         }
 
 
@@ -335,6 +431,7 @@ public class CommentListActivity extends AppCompatActivity {
             TextView comment_name;
             TextView comment_date;
             TextView comment_content;
+            ImageView comment_delete;
 
 
             public ViewHolder(View view) {
@@ -344,6 +441,7 @@ public class CommentListActivity extends AppCompatActivity {
                 comment_name = (TextView) view.findViewById(R.id.comment_name);
                 comment_date = (TextView) view.findViewById(R.id.comment_date);
                 comment_content = (TextView) view.findViewById(R.id.comment_content);
+                comment_delete = (ImageView) view.findViewById(R.id.comment_delete);
 
             }
 
@@ -353,6 +451,10 @@ public class CommentListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        Intent okIntent = new Intent(getBaseContext(), MainActivity.class);
+        okIntent.putExtra("position", "cmt");
+        startActivity(okIntent);
         finish();
     }
 }

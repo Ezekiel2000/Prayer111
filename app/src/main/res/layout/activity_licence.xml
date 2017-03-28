@@ -17,103 +17,120 @@
             android:layout_height="56dp">
 
             <ImageView
+                android:gravity="center_horizontal"
+                android:src="@drawable/title"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/title_background"/>
+                android:layout_height="56dp"/>
 
         </android.support.v7.widget.Toolbar>
 
 
     </android.support.design.widget.AppBarLayout>
 
-
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
+        android:layout_marginTop="56dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="56dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:text="오픈 소스 사용"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginStart="16dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:gravity="center_horizontal"
-            android:id="@+id/textView3"/>
-
-        <LinearLayout
-            android:orientation="vertical"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginStart="16dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/linearLayout3"
-            >
+            android:layout_height="match_parent">
 
             <TextView
-                android:text="제작"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="기획"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="디자인"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-
-
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/linearLayout2"
-            android:layout_marginTop="32dp"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginStart="16dp"
-            app:layout_constraintLeft_toLeftOf="parent">
-
-            <TextView
-                android:text="Okhttp 3 사용"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="Glide 2 사용"
-                android:layout_width="match_parent"
+                android:text="오픈 소스 사용"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView"
-                tools:layout_editor_absoluteY="0dp"
-                tools:layout_editor_absoluteX="8dp"/>
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginStart="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:gravity="center_horizontal"
+                android:id="@+id/textView3"/>
 
-            <TextView
-                android:text="com.getbase:floatingactionbutton 1 사용"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView2"
-                tools:layout_editor_absoluteY="0dp"
-                tools:layout_editor_absoluteX="8dp"/>
+                android:layout_marginTop="40dp"
+                app:layout_constraintTop_toBottomOf="@+id/textView3"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginStart="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:id="@+id/linearLayout3"
+                >
 
-        </LinearLayout>
+                <TextView
+                    android:text="제작"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="기획"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="디자인"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
 
 
-    </android.support.constraint.ConstraintLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout2"
+                android:layout_marginTop="32dp"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginStart="16dp"
+                app:layout_constraintLeft_toLeftOf="parent">
+
+                <TextView
+                    android:text="Okhttp 3 사용"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="@string/licence_okhttp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="Glide 2 사용"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="@string/licence_gilde"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="com.getbase:floatingactionbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="@string/licence_floating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+
 
 
 </android.support.design.widget.CoordinatorLayout>

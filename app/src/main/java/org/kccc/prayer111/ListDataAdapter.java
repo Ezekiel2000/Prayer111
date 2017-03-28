@@ -101,7 +101,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         Log.d("하이", "원래 날짜 : " + data.getDate() );
         Log.d("하이", "날짜 : " + dateMonth + dateDay);
 
-        holder.text_date.setText(dateMonth + "월 " + dateDay + "일");
+        holder.text_date.setText(data.getDate());
 
         // glide 라이브러리 사용하여 원형 프로필 만들기
         Glide.with(context)
@@ -197,8 +197,9 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
                                     }.start();
 
-                                    notifyItemRemoved(holder.getAdapterPosition());
-                                    notifyDataSetChanged();
+                                    remove(new ListData(data.getNumber(), data.getProfileImage(), data.getEmail(), data.getName(),
+                                            data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber(),
+                                            data.getCommentNumber(), data.getChkHeart()));
                                     Toast.makeText(context, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                                 }
 
@@ -222,13 +223,15 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
         holder.text_comment_number.setText(String.valueOf(data.getCommentNumber()));
 
-        if (data.getChkHeart() == 1 ) {
-
-            holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
-
-        } else if (data.getChkHeart() == 0 ) {
+        if (data.getChkHeart() == 0 ) {
 
             holder.icon_heart.setImageResource(R.drawable.ic_heart);
+            icon_heart_clicked = true;
+
+        } else  {
+
+            holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
+            icon_heart_clicked = false;
 
         }
 
@@ -302,6 +305,64 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
 
                 } else {
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+
+                            HttpURLConnection conn = null;
+
+                            try {
+
+                                URL url = new URL(postUrl);
+                                conn = (HttpURLConnection) url.openConnection();
+                                conn.setDoInput(true);
+                                conn.setDoOutput(true);
+                                conn.setChunkedStreamingMode(0);
+                                conn.setRequestMethod("POST");
+
+                                OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                                writer.write("mode=setHeart"
+                                        + "&UserId=" + PropertyManager.getInstance().getUserId()
+                                        + "&prayNo=" + data.getNumber());
+                                writer.flush();
+                                writer.close();
+                                out.close();
+
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                                StringBuilder builder = new StringBuilder();
+                                String line = null;
+                                while ((line = reader.readLine()) != null) {
+                                    if (builder.length() > 0) {
+                                        builder.append("\n");
+                                    }
+                                    builder.append(line);
+                                }
+
+                                Log.d("하이", builder.toString());
+
+                                JSONObject jsonObject = new JSONObject(builder.toString());
+                                String data = jsonObject.getString("result");
+
+                                JSONObject object = new JSONObject(data);
+                                heart_check = object.getString("chkHeart");
+
+                                Log.d("하이", "원래대로 하트 : " + heart_check);
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                if (conn != null) {
+                                    conn.disconnect();
+                                }
+                            }
+
+                        }
+                    }.start();
 
                     Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked );
                     holder.icon_heart.setImageResource(R.drawable.ic_heart);
@@ -537,6 +598,14 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 //        this.listData = listData;
 //        notifyDataSetChanged();
 //    }
+
+    public void remove(ListData data) {
+
+        int position = listData.indexOf(data);
+        listData.remove(position+1);
+        notifyItemRemoved(position);
+
+    }
 
 
     @Override

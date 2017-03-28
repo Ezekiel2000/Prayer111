@@ -18,10 +18,10 @@
             android:layout_height="56dp">
 
             <ImageView
+                android:gravity="center_horizontal"
+                android:src="@drawable/title"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/title_background"/>
-
+                android:layout_height="56dp"/>
 
         </android.support.v7.widget.Toolbar>
 
