@@ -11,12 +11,12 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
-        android:layout_height="200dp"
         android:background="@color/colorFacebook"
         android:id="@+id/constraintImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="200dp">
 
         <ImageView
             android:layout_width="100dp"
@@ -25,7 +25,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/image_profile_chage"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="50dp"
             android:src="@drawable/ic_myinfo"/>
 
         <TextView
@@ -39,7 +39,9 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="16dp"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginEnd="16dp"/>
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -60,17 +62,18 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            tools:layout_editor_absoluteY="25dp">
+            tools:layout_editor_absoluteY="50dp">
 
             <TextView
                 android:id="@+id/text_write_intercession"
                 android:padding="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="15dp"
                 android:text="내가 작성한 중보기도"
                 tools:layout_editor_absoluteY="50dp"
                 tools:layout_editor_absoluteX="16dp"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/colorNormalText"
                 android:drawableRight="@drawable/ic_my_right"/>
 
             <View
@@ -83,10 +86,11 @@
                 android:padding="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="15dp"
                 android:text="내가 작성한 댓글"
                 tools:layout_editor_absoluteY="50dp"
                 tools:layout_editor_absoluteX="16dp"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/colorNormalText"
                 android:drawableRight="@drawable/ic_my_right"/>
 
             <View
@@ -115,17 +119,18 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            tools:layout_editor_absoluteY="25dp">
+            tools:layout_editor_absoluteY="50dp">
 
             <TextView
                 android:id="@+id/my_password_change"
                 android:padding="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="15dp"
                 android:text="비밀번호 변경"
                 tools:layout_editor_absoluteY="25dp"
                 tools:layout_editor_absoluteX="16dp"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/colorNormalText"
                 android:drawableRight="@drawable/ic_my_down"/>
 
         </LinearLayout>
@@ -148,18 +153,21 @@
             android:layout_height="wrap_content"
             android:text="회원탈퇴"
             android:id="@+id/btn_signout"
+            android:background="@drawable/signout_btn"
             tools:layout_editor_absoluteY="0dp"
-            tools:layout_editor_absoluteX="0dp"/>
+            tools:layout_editor_absoluteX="0dp"
+            android:layout_marginRight="5dp"/>
 
         <Button
             android:id="@+id/btn_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="로그아웃"
+            android:background="@drawable/login_btn"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            />
+            android:layout_marginLeft="5dp"/>
 
 
 

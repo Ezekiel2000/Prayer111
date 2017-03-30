@@ -25,7 +25,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:textColor="#7f7f7f"
+                    android:textColor="#777777"
                     android:textSize="17sp"
                     android:text="취소"
                     android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
-                    android:textColor="#6b58ca"
+                    android:textColor="#777777"
                     android:textSize="17sp"
                     android:text="저장"
                     android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
         android:layout_marginTop="55dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#c4c4c4"/>
+        android:background="#cccccc"/>
 
     <android.support.constraint.ConstraintLayout
         android:layout_marginTop="56dp"
@@ -138,6 +138,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:hint="중보기도 내용을 글로 나누어 보세요"
+                    android:textColorHint="#aaaaaa"
+                    android:textColor="#292929"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -173,9 +175,9 @@
             app:layout_constraintRight_toRightOf="parent">
 
             <View
-                android:layout_width="344dp"
-                android:layout_height="1dp"
-                android:background="#e5e5e5"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#f8f8f8"
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="0dp"/>
 

@@ -8,50 +8,10 @@
     android:layout_height="match_parent"
     tools:context="org.kccc.prayer111.CommentListActivity">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        android:background="#f5f5f5">
-
-        <EditText
-            android:paddingLeft="12dp"
-            android:layout_height="48dp"
-            android:textSize="13sp"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_constraintLeft_creator="1"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/input_comment"
-            app:layout_constraintRight_toLeftOf="@+id/btn_ok"
-            android:layout_marginEnd="8dp"
-            android:layout_width="0dp"
-            android:background="#f5f5f5"
-            android:hint="댓글을 입력하세요"
-            android:textColor="#595959"
-            android:textColorHint="#c7c7c7"
-            android:inputType="none"/>
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_ok"
-            app:layout_constraintTop_toTopOf="@+id/input_comment"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/btn_ok"
-            android:layout_marginEnd="8dp"/>
-
-    </android.support.constraint.ConstraintLayout>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/comment_list_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         android:layout_marginStart="8dp"
@@ -59,8 +19,69 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+        app:layout_constraintVertical_bias="0.0"
+        >
 
     </android.support.v7.widget.RecyclerView>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:paddingLeft="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:paddingRight="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="0dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            android:background="#f5f5f5"
+            android:id="@+id/constraintLayout2">
+
+            <EditText
+                android:paddingLeft="12dp"
+                android:layout_height="48dp"
+                android:textSize="13sp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:layout_constraintLeft_creator="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:id="@+id/input_comment"
+                app:layout_constraintRight_toLeftOf="@+id/btn_ok"
+                android:layout_marginEnd="8dp"
+                android:layout_width="0dp"
+                android:background="#f5f5f5"
+                android:hint="댓글을 입력하세요"
+                android:textColor="#595959"
+                android:textColorHint="#aaaaaa"
+                android:inputType="none"/>
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_ok"
+                app:layout_constraintTop_toTopOf="@+id/input_comment"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:id="@+id/btn_ok"
+                android:layout_marginEnd="8dp"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+
+
+    </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>

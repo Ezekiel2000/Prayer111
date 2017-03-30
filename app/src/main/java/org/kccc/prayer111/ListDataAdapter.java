@@ -199,7 +199,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
                                     remove(new ListData(data.getNumber(), data.getProfileImage(), data.getEmail(), data.getName(),
                                             data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber(),
-                                            data.getCommentNumber(), data.getChkHeart()));
+                                            data.getCommentNumber(), data.getChkHeart()), position);
                                     Toast.makeText(context, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                                 }
 
@@ -599,11 +599,17 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 //        notifyDataSetChanged();
 //    }
 
-    public void remove(ListData data) {
+    public void remove(ListData data, int position) {
 
-        int position = listData.indexOf(data);
-        listData.remove(position+1);
-        notifyItemRemoved(position);
+        try {
+
+            int pos = position;
+            listData.remove(pos);
+            notifyItemRemoved(pos);
+
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
 
     }
 

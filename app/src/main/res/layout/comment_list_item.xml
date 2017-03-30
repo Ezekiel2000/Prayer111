@@ -40,7 +40,7 @@
                     <TextView
                         android:id="@+id/comment_name"
                         android:layout_marginRight="6dp"
-                        android:textColor="#595959"
+                        android:textColor="#000000"
                         android:textSize="12sp"
                         android:text="Name"
                         android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
 
                     <TextView
                         android:id="@+id/comment_date"
-                        android:textColor="#acacac"
+                        android:textColor="#aaaaaa"
                         android:textSize="12sp"
                         android:text="Date"
                         android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
 
                 <TextView
                     android:text="한 주간도 매일매일 주님안에서 승리하시길 기도합니다"
-                    android:textColor="#5a5a5a"
+                    android:textColor="@color/colorNormalText"
                     android:textSize="14sp"
                     android:id="@+id/comment_content"
                     android:layout_width="match_parent"
@@ -79,7 +79,7 @@
 
         <View
             android:layout_marginTop="18dp"
-            android:background="#d1d1d1"
+            android:background="#e5e5e5"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             />

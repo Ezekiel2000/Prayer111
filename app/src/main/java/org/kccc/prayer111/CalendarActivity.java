@@ -203,6 +203,8 @@ public class CalendarActivity extends AppCompatActivity {
             Integer today = mCal.get(Calendar.DAY_OF_MONTH);
             String sToday = String.valueOf(1);
 
+            Log.d("하이", "포지션 : " + position);
+
             for (int i = 0; i < checkday.size(); i++) {
 
                 if (getItem(position).toString().equals(String.valueOf(i))) {
@@ -224,6 +226,8 @@ public class CalendarActivity extends AppCompatActivity {
 
             return convertView;
         }
+
+
 
     }
 

@@ -226,7 +226,7 @@ public class CommentListActivity extends AppCompatActivity {
 
                     data = new ListCommentData[jsonArray.length()];
 
-                    data[i] = new ListCommentData(prayNumber, profile, name, date, content);
+                    data[i] = new ListCommentData(commentNumber, profile, name, date, content);
                     listCommentDatas.add(data[i]);
 
                 }
@@ -330,6 +330,8 @@ public class CommentListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
+                    Log.d("하이", "선택한 놈 : " + position);
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 
                     builder.setTitle("댓글 삭제")
@@ -390,7 +392,7 @@ public class CommentListActivity extends AppCompatActivity {
 
                                     Toast.makeText(context, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                                     commentListViewAdapter.remove(new ListCommentData(commentData.getPray_number(),
-                                            commentData.getComment_profileImage(), commentData.getComment_name(), commentData.getComment_date(), commentData.getComment_content()));
+                                            commentData.getComment_profileImage(), commentData.getComment_name(), commentData.getComment_date(), commentData.getComment_content()), position);
 
                                 }
                             })
@@ -415,13 +417,20 @@ public class CommentListActivity extends AppCompatActivity {
         }
 
 
-        public void remove(ListCommentData data) {
+        public void remove(ListCommentData data, int position) {
 
-            Log.d("하이", "리스트 번호" + listCommentDatas.indexOf(data));
+            try {
 
-            int position = listCommentDatas.indexOf(data);
-            listCommentDatas.remove(position+1);
-            notifyItemRemoved(position);
+                Log.d("하이", "리스트 번호" + listCommentDatas.indexOf(data));
+
+                int pos = position;
+                listCommentDatas.remove(pos);
+                notifyItemRemoved(pos);
+
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+
         }
 
 
