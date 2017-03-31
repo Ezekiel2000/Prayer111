@@ -97,13 +97,17 @@ public class SignInActivity extends AppCompatActivity {
 
         signtext = (TextView) findViewById(R.id.text_sign_up);
 
-        text_input_email.setText(PropertyManager.getInstance().getUserId());
-        text_input_password.setText(PropertyManager.getInstance().getPassword());
+        Boolean chk = PropertyManager.getInstance().getUserRememberCheck();
+        Log.d("하이", "체크값 : " + chk);
 
-//        if (checkBox.isChecked()) {
-//            text_input_email.setText(PropertyManager.getInstance().getUserName());
-//            text_input_password.setText(PropertyManager.getInstance().getPassword());
-//        }
+        if (chk) {
+
+            checkBox.setChecked(chk);
+            Log.d("하이", "들어옴" );
+            text_input_email.setText(PropertyManager.getInstance().getUserId());
+            text_input_password.setText(PropertyManager.getInstance().getPassword());
+
+        }
 
         // 일반적인 이메일 로그인 버튼 클릭 시
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -160,6 +164,27 @@ public class SignInActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("하이", "Resume");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("하이", "Pause");
+        PropertyManager.getInstance().setUserRememberCheck(checkBox.isChecked());
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("하이", "Stop");
     }
 
     private class LoginProcess extends AsyncTask<Void, String, String> {
@@ -250,7 +275,7 @@ public class SignInActivity extends AppCompatActivity {
                     profileUrl = object.getString("photo");
                     userId = object.getString("id");
                     userName = object.getString("name");
-                    password = object.getString("passwd");
+//                    password = object.getString("passwd");
                     userId = object.getString("email");
 
                     setLayoutText();

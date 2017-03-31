@@ -211,11 +211,11 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
                 // PropertyManager 초기화
-                PropertyManager.getInstance().setUserProfile("");
-                PropertyManager.getInstance().setUserName("");
-                PropertyManager.getInstance().setUserId("");
-                PropertyManager.getInstance().setPassword("");
-                PropertyManager.getInstance().setUserLoginType("");
+//                PropertyManager.getInstance().setUserProfile("");
+//                PropertyManager.getInstance().setUserName("");
+//                PropertyManager.getInstance().setUserId("");
+//                PropertyManager.getInstance().setPassword("");
+//                PropertyManager.getInstance().setUserLoginType("");
 
                 Toast.makeText(v.getContext(), "로그아웃", Toast.LENGTH_SHORT).show();
 
@@ -259,6 +259,8 @@ public class ProfileActivity extends AppCompatActivity {
                 PropertyManager.getInstance().setUserName("");
                 PropertyManager.getInstance().setUserId("");
                 PropertyManager.getInstance().setPassword("");
+
+                PropertyManager.getInstance().remove();
 
                 Toast.makeText(v.getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
 

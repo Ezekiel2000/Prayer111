@@ -35,6 +35,9 @@ import com.pushwoosh.BasePushMessageReceiver;
 import com.pushwoosh.PushManager;
 import com.pushwoosh.fragment.PushEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -118,8 +121,9 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         SimpleDateFormat dd = new SimpleDateFormat("d", Locale.KOREA);
         day = dd.format(date);
 
-
         Log.d("하이", "시스템바 변경");
+
+
 
         // 백버튼 두번 눌러서 꺼지게 하기 위해 핸들러 생성하여 던짐
         backPressCloseHandler = new BackPressCloseHandler(this);
@@ -161,38 +165,42 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         fab_pray.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                        long now = System.currentTimeMillis();
-//                        Date date = new Date(now);
-//
-//                        SimpleDateFormat dd = new SimpleDateFormat("d", Locale.KOREA);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        long now = System.currentTimeMillis();
+                        Date date = new Date(now);
+
+                        SimpleDateFormat dd = new SimpleDateFormat("d", Locale.KOREA);
 //                        day = dd.format(date);
-//
-//                        int days = Integer.parseInt(day);
-//
-//                        if (days == 1) {
-//
-//                            PropertyManager.getInstance().setUserCalendarCheck("");
-//                        }
-//
-//                        Log.d("하이", "오늘의 날짜 : " + day);
-//
-//                        try {
-//
-//                            JSONArray array = new JSONArray();
-//                            array.put(days, true);
-//
-//                            Log.d("하이", "어레이 : " + array.toString());
-//
-//                            PropertyManager.getInstance().setUserCalendarCheck(array.toString());
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }).start();
+                        day = "2";
+
+                        int days = Integer.parseInt(day);
+
+                        if (days == 1) {
+
+                            PropertyManager.getInstance().setUserCalendarCheck("");
+                        }
+
+                        Log.d("하이", "오늘의 날짜 : " + day);
+
+                        try {
+
+                            String json = PropertyManager.getInstance().getUserCalendarCheck();
+                            Log.d("하이", "어레이 : " + json);
+
+                            JSONArray array = new JSONArray();
+                            array.put(days, true);
+
+                            Log.d("하이", "어레이 : " + array.toString());
+
+                            PropertyManager.getInstance().setUserCalendarCheck(array.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
                 PropertyManager.getInstance().setUserCalendarCheck(day);
                 Log.d("하이", "클릭된 날짜 : " + PropertyManager.getInstance().getUserCalendarCheck());
                 Toast.makeText(MainActivity.this, day + "일, 오늘 기도를 하였습니다.", Toast.LENGTH_SHORT).show();

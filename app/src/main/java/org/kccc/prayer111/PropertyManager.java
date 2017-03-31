@@ -2,6 +2,7 @@ package org.kccc.prayer111;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 /**
  * Created by ezekiel on 2017. 2. 27..
@@ -120,6 +121,28 @@ public class PropertyManager {
         mTodayCheck = UserCalendarCheck;
         mEditor.putString(KEY_CALENDAR_CHECK, UserCalendarCheck);
         mEditor.commit();
+    }
+
+    private static final String KEY_REMEMBER_CHECK = "remember";
+    private boolean mUserCheck = false;
+
+    public boolean getUserRememberCheck() {
+        if (mUserCheck == false) {
+            mUserCheck = mPrefs.getBoolean(KEY_REMEMBER_CHECK, false);
+        }
+        return mUserCheck;
+    }
+
+    public void setUserRememberCheck(boolean UserCheck) {
+        mUserCheck = UserCheck;
+        mEditor.putBoolean(KEY_REMEMBER_CHECK, false);
+        mEditor.commit();
+        Log.d("하이", "결과" + UserCheck);
+    }
+
+
+    public void remove() {
+        mEditor.clear();
     }
 
 }

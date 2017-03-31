@@ -74,6 +74,11 @@ public class CalendarActivity extends AppCompatActivity {
         dayList.add("금");
         dayList.add("토");
 
+        for (int i = 0 ; i < 40 ; i++) {
+            dayPrayCheckedList.add("0");
+        }
+        dayPrayCheckedList.add(10, "1");
+
         json = PropertyManager.getInstance().getUserCalendarCheck();
 
         Log.d("하이", "json 의 값 : " + json);
@@ -141,6 +146,7 @@ public class CalendarActivity extends AppCompatActivity {
         for (int j = 0; j < mCal.getActualMaximum(Calendar.DAY_OF_MONTH); j++) {
             dayList.add("" + (j + 1));
             Log.d("하이", "j의 값 :" + j + dayList.toString());
+            Log.d("하이", "month 의 값 :" + month);
         }
 
     }
@@ -204,24 +210,27 @@ public class CalendarActivity extends AppCompatActivity {
             String sToday = String.valueOf(1);
 
             Log.d("하이", "포지션 : " + position);
+            Log.d("하이", "체크값 : " + dayPrayCheckedList.get(position));
 
-            for (int i = 0; i < checkday.size(); i++) {
+            Log.d("하이", "포지션 : " + getItem(position));
 
-                if (getItem(position).toString().equals(String.valueOf(i))) {
+//            for (int i = 0; i < checkday.size(); i++) {
 
-                    if (checkday.get(i).toString().equals("true")) {
+//                if (getItem(position).toString().equals(String.valueOf(i))) {
 
-                        Log.d("하이", "찍힌 날 : " + checkday.get(i) + i);
-                        holder.textItemGridView.setTextColor(getResources().getColor(R.color.colorCalender));
-                        holder.textItemGridView.setBackground(getResources().getDrawable(R.drawable.calendar_stamp));
+//                    if (checkday.get(i).toString().equals("true")) {
+//
+//                        Log.d("하이", "찍힌 날 : " + checkday.get(i) + i);
+//                        holder.textItemGridView.setTextColor(getResources().getColor(R.color.colorCalender));
+//                        holder.textItemGridView.setBackground(getResources().getDrawable(R.drawable.calendar_stamp));
+//
+//                    }
 
-                    }
-
-                }
+//                }
 
 //                Log.d("하이", "안찍힌 날 : " + checkday.get(i) + i);
 
-            }
+//            }
 
 
             return convertView;
