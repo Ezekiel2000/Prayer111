@@ -33,7 +33,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="45dp"
-        android:text="이번 111기도 어플이 잘 나오게 해주세요"
+        android:text="로딩중입니다."
         android:textSize="17sp"
         android:textColor="@color/colorMonthText"
         app:layout_constraintLeft_toLeftOf="parent"

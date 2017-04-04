@@ -52,6 +52,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
     int list_intercession;
     Boolean icon_heart_clicked = true;
     String heart_check;
+    String pray_number;
 
     SimpleDateFormat curMonthFormat;
     SimpleDateFormat curDayFormat;
@@ -223,89 +224,46 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
         holder.text_comment_number.setText(String.valueOf(data.getCommentNumber()));
 
-        if (data.getChkHeart() == 0 ) {
+        Log.d("하이", "getChkHeart: " + data.getChkHeart() );
+
+        if (data.getChkHeart() == 0) {
 
             holder.icon_heart.setImageResource(R.drawable.ic_heart);
-            icon_heart_clicked = true;
+//            icon_heart_clicked = true;
+//            Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked );
 
         } else  {
 
             holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
-            icon_heart_clicked = false;
-
+//            icon_heart_clicked = false;
+//            Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked );
         }
 
         holder.icon_heart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (icon_heart_clicked) {
-
-                    Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked );
-                    holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
-                    icon_heart_clicked = false;
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-
-                            HttpURLConnection conn = null;
-
-                            try {
-
-                                URL url = new URL(postUrl);
-                                conn = (HttpURLConnection) url.openConnection();
-                                conn.setDoInput(true);
-                                conn.setDoOutput(true);
-                                conn.setChunkedStreamingMode(0);
-                                conn.setRequestMethod("POST");
-
-                                OutputStream out = new BufferedOutputStream(conn.getOutputStream());
-                                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-
-                                writer.write("mode=setHeart"
-                                        + "&UserId=" + PropertyManager.getInstance().getUserId()
-                                        + "&prayNo=" + data.getNumber());
-                                writer.flush();
-                                writer.close();
-                                out.close();
-
-                                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-
-                                StringBuilder builder = new StringBuilder();
-                                String line = null;
-                                while ((line = reader.readLine()) != null) {
-                                    if (builder.length() > 0) {
-                                        builder.append("\n");
-                                    }
-                                    builder.append(line);
-                                }
-
-                                Log.d("하이", builder.toString());
-
-                                JSONObject jsonObject = new JSONObject(builder.toString());
-                                String data = jsonObject.getString("result");
-
-                                JSONObject object = new JSONObject(data);
-                                heart_check = object.getString("chkHeart");
-
-                                Log.d("하이", "체크 하트 : " + heart_check);
+                Log.d("하이", "heart_check : " + heart_check);
 
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                if (conn != null) {
-                                    conn.disconnect();
-                                }
-                            }
+                Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked);
+                holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
+                icon_heart_clicked = false;
 
-                        }
-                    }.start();
+                Intent commentIntent = new Intent();
 
+                String name = PropertyManager.getInstance().getUserName();
+
+                if (name.equals("")) {
+
+                    commentIntent = new Intent(context, SignInActivity.class);
+                    commentIntent.putExtra("position", "cmt");
+                    commentIntent.putExtra("prayNumber", data.getNumber());
+                    v.getContext().startActivity(commentIntent);
 
                 } else {
 
+                    final Handler handler = new Handler();
                     new Thread() {
                         @Override
                         public void run() {
@@ -345,12 +303,42 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                 Log.d("하이", builder.toString());
 
                                 JSONObject jsonObject = new JSONObject(builder.toString());
-                                String data = jsonObject.getString("result");
+                                String json = jsonObject.getString("result");
 
-                                JSONObject object = new JSONObject(data);
+                                JSONObject object = new JSONObject(json);
                                 heart_check = object.getString("chkHeart");
+                                pray_number = object.getString("heart");
 
-                                Log.d("하이", "원래대로 하트 : " + heart_check);
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        if (data.getChkHeart() == 1) {
+
+                                            if (pray_number.equals("1")) {
+                                                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
+                                                holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
+                                                Toast.makeText(context, "좋아요 를 클릭하셨습니다.", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber() - 1));
+                                                holder.icon_heart.setImageResource(R.drawable.ic_heart);
+                                            }
+
+                                        } else {
+
+                                            if (pray_number.equals("1")) {
+                                                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber() + 1));
+                                                holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
+                                                Toast.makeText(context, "좋아요 를 클릭하셨습니다.", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
+                                                holder.icon_heart.setImageResource(R.drawable.ic_heart);
+                                            }
+
+                                        }
+
+                                    }
+                                });
 
 
                             } catch (Exception e) {
@@ -362,11 +350,8 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                             }
 
                         }
-                    }.start();
 
-                    Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked );
-                    holder.icon_heart.setImageResource(R.drawable.ic_heart);
-                    icon_heart_clicked = true;
+                    }.start();
 
                 }
 
@@ -612,6 +597,13 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         }
 
     }
+
+//    public void changeHeart(ListData data, int position) {
+//
+//        listData.set(position, )
+//        notifyItemChanged(position);
+//
+//    }
 
 
     @Override

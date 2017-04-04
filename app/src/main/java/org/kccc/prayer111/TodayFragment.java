@@ -138,14 +138,20 @@ public class TodayFragment extends Fragment {
             String strCurYear = curYearFormat.format(date) + curMonthFormat.format(date);
             String strCurDay = curDayFormat.format(date);
 
-            if (todayPraysList.get(0).get("yymm").equals(strCurYear) && todayPraysList.get(0).get("day").equals(strCurDay)) {
-                today_pray_content.setText(todayPraysList.get(0).get("pray"));
-                today_pray = today_pray_content.getText().toString();
+            try {
 
-                ((MainActivity) getActivity()).today_pray_content = today_pray;
+                if (todayPraysList.get(0).get("yymm").equals(strCurYear) && todayPraysList.get(0).get("day").equals(strCurDay)) {
+                    today_pray_content.setText(todayPraysList.get(0).get("pray"));
+                    today_pray = today_pray_content.getText().toString();
 
-            } else {
-                Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                    ((MainActivity) getActivity()).today_pray_content = today_pray;
+
+                } else {
+                    Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+            } catch (IndexOutOfBoundsException e) {
+
             }
 
             Log.d("하이", "fragment1  onPostExecute" + today_pray);

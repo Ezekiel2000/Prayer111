@@ -3,6 +3,7 @@ package org.kccc.prayer111;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -40,6 +41,9 @@ public class CalendarActivity extends AppCompatActivity {
     String json;
     ArrayList checkday = new ArrayList();
 
+    SharedPreferences dayCheck;
+    SharedPreferences.Editor dayEditor;
+
     private boolean today_checked;
 
     @Override
@@ -58,11 +62,21 @@ public class CalendarActivity extends AppCompatActivity {
         long now = System.currentTimeMillis();
         final Date date = new Date(now);
 
+        try {
+
+            dayCheck = getSharedPreferences("check", Activity.MODE_PRIVATE);
+
+        } catch (Exception e) {
+
+        }
+
+
         final SimpleDateFormat curYearFormat = new SimpleDateFormat("yyyy", Locale.KOREA);
         final SimpleDateFormat curMonthFormat = new SimpleDateFormat("MM", Locale.KOREA);
         final SimpleDateFormat curDayFormat = new SimpleDateFormat("dd", Locale.KOREA);
 
         textDate.setText(curYearFormat.format(date) + "." + curMonthFormat.format(date));
+
 
         dayList = new ArrayList<String>();
         dayPrayCheckedList = new ArrayList<String>();
@@ -74,14 +88,11 @@ public class CalendarActivity extends AppCompatActivity {
         dayList.add("금");
         dayList.add("토");
 
-        for (int i = 0 ; i < 40 ; i++) {
-            dayPrayCheckedList.add("0");
-        }
-        dayPrayCheckedList.add(10, "1");
+
 
         json = PropertyManager.getInstance().getUserCalendarCheck();
 
-        Log.d("하이", "json 의 값 : " + json);
+        Log.d("하이", "json 의 값 : " + Integer.parseInt(curDayFormat.format(date)));
 
         if (json != null) {
 

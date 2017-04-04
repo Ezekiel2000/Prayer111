@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     Boolean loginCheck = false;
 
     SharedPreferences mPref;
+    SharedPreferences dayCheck;
+    SharedPreferences.Editor dayEditor;
     Boolean bFirst;
 
     public static final int REQUEST_MAIN = 2501;
@@ -105,16 +107,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         }
         today_checked = false;
 
-        // 첫 실행 판단
-        try {
-
-            mPref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
-            bFirst = mPref.getBoolean("isFirst", false);
-
-        } catch (Exception e) {
-
-        }
-
         long now = System.currentTimeMillis();
         Date date = new Date(now);
 
@@ -123,7 +115,20 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
         Log.d("하이", "시스템바 변경");
 
+        // 첫 실행 판단
+        try {
 
+            mPref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
+            dayCheck = getSharedPreferences("check", Activity.MODE_PRIVATE);
+            bFirst = mPref.getBoolean("isFirst", false);
+            dayEditor = dayCheck.edit();
+            if (day.equals("1")) {
+                dayEditor.clear();
+            }
+
+        } catch (Exception e) {
+
+        }
 
         // 백버튼 두번 눌러서 꺼지게 하기 위해 핸들러 생성하여 던짐
         backPressCloseHandler = new BackPressCloseHandler(this);
@@ -162,9 +167,16 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         }
 
 
+
         fab_pray.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.d("하이", "클릭된 날짜 : " + day);
+
+                dayEditor.putString(day, day);
+
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -174,7 +186,8 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
                         SimpleDateFormat dd = new SimpleDateFormat("d", Locale.KOREA);
 //                        day = dd.format(date);
-                        day = "2";
+
+                        day = "4";
 
                         int days = Integer.parseInt(day);
 
@@ -201,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
                         }
                     }
                 }).start();
+
                 PropertyManager.getInstance().setUserCalendarCheck(day);
                 Log.d("하이", "클릭된 날짜 : " + PropertyManager.getInstance().getUserCalendarCheck());
                 Toast.makeText(MainActivity.this, day + "일, 오늘 기도를 하였습니다.", Toast.LENGTH_SHORT).show();
