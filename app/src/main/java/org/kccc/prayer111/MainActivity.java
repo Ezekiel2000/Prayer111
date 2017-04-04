@@ -35,9 +35,6 @@ import com.pushwoosh.BasePushMessageReceiver;
 import com.pushwoosh.PushManager;
 import com.pushwoosh.fragment.PushEventListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -115,6 +112,24 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
         Log.d("하이", "시스템바 변경");
 
+//        Intent intent = new Intent(MainActivity.this, NotiService.class);
+//        startService(intent);
+
+//        new Thread() {
+//            @Override
+//            public void run() {
+//
+//                try {
+//                    SendPushNotification sendPushNotification = new SendPushNotification();
+//                    sendPushNotification.SendPush();
+//                } catch (MalformedURLException e) {
+//                    e.printStackTrace();
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }.start();
+
         // 첫 실행 판단
         try {
 
@@ -124,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             dayEditor = dayCheck.edit();
             if (day.equals("1")) {
                 dayEditor.clear();
+
             }
 
         } catch (Exception e) {
@@ -172,51 +188,51 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             @Override
             public void onClick(View v) {
 
-                Log.d("하이", "클릭된 날짜 : " + day);
-
-                dayEditor.putString(day, day);
-
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
+//                Log.d("하이", "클릭된 날짜 : " + day);
+//
+//                dayEditor.putString(day, day);
+//
+//
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
                         long now = System.currentTimeMillis();
                         Date date = new Date(now);
 
                         SimpleDateFormat dd = new SimpleDateFormat("d", Locale.KOREA);
-//                        day = dd.format(date);
+                        day = dd.format(date);
+//
+//                        day = "4";
+//
+//                        int days = Integer.parseInt(day);
+//
+//                        if (days == 1) {
+//
+//                            PropertyManager.getInstance().setUserCalendarCheck("");
+//                        }
+//
+//                        Log.d("하이", "오늘의 날짜 : " + day);
+//
+//                        try {
+//
+//                            String json = PropertyManager.getInstance().getUserCalendarCheck();
+//                            Log.d("하이", "어레이 : " + json);
+//
+//                            JSONArray array = new JSONArray();
+//                            array.put(days, true);
+//
+//                            Log.d("하이", "어레이 : " + array.toString());
+//
+//                            PropertyManager.getInstance().setUserCalendarCheck(array.toString());
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }).start();
 
-                        day = "4";
-
-                        int days = Integer.parseInt(day);
-
-                        if (days == 1) {
-
-                            PropertyManager.getInstance().setUserCalendarCheck("");
-                        }
-
-                        Log.d("하이", "오늘의 날짜 : " + day);
-
-                        try {
-
-                            String json = PropertyManager.getInstance().getUserCalendarCheck();
-                            Log.d("하이", "어레이 : " + json);
-
-                            JSONArray array = new JSONArray();
-                            array.put(days, true);
-
-                            Log.d("하이", "어레이 : " + array.toString());
-
-                            PropertyManager.getInstance().setUserCalendarCheck(array.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-
-                PropertyManager.getInstance().setUserCalendarCheck(day);
-                Log.d("하이", "클릭된 날짜 : " + PropertyManager.getInstance().getUserCalendarCheck());
+//                PropertyManager.getInstance().setUserCalendarCheck(day);
+//                Log.d("하이", "클릭된 날짜 : " + PropertyManager.getInstance().getUserCalendarCheck());
                 Toast.makeText(MainActivity.this, day + "일, 오늘 기도를 하였습니다.", Toast.LENGTH_SHORT).show();
 //                Log.d("하이", "클릭한 날짜 : " + PropertyManager.getInstance().getUserCalendarCheck());
             }
@@ -519,6 +535,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
             Intent calenderIntent = new Intent(this, CalendarActivity.class);
             calenderIntent.putExtra("checked", today_checked);
+            calenderIntent.putExtra("day", day);
             startActivityForResult(calenderIntent, REQUEST_MAIN);
 
         } else if (id == R.id.action_logout) {
@@ -643,12 +660,14 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
     public void  processPermissions() {
 
-        if (!hasStorageGranted() || !hasContactsGranted()) {
+        if (!hasStorageGranted() || !hasContactsGranted() || !hasNotificationGranted()) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this, android.Manifest.permission.READ_EXTERNAL_STORAGE) ||
                     ActivityCompat.shouldShowRequestPermissionRationale(
-                            this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                Toast.makeText(this, "설정에서 '저장소와 '주소록 읽기'권한을 모두 승인해주세요", Toast.LENGTH_SHORT).show();
+                            this, android.Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(
+                            this, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)) {
+                Toast.makeText(this, "설정에서 '저장소와 '알림 받기'권한을 모두 승인해주세요", Toast.LENGTH_SHORT).show();
             }
 
             ActivityCompat.requestPermissions(
@@ -673,6 +692,13 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         return permissionContacts == PackageManager.PERMISSION_GRANTED;
     }
 
+    private boolean hasNotificationGranted() {
+        int permissionNotification = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE);
+
+        return permissionNotification == PackageManager.PERMISSION_GRANTED;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -688,10 +714,10 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
                     if (grantResults.length == 3 && grantResults[0] + grantResults[1] + grantResults[2]
                             == PackageManager.PERMISSION_GRANTED) {
                         Toast.makeText(this,
-                                "'저장소 읽기'와 '주소록 읽기'가 모두 승인되었습니다", Toast.LENGTH_SHORT).show();
+                                "'저장소 읽기'와 '알림 받기'가 모두 승인되었습니다", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this,
-                                "'저장소 읽기'와 '주소록 읽기'요청을 모두 혹은 일부 거부하셨습니다", Toast.LENGTH_SHORT).show();
+                                "'저장소 읽기'와 '알림 받기'요청을 모두 혹은 일부 거부하셨습니다", Toast.LENGTH_SHORT).show();
                     }
 
                     SharedPreferences.Editor editor = mPref.edit();

@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by ezekiel on 2017. 2. 2..
@@ -57,8 +58,8 @@ public class MonthFragment extends Fragment {
 
         monthPraysList = new ArrayList<>();
 
-        curYearFormat = new SimpleDateFormat("yyyy");
-        curMonthFormat = new SimpleDateFormat("MM");
+        curYearFormat = new SimpleDateFormat("yyyy", Locale.KOREA);
+        curMonthFormat = new SimpleDateFormat("MM", Locale.KOREA);
 
         month_pray_title = (TextView) view.findViewById(R.id.month_pray_title);
         Typeface typefaceTitle = Typeface.createFromAsset(getContext().getAssets(), "tvN_OTF_Light.otf");
@@ -99,6 +100,9 @@ public class MonthFragment extends Fragment {
                     String yymm = object.getString("yymm");
                     String day = object.getString("day");
 
+                    Log.d("하이", "pray :" + pray);
+                    Log.d("하이", "yymm :" + yymm);
+                    Log.d("하이", "day :" + day);
 
                     HashMap<String, String> monthPray = new HashMap<>();
 
@@ -106,6 +110,8 @@ public class MonthFragment extends Fragment {
                     monthPray.put("yymm", yymm);
 
                     monthPraysList.add(monthPray);
+
+                    Log.d("하이", "list :" + monthPraysList.toString());
 
                 } catch (JSONException e) {
                     Log.e(TAG, "Json parsing error" + e.getMessage());
@@ -124,17 +130,24 @@ public class MonthFragment extends Fragment {
 
             String strCurMonth = curYearFormat.format(date) + curMonthFormat.format(date);
 
-            if (monthPraysList.get(0).get("yymm").equals(strCurMonth)) {
+            try {
 
-                month_pray_content.setText(monthPraysList.get(0).get("pray"));
-                month_pray = month_pray_content.getText().toString();
+                if (monthPraysList.get(0).get("yymm").equals(strCurMonth)) {
 
-                ((MainActivity) getActivity()).month_pray_content = month_pray;
+                    month_pray_content.setText(monthPraysList.get(0).get("pray"));
+                    month_pray = month_pray_content.getText().toString();
 
-            } else {
+                    ((MainActivity) getActivity()).month_pray_content = month_pray;
 
-                Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    Toast.makeText(getContext(), "기도제목을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         }
 
     }

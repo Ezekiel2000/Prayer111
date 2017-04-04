@@ -94,7 +94,9 @@ public class IntercessionFragment extends Fragment {
 
             HttpHandler sh = new HttpHandler();
 
-            if ( PropertyManager.getInstance().getUserId() != null ) {
+            Log.d("하이", "체크체크 : " + PropertyManager.getInstance().getUserId());
+
+            if ( PropertyManager.getInstance().getUserId().isEmpty() ) {
 
                 url = url +"&userId=" + PropertyManager.getInstance().getUserId();
 

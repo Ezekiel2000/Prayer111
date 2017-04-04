@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class CalendarActivity extends AppCompatActivity {
     private AlertDialog.Builder alert_today;
 
     String json;
+    String today;
     ArrayList checkday = new ArrayList();
 
     SharedPreferences dayCheck;
@@ -89,28 +91,63 @@ public class CalendarActivity extends AppCompatActivity {
         dayList.add("토");
 
 
+//
+//        json = PropertyManager.getInstance().getUserCalendarCheck();
+//
+//        Log.d("하이", "json 의 값 : " + Integer.parseInt(curDayFormat.format(date)));
+//
+//        if (json != null) {
+//
+//            try {
+//                JSONArray array = new JSONArray(json);
+//                for (int i = 0 ; i < array.length(); i++) {
+//                    String check = array.getString(i);
+//                    if (check.isEmpty()) {
+//                        check = "false";
+//                    }
+//                    checkday.add(i, check);
+//                }
+//
+//            } catch (JSONException e) {
+//
+//            }
+//
+//        }
 
-        json = PropertyManager.getInstance().getUserCalendarCheck();
 
-        Log.d("하이", "json 의 값 : " + Integer.parseInt(curDayFormat.format(date)));
 
-        if (json != null) {
+        String dayLoad = dayCheck.getString("saveDay", "");
 
-            try {
-                JSONArray array = new JSONArray(json);
-                for (int i = 0 ; i < array.length(); i++) {
-                    String check = array.getString(i);
-                    if (check.isEmpty()) {
-                        check = "false";
-                    }
-                    checkday.add(i, check);
-                }
+        if (!dayLoad.isEmpty()) {
 
-            } catch (JSONException e) {
-
-            }
 
         }
+
+
+        today = getIntent().getStringExtra("day");
+        dayPrayCheckedList.add(today);
+
+        JSONObject object = new JSONObject();
+
+        try {
+            JSONArray array = new JSONArray();
+            for (int i = 0 ; i < dayPrayCheckedList.size(); i++) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("day", dayPrayCheckedList.get(i));
+            }
+
+            object.put("array", array);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String daySave = object.toString();
+
+        dayEditor.putString("saveDay", daySave);
+        dayEditor.commit();
+
+
 
         mCal = Calendar.getInstance();
 
@@ -221,9 +258,20 @@ public class CalendarActivity extends AppCompatActivity {
             String sToday = String.valueOf(1);
 
             Log.d("하이", "포지션 : " + position);
-            Log.d("하이", "체크값 : " + dayPrayCheckedList.get(position));
+//            Log.d("하이", "체크값 : " + dayPrayCheckedList.get(position));
 
-            Log.d("하이", "포지션 : " + getItem(position));
+            Log.d("하이", "겟아이템 : " + getItem(position));
+
+            for (int i =0 ; i < dayPrayCheckedList.size(); i++) {
+
+                if (getItem(position).equals(dayPrayCheckedList.get(i))) {
+
+                    holder.textItemGridView.setBackground(getResources().getDrawable(R.drawable.calendar_stamp));
+
+                }
+
+            }
+
 
 //            for (int i = 0; i < checkday.size(); i++) {
 

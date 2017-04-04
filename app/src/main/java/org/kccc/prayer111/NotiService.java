@@ -3,71 +3,77 @@ package org.kccc.prayer111;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 
 import org.json.JSONException;
 
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class NotiService extends Service {
 
-    SendPushNotification sendPushNotification;
+    boolean isRunning;
+    SimpleDateFormat today;
 
     public NotiService() {
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        super();
     }
 
     @Override
     public void onCreate() {
 
-//        registerReceivers();
-//        PushManager pushManager = PushManager.getInstance(this);
-//
-//        pushManager.setNotificationFactory(new NotificationFactory());
-//
-//
-//        processPermissions();
-//
-//        try {
-//            pushManager.onStartup(this);
-//        } catch (Exception e) {
-//            Log.d("하이", e.getLocalizedMessage());
-//        }
-//        pushManager.registerForPushNotifications();
+        isRunning = true;
 
 
-        sendPushNotification = new SendPushNotification();
-        super.onCreate();
-
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-
-
-        new Thread(new Runnable() {
+        new Thread() {
             @Override
             public void run() {
+                while (isRunning) {
 
-                try {
+                    long now = System.currentTimeMillis();
+                    Date date = new Date(now);
 
-                    sendPushNotification.SendPush();
+                    SimpleDateFormat dd = new SimpleDateFormat("hh:mm", Locale.KOREA);
+                    String day = dd.format(date);
 
-                } catch (MalformedURLException e) {
 
-                } catch (JSONException e) {
+
+//                    if ( day.equals("04:03")) {
+//
+//                        Log.d("하이", "서비스 시간 : " + day);
+//                        isRunning = false;
+//
+//                    }
+//
+                    try {
+                        SendPushNotification sendPushNotification = new SendPushNotification();
+                        sendPushNotification.SendPush();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
 
                 }
 
             }
-        }).start();
+        }.start();
 
-        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return Service.START_NOT_STICKY;
     }
 
     @Override

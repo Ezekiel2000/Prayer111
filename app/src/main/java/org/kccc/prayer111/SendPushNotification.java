@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by ezekiel on 2017. 3. 6..
@@ -25,8 +26,8 @@ import java.util.HashMap;
 public class SendPushNotification {
 
     public static final String PUSHWOOSH_SERVICE_BASE_URL = "https://cp.pushwoosh.com/json/1.3/";
-    private static final String AUTH_TOKEN = "Q1wgPWshHYPIkqUWSJXWk2MWFMLaLnqpugKn1qUN0NGk1XqEpHf5JxRS9DY790DAgW3yBIeBT3vBRiictHbx";
-    private static final String APPLICATION_CODE = "5B4AC-805EF";
+    private static final String AUTH_TOKEN = "bl6bSAxoTG1LVTwhY5xOTxayV6XQ02syAvGxK3GRNBCWQI3h0cgGlpwrXUMEM86imMVhOlqYgUuLGkbBYTZg";
+    private static final String APPLICATION_CODE = "C7D6C-DAEB6";
 
     ArrayList<HashMap<String, String>> todayPraysList;
     private static String url = "http://api.kccc.org/a/pray111/get/today";
@@ -37,11 +38,11 @@ public class SendPushNotification {
 
     public void SendPush() throws JSONException, MalformedURLException {
 
-        now = new SimpleDateFormat("yyyy-MM-dd");
+        now = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
         Date Time = new Date();
         today = now.format(Time);
 
-        today = today + " 15:40";
+        today = today + " 17:32";
         HttpHandler sh = new HttpHandler();
 
         Log.d("하이", "지금 현재 시각은? : " + today );
@@ -72,8 +73,9 @@ public class SendPushNotification {
 
         JSONArray notificationsArray = new JSONArray()
                 .put(new JSONObject()
-                        .put("send_date", now)
+                        .put("send_date", today)
                         .put("content", push_message)
+                        .put("timezone", "Asia/Seoul")
                         .put("link", "org.kccc.prayer111"));
         JSONObject requestObj = new JSONObject()
                 .put("application", APPLICATION_CODE)

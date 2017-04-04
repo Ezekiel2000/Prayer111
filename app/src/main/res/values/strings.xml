@@ -3,6 +3,8 @@
     <string name="facebook_app_id">1851823218401486</string>
     <string name="kakao_app_id">76fab39d2cc57c8c97fdcc12fa90cd6c</string>
 
+    <string name="api_auth_token">Q1wgPWshHYPIkqUWSJXWk2MWFMLaLnqpugKn1qUN0NGk1XqEpHf5JxRS9DY790DAgW3yBIeBT3vBRiictHbx</string>
+
     <string name="title_activity_main">111Prayer</string>
     <string name="action_intro">111 소개</string>
     <string name="action_calender">기도한 날짜</string>
