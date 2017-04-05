@@ -202,39 +202,9 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
                         SimpleDateFormat dd = new SimpleDateFormat("d", Locale.KOREA);
                         day = dd.format(date);
-//
-//                        day = "4";
-//
-//                        int days = Integer.parseInt(day);
-//
-//                        if (days == 1) {
-//
-//                            PropertyManager.getInstance().setUserCalendarCheck("");
-//                        }
-//
-//                        Log.d("하이", "오늘의 날짜 : " + day);
-//
-//                        try {
-//
-//                            String json = PropertyManager.getInstance().getUserCalendarCheck();
-//                            Log.d("하이", "어레이 : " + json);
-//
-//                            JSONArray array = new JSONArray();
-//                            array.put(days, true);
-//
-//                            Log.d("하이", "어레이 : " + array.toString());
-//
-//                            PropertyManager.getInstance().setUserCalendarCheck(array.toString());
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }).start();
 
-//                PropertyManager.getInstance().setUserCalendarCheck(day);
-//                Log.d("하이", "클릭된 날짜 : " + PropertyManager.getInstance().getUserCalendarCheck());
                 Toast.makeText(MainActivity.this, day + "일, 오늘 기도를 하였습니다.", Toast.LENGTH_SHORT).show();
-//                Log.d("하이", "클릭한 날짜 : " + PropertyManager.getInstance().getUserCalendarCheck());
+
             }
         });
 
