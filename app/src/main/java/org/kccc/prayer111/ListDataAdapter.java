@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -13,11 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,8 +51,12 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
     final static int MIN_LINE = 2;
     final static int MAX_LINE = 500;
 
+    final static int LOAD_ROW = 30;
+    int start = 1;
+
     Context context;
     List<ListData> listData;
+    ListData[] datas;
     int list_intercession;
     Boolean icon_heart_clicked = true;
     String heart_check;
@@ -63,9 +70,15 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
     String dateMonth;
     String dateDay;
 
+    Boolean endPosition = false;
+
+    public ProgressBar progressBar;
+
     Handler handler = new Handler();
 
     private String postUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
+    private String url = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getTogether";
+    private String addurl = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getTogether&startRow=";
 
     public ListDataAdapter(Context context, List<ListData> listData, int list_intercession) {
         this.context = context;
@@ -501,13 +514,20 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
         });
 
+        Log.d("하이", "포지션 값 : " + position);
+        Log.d("하이", "사이즈 값 : " + listData.size());
+
+        if (position == listData.size()-1 ) {
+
+            if (!endPosition) {
+                loadDataList();
+            }
+
+        }
+
+
     }
 
-
-//    public void upDateItemList(List<ListData> listData) {
-//        this.listData = listData;
-//        notifyDataSetChanged();
-//    }
 
     public void remove(ListData data, int position) {
 
@@ -528,6 +548,81 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+    public void loadDataList() {
+
+        int row = (start++) * LOAD_ROW;
+        String setUrl = addurl + row;
+
+        Log.d("하이", "url : " + setUrl);
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+
+                HttpHandler sh = new HttpHandler();
+
+                String jsonStr = sh.makeServiceCall(setUrl);
+                Log.d("하이", "체크체크 : " +setUrl);
+
+                try {
+
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    String dataJson = jsonObject.getString("result");
+
+                    JSONArray jsonArray = new JSONArray(dataJson);
+
+                    for (int i = 0; i < jsonArray.length() ; i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        String number = object.getString("no");
+                        String email = object.getString("id");
+                        String name = object.getString("name");
+                        String content = object.getString("pray");
+                        String date = object.getString("indate");
+                        String profile = object.getString("prayPhoto");
+                        String imageInput = object.getString("photo");
+                        int warn = object.getInt("warn");
+                        int prayNumber = object.getInt("heart");
+                        int commentNumber = object.getInt("comment");
+                        int chkHeart = object.getInt("chkHeart");
+
+                        Log.d("하이", "체크체크 : " + object.toString());
+
+                        datas = new ListData[jsonArray.length()];
+
+                        // 신고당한 리스트(warn = 1인경우)는 add 하지 않음
+                        if (warn == 0) {
+
+                            datas[i] = new ListData(number, profile, email, name, date, content, imageInput, warn, prayNumber, commentNumber, chkHeart);
+                            listData.add(datas[i]);
+
+                        }
+                    }
+
+                } catch (JSONException e) {
+
+                    endPosition = true;
+                    e.printStackTrace();
+
+                }
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                notifyDataSetChanged();
+            }
+        }.execute();
+
+    }
 
 
 

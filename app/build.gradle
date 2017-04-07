@@ -50,8 +50,6 @@ dependencies {
     compile 'com.pushwoosh:pushwoosh:4.12.1'
     compile 'com.google.android.gms:play-services-gcm:10.2.0'
     compile 'com.google.android.gms:play-services-location:10.2.0'
-    compile 'com.github.pwittchen:infinitescroll:0.0.1'
-    compile 'com.vinaysshenoy:mugen:1.0.3'
     compile group: project.KAKAO_SDK_GROUP, name: 'usermgmt', version: project.KAKAO_SDK_VERSION
     compile group: 'com.kakao.sdk', name: 'kakaolink', version: project.KAKAO_SDK_VERSION
 }

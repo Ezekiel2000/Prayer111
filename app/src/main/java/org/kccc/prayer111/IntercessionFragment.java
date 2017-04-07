@@ -15,9 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.mugen.Mugen;
-import com.mugen.MugenCallbacks;
-import com.mugen.attachers.BaseAttacher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,65 +101,9 @@ public class IntercessionFragment extends Fragment {
 
         new GetIntercessionPrays().execute();
 
-
-        BaseAttacher attacher = Mugen.with(recyclerView, new MugenCallbacks() {
-            @Override
-            public void onLoadMore() {
-
-            }
-
-            @Override
-            public boolean isLoading() {
-                return false;
-            }
-
-            @Override
-            public boolean hasLoadedAllItems() {
-                return false;
-            }
-        }).start();
-
-        attacher.setLoadMoreEnabled(true);
-
-        attacher.setLoadMoreOffset(3);
-
-
-//        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//            }
-//
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
-//                displayedposition = llm.findLastCompletelyVisibleItemPosition();
-//
-//                Log.d("하이", "위치 : " + displayedposition);
-//
-//            }
-//        });
-//
-//        linearLayoutManager.scrollToPositionWithOffset(displayedposition, listData.size());
-
         return view;
 
     }
-
-//    private InfiniteScrollListener createInfiniteScrollListener() {
-//        return new InfiniteScrollListener(MAX_ITEMS_PER_REQUEST, linearLayoutManager) {
-//            @Override
-//            public void onScrolledToEnd(int firstVisibleItemPosition) {
-//                Log.d("하이", "호출 : " +url);
-//                int start = ++page * MAX_ITEMS_PER_REQUEST;
-//                simulateLoading(start);
-//                Log.d("하이", "호출 : " +url);
-//                refreshView(recyclerView, listDataAdapter, firstVisibleItemPosition);
-//            }
-//        };
-//    }
-
 
     private class GetIntercessionPrays extends AsyncTask<Void, Void, Void> {
 
@@ -284,80 +225,6 @@ public class IntercessionFragment extends Fragment {
 
         return new JSONArray(objects);
     }
-
-
-    private void simulateLoading(int start) {
-
-        String seturl = url + "&startRow" + start;
-
-        Log.d("하이", "엡데이트 url : " +url);
-
-        new AsyncTask<Void, Void, Void>() {
-            @Override protected void onPreExecute() {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override protected Void doInBackground(Void... params) {
-
-                HttpHandler sh = new HttpHandler();
-
-                String jsonStr = sh.makeServiceCall(seturl);
-
-                Log.d("하이", "체크체크 : " +seturl);
-
-                try {
-
-                    JSONObject jsonObject = new JSONObject(jsonStr);
-                    String dataJson = jsonObject.getString("result");
-
-                    JSONArray jsonArray = new JSONArray(dataJson);
-
-                    // 내림차순으로 정렬하기
-//                jsonArray = soryJsonArray(jsonArray);
-
-                    for (int i = 0; i < jsonArray.length() ; i++) {
-                        JSONObject object = jsonArray.getJSONObject(i);
-
-                        String number = object.getString("no");
-                        String email = object.getString("id");
-                        String name = object.getString("name");
-                        String content = object.getString("pray");
-                        String date = object.getString("indate");
-                        String profile = object.getString("prayPhoto");
-                        String imageInput = object.getString("photo");
-                        int warn = object.getInt("warn");
-                        int prayNumber = object.getInt("heart");
-                        int commentNumber = object.getInt("comment");
-                        int chkHeart = object.getInt("chkHeart");
-
-                        Log.d("하이", "체크체크 : " + object.toString());
-
-                        data = new ListData[jsonArray.length()];
-
-                        // 신고당한 리스트(warn = 1인경우)는 add 하지 않음
-                        if (warn == 0) {
-
-                            data[i] = new ListData(number, profile, email, name, date, content, imageInput, warn, prayNumber, commentNumber, chkHeart);
-                            listData.add(data[i]);
-
-                        }
-                    }
-
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-
-                }
-
-                return null;
-            }
-
-            @Override protected void onPostExecute(Void param) {
-                progressBar.setVisibility(View.GONE);
-            }
-        }.execute();
-    }
-
 
     @Override
     public void onResume() {
