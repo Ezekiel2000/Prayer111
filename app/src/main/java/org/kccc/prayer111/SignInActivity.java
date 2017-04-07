@@ -62,6 +62,8 @@ public class SignInActivity extends AppCompatActivity {
     private String profileUrl;
     private String password;
 
+    User user;
+
     Bitmap mSaved;
 
     private SessionCallback mKakaocallback;
@@ -114,8 +116,12 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                PropertyManager.getInstance().setUserId(text_input_email.getText().toString());
-                PropertyManager.getInstance().setPassword(text_input_password.getText().toString());
+                if (chk) {
+
+                    PropertyManager.getInstance().setUserId(text_input_email.getText().toString());
+                    PropertyManager.getInstance().setPassword(text_input_password.getText().toString());
+
+                }
 
                 Log.d("하이", "암호값 : " + text_input_password.getText().toString() );
                 password = text_input_password.getText().toString();
@@ -280,6 +286,8 @@ public class SignInActivity extends AppCompatActivity {
 
                     setLayoutText();
 
+                    user = new User(profileUrl, userId, userName, "");
+
                     PropertyManager.getInstance().setUserName(userName);
                     PropertyManager.getInstance().setUserId(userId);
                     PropertyManager.getInstance().setPassword(password);
@@ -300,6 +308,7 @@ public class SignInActivity extends AppCompatActivity {
                         intent.putExtra("userId", userId);
                         intent.putExtra("name", userName);
                         intent.putExtra("password", password);
+//                        intent.putExtra("userData", user);
                         intent.putExtra("prayNumber", getIntent().getStringExtra("prayNumber"));
 
                     } else if (getIntent().getStringExtra("position").equals("write")){
@@ -361,9 +370,9 @@ public class SignInActivity extends AppCompatActivity {
                             Log.d("하이", "에러 : " + response.getError().getErrorMessage());
                         } else {
                             try {
-                                userId = object.getString("email");      // 페이스북의 키 값
+//                                userId = object.getString("email");      // 페이스북의 키 값
                                 userName = object.getString("name");
-                                profileUrl = "https://graph.facebook.com/" + userId + "/picture";
+                                profileUrl = "https://graph.facebook.com/" + userId + "/picture?type=large";
 
                                 setLayoutText();
 

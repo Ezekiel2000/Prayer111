@@ -7,12 +7,17 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.mugen.Mugen;
+import com.mugen.MugenCallbacks;
+import com.mugen.attachers.BaseAttacher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,14 +34,22 @@ import java.util.List;
  */
 
 public class IntercessionFragment extends Fragment {
+    private static final int MAX_ITEMS_PER_REQUEST = 30;
+    private static final int NUMBER_OF_ITEMS = 100;
+    private static final int SIMULATED_LOADING_TIME_IN_MS = 1500;
 
     final int ITEM_SIZE = 5;
     List<ListData> listData;
     ListData[] data;
+    private int page = 0;
 
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
+    public ProgressBar progressBar;
 
+    String userId = "";
+
+    private static int displayedposition = 0;
 
     private String TAG = IntercessionFragment.class.getSimpleName();
     private static String url = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getTogether";
@@ -61,9 +74,9 @@ public class IntercessionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
-
         View view = inflater.inflate(R.layout.fragment_intercession, container, false);
+
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -71,14 +84,84 @@ public class IntercessionFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        recyclerView.setAdapter(listDataAdapter);
+        Log.d("하이", "호출 : " +url);
+//        recyclerView.addOnScrollListener(createInfiniteScrollListener());
+
+
+
         listData = new ArrayList<>();
         listDataAdapter = new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession);
 
+        userId = ((MainActivity)getActivity()).userId;
+
+        if (!TextUtils.isEmpty(userId)) {
+
+
+            url = url +"&userId=" + userId;
+
+        }
+
         new GetIntercessionPrays().execute();
+
+
+        BaseAttacher attacher = Mugen.with(recyclerView, new MugenCallbacks() {
+            @Override
+            public void onLoadMore() {
+
+            }
+
+            @Override
+            public boolean isLoading() {
+                return false;
+            }
+
+            @Override
+            public boolean hasLoadedAllItems() {
+                return false;
+            }
+        }).start();
+
+        attacher.setLoadMoreEnabled(true);
+
+        attacher.setLoadMoreOffset(3);
+
+
+//        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+//                displayedposition = llm.findLastCompletelyVisibleItemPosition();
+//
+//                Log.d("하이", "위치 : " + displayedposition);
+//
+//            }
+//        });
+//
+//        linearLayoutManager.scrollToPositionWithOffset(displayedposition, listData.size());
 
         return view;
 
     }
+
+//    private InfiniteScrollListener createInfiniteScrollListener() {
+//        return new InfiniteScrollListener(MAX_ITEMS_PER_REQUEST, linearLayoutManager) {
+//            @Override
+//            public void onScrolledToEnd(int firstVisibleItemPosition) {
+//                Log.d("하이", "호출 : " +url);
+//                int start = ++page * MAX_ITEMS_PER_REQUEST;
+//                simulateLoading(start);
+//                Log.d("하이", "호출 : " +url);
+//                refreshView(recyclerView, listDataAdapter, firstVisibleItemPosition);
+//            }
+//        };
+//    }
 
 
     private class GetIntercessionPrays extends AsyncTask<Void, Void, Void> {
@@ -93,16 +176,6 @@ public class IntercessionFragment extends Fragment {
         protected Void doInBackground(Void... params) {
 
             HttpHandler sh = new HttpHandler();
-
-            Log.d("하이", "체크체크 : " + PropertyManager.getInstance().getUserId());
-
-            if ( PropertyManager.getInstance().getUserId().isEmpty() ) {
-
-                url = url +"&userId=" + PropertyManager.getInstance().getUserId();
-
-            }
-
-
 
             String jsonStr = sh.makeServiceCall(url);
 
@@ -211,6 +284,80 @@ public class IntercessionFragment extends Fragment {
 
         return new JSONArray(objects);
     }
+
+
+    private void simulateLoading(int start) {
+
+        String seturl = url + "&startRow" + start;
+
+        Log.d("하이", "엡데이트 url : " +url);
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override protected void onPreExecute() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override protected Void doInBackground(Void... params) {
+
+                HttpHandler sh = new HttpHandler();
+
+                String jsonStr = sh.makeServiceCall(seturl);
+
+                Log.d("하이", "체크체크 : " +seturl);
+
+                try {
+
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    String dataJson = jsonObject.getString("result");
+
+                    JSONArray jsonArray = new JSONArray(dataJson);
+
+                    // 내림차순으로 정렬하기
+//                jsonArray = soryJsonArray(jsonArray);
+
+                    for (int i = 0; i < jsonArray.length() ; i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        String number = object.getString("no");
+                        String email = object.getString("id");
+                        String name = object.getString("name");
+                        String content = object.getString("pray");
+                        String date = object.getString("indate");
+                        String profile = object.getString("prayPhoto");
+                        String imageInput = object.getString("photo");
+                        int warn = object.getInt("warn");
+                        int prayNumber = object.getInt("heart");
+                        int commentNumber = object.getInt("comment");
+                        int chkHeart = object.getInt("chkHeart");
+
+                        Log.d("하이", "체크체크 : " + object.toString());
+
+                        data = new ListData[jsonArray.length()];
+
+                        // 신고당한 리스트(warn = 1인경우)는 add 하지 않음
+                        if (warn == 0) {
+
+                            data[i] = new ListData(number, profile, email, name, date, content, imageInput, warn, prayNumber, commentNumber, chkHeart);
+                            listData.add(data[i]);
+
+                        }
+                    }
+
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+
+                }
+
+                return null;
+            }
+
+            @Override protected void onPostExecute(Void param) {
+                progressBar.setVisibility(View.GONE);
+            }
+        }.execute();
+    }
+
 
     @Override
     public void onResume() {

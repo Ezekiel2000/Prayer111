@@ -115,61 +115,6 @@ public class WriteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-//                new Thread() {
-//                    @Override
-//                    public void run() {
-//
-//                        HttpURLConnection conn = null;
-//
-//                        try {
-//
-//                            URL url = new URL(setUrl);
-//                            conn = (HttpURLConnection) url.openConnection();
-//                            conn.setDoOutput(true);
-//                            conn.setDoInput(true);
-//                            conn.setChunkedStreamingMode(0);
-//                            conn.setRequestMethod("POST");
-////                        conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-//
-//                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
-//                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-//
-//                            writer.write( "mode=setTogetherPray"
-//                                    + "&pray=" + write_content.getText()
-//                                    + "&id=" + email);
-//                            writer.flush();
-//                            writer.close();
-//                            out.close();
-//
-//                            conn.connect();
-//
-//                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-//
-//                            StringBuilder builder = new StringBuilder();
-//                            String line = null;
-//                            while ((line =reader.readLine()) != null) {
-//                                if (builder.length() > 0) {
-//                                    builder.append("\n");
-//                                }
-//                                builder.append(line);
-//                            }
-//
-//                            Log.d("하이", builder.toString());
-//
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        } finally {
-//                            if (conn != null) {
-//                                conn.disconnect();
-//                            }
-//                        }
-//
-//                    }
-//                }.start();
-
-
-
-
                 // 서버로 정보값 Post 하고 MainActivity 의 중보기도로 이동
 
                 Log.d("하이" ,"아이디 : " + userId);

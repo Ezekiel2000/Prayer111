@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     String profile;
     String email;
 
+    User user;
+
     Boolean loginCheck = false;
 
     SharedPreferences mPref;
@@ -188,15 +190,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             @Override
             public void onClick(View v) {
 
-//                Log.d("하이", "클릭된 날짜 : " + day);
-//
-//                dayEditor.putString(day, day);
-//
-//
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
                         long now = System.currentTimeMillis();
                         Date date = new Date(now);
 

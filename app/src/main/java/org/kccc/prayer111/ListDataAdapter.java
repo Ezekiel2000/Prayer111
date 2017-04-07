@@ -1,5 +1,6 @@
 package org.kccc.prayer111;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,6 +58,8 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
     SimpleDateFormat curMonthFormat;
     SimpleDateFormat curDayFormat;
 
+    String userId = "";
+
     String dateMonth;
     String dateDay;
 
@@ -75,7 +78,6 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_list, null);
 
         Log.d("하이", "CreateViewholder");
-
 
         return new ViewHolder(view);
     }
@@ -149,6 +151,12 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             holder.image_input.setVisibility(View.VISIBLE);
         }
 
+        Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserId());
+        Log.d("하이", "Id : " + data.getEmail());
+        if (!PropertyManager.getInstance().getUserId().equals(data.getEmail())) {
+            holder.card_delete.setVisibility(View.GONE);
+        }
+
         holder.card_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,7 +164,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                 Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserId());
                 Log.d("하이", "Id : " + data.getEmail());
 
-                if (PropertyManager.getInstance().getUserId().equals(data.getEmail()))
+                if (userId.equals(data.getEmail()))
                 {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -315,25 +323,20 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
                                         if (data.getChkHeart() == 1) {
 
-                                            if (pray_number.equals("1")) {
-                                                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
-                                                holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
-                                                Toast.makeText(context, "좋아요 를 클릭하셨습니다.", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber() - 1));
-                                                holder.icon_heart.setImageResource(R.drawable.ic_heart);
-                                            }
+                                            upDateList(new ListData(data.getNumber(), data.getProfileImage(), data.getEmail(), data.getName(),
+                                                    data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber()-1,
+                                                    data.getCommentNumber(), 0), position);
+
+                                            Toast.makeText(context, "좋아요를 클릭을 해제하셨습니다.", Toast.LENGTH_SHORT).show();
 
                                         } else {
 
-                                            if (pray_number.equals("1")) {
-                                                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber() + 1));
-                                                holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
-                                                Toast.makeText(context, "좋아요 를 클릭하셨습니다.", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                holder.text_prayer_number.setText(String.valueOf(data.getPrayerNumber()));
-                                                holder.icon_heart.setImageResource(R.drawable.ic_heart);
-                                            }
+                                            upDateList(new ListData(data.getNumber(), data.getProfileImage(), data.getEmail(), data.getName(),
+                                                    data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber()+1,
+                                                    data.getCommentNumber(), 1), position);
+
+                                            Toast.makeText(context, "좋아요를 클릭하셨습니다.", Toast.LENGTH_SHORT).show();
+
 
                                         }
 
@@ -357,87 +360,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
             }
         });
-//        holder.icon_heart.setOnClickListener(v -> {
-//
-//                String builders = null;
-//
-//                new Thread() {
-//                    @Override
-//                    public void run() {
-//
-//                        HttpURLConnection conn = null;
-//
-//                        try {
-//
-//                            URL url = new URL(postUrl);
-//                            conn = (HttpURLConnection) url.openConnection();
-//                            conn.setDoInput(true);
-//                            conn.setDoOutput(true);
-//                            conn.setChunkedStreamingMode(0);
-//                            conn.setRequestMethod("POST");
-//
-//                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
-//                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-//
-//                            writer.write("mode=setHeart"
-//                                    + "&UserId=" + PropertyManager.getInstance().getUserEmail()
-//                                    + "&prayNo=" + data.getNumber());
-//                            writer.flush();
-//                            writer.close();
-//                            out.close();
-//
-//                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-//
-//                            StringBuilder builder = new StringBuilder();
-//                            String line = null;
-//                            while ((line = reader.readLine()) != null) {
-//                                if (builder.length() > 0) {
-//                                    builder.append("\n");
-//                                }
-//                                builder.append(line);
-//                            }
-//
-//                            Log.d("하이", builder.toString());
-//
-//                            JSONObject jsonObject = new JSONObject(builder.toString());
-//                            String data = jsonObject.getString("result");
-//
-//                            JSONObject object = new JSONObject(data);
-//                            heart_check = object.getString("chkHeart");
-//
-//                            Log.d("하이", "체크 하트 : " + heart_check);
-//
-//
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        } finally {
-//                            if (conn != null) {
-//                                conn.disconnect();
-//                            }
-//                        }
-//
-//                    }
-//                }.start();
-//
-//            try {
-//                if (heart_check.equals("0")) {
-//                    Log.d("하이", "체크 하트1 : " + heart_check);
-//                    icon_heart_clicked = true;
-//                } else {
-//                    Log.d("하이", "체크 하트2 : " + heart_check);
-//                    icon_heart_clicked = false;
-//                }
-//
-//                notifyDataSetChanged();
-//
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//        });
 
-        // 코멘트 버튼을 누르면 CommentListActivity로 이동함
         holder.icon_comment.setOnClickListener(v -> {
             Intent commentIntent = new Intent();
 
@@ -478,23 +401,22 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                     builder.setItems(info, (dialog, which) -> {
                         switch (which) {
                             case 0:
-                                Toast.makeText(context, "메세지 공유", Toast.LENGTH_SHORT).show();
 
                                 Intent smsIntent = new Intent(Intent.ACTION_VIEW);
                                 smsIntent.putExtra("sms_body", holder.text_content.getText());
                                 smsIntent.setType("vnd.android-dir/mms-sms");
 
                                 try {
+                                    Toast.makeText(context, "메세지 공유", Toast.LENGTH_SHORT).show();
                                     v.getContext().startActivity(smsIntent);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                } catch (ActivityNotFoundException e) {
+                                    Toast.makeText(context, "문자 어플리케이션이 없습니다.", Toast.LENGTH_SHORT).show();
                                 }
 
 
                                 break;
                             case 1:
 
-                                Toast.makeText(context, "카카오톡 공유", Toast.LENGTH_SHORT).show();
                                 Log.d("하이", "선택한 놈 : " + holder.getAdapterPosition());
                                 Intent kakaoIntent = new Intent(Intent.ACTION_SEND);
                                 kakaoIntent.setType("text/plain");
@@ -504,6 +426,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                 kakaoIntent.setPackage("com.kakao.talk");
 
                                 try {
+                                    Toast.makeText(context, "카카오톡 공유", Toast.LENGTH_SHORT).show();
                                     v.getContext().startActivity(kakaoIntent);
                                 } catch (Exception e) {
                                     Toast.makeText(context, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
@@ -511,7 +434,6 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
                                 break;
                             case 2:
-                                Toast.makeText(context, "신고하기", Toast.LENGTH_SHORT).show();
 
                                 new Thread() {
                                     @Override
@@ -562,6 +484,9 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                     }
                                 }.start();
 
+                                remove(new ListData(data.getNumber(), data.getProfileImage(), data.getEmail(), data.getName(),
+                                        data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber(),
+                                        data.getCommentNumber(), data.getChkHeart()), position);
                                 Toast.makeText(context, "해당 기도제목을 신고하였습니다.", Toast.LENGTH_SHORT).show();
 
                                 break;
@@ -598,12 +523,12 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
     }
 
-//    public void changeHeart(ListData data, int position) {
-//
-//        listData.set(position, )
-//        notifyItemChanged(position);
-//
-//    }
+    public void upDateList(ListData data, int position) {
+        listData.set(position, data);
+        notifyDataSetChanged();
+    }
+
+
 
 
     @Override
