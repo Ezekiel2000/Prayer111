@@ -310,6 +310,7 @@ public class SignInActivity extends AppCompatActivity {
                         intent.putExtra("password", password);
 //                        intent.putExtra("userData", user);
                         intent.putExtra("prayNumber", getIntent().getStringExtra("prayNumber"));
+                        intent.putExtra("check", true);
 
                     } else if (getIntent().getStringExtra("position").equals("write")){
 
@@ -321,6 +322,7 @@ public class SignInActivity extends AppCompatActivity {
                         intent.putExtra("userId", userId);
                         intent.putExtra("name", userName);
                         intent.putExtra("password", password);
+                        intent.putExtra("check", true);
 
                     } else if (getIntent().getStringExtra("position").equals("main")) {
 
@@ -447,6 +449,7 @@ public class SignInActivity extends AppCompatActivity {
                                     intent.putExtra("name", userName);
                                     intent.putExtra("password", password);
                                     intent.putExtra("prayNumber", getIntent().getStringExtra("prayNumber"));
+                                    intent.putExtra("check", true);
 
                                     startActivity(intent);
 
@@ -457,6 +460,7 @@ public class SignInActivity extends AppCompatActivity {
                                     intent.putExtra("userId", userId);
                                     intent.putExtra("name", userName);
                                     intent.putExtra("password", password);
+                                    intent.putExtra("check", true);
 
                                     startActivity(intent);
                                 } else if (getIntent().getStringExtra("position").equals("main")) {
@@ -629,7 +633,9 @@ public class SignInActivity extends AppCompatActivity {
                     intent.putExtra("name", userName);
                     intent.putExtra("password", password);
                     intent.putExtra("prayNumber", getIntent().getStringExtra("prayNumber"));
+                    intent.putExtra("check", true);
                     startActivity(intent);
+
 
                 } else if (getIntent().getStringExtra("position").equals("write")) {
                     Intent intent = new Intent(getBaseContext(), WriteActivity.class);
@@ -638,7 +644,9 @@ public class SignInActivity extends AppCompatActivity {
                     intent.putExtra("userId", userId);
                     intent.putExtra("name", userName);
                     intent.putExtra("password", password);
+                    intent.putExtra("check", true);
                     startActivity(intent);
+
                 } else if (getIntent().getStringExtra("position").equals("main")) {
 
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -90,6 +91,16 @@ public class CommentListActivity extends AppCompatActivity {
 
         input_comment = (EditText) findViewById(R.id.input_comment);
         btn_ok = (ImageView) findViewById(R.id.btn_ok);
+
+        input_comment.post(new Runnable() {
+            @Override
+            public void run() {
+                input_comment.setFocusableInTouchMode(true);
+                input_comment.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(input_comment, 0);
+            }
+        });
 
         Intent intent = getIntent();
         prayNumber = intent.getStringExtra("prayNumber");
@@ -420,15 +431,15 @@ public class CommentListActivity extends AppCompatActivity {
             Log.d("하이", "코멘트 갯수 : " + position);
             Log.d("하이", "리스트 갯수 : " + listCommentDatas.size());
 
-            if (position == listCommentDatas.size()-1 ) {
-
-                if (!endPsotion) {
-
-                    loadDataList();
-
-                }
-
-            }
+//            if (position == listCommentDatas.size()-1 ) {
+//
+//                if (!endPsotion) {
+//
+//                    loadDataList();
+//
+//                }
+//
+//            }
 
         }
 

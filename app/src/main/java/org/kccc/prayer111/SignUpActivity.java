@@ -80,6 +80,7 @@ public class SignUpActivity extends AppCompatActivity {
         btn_sign = (Button) findViewById(R.id.btn_sign);
         image_select = (ImageView) findViewById(R.id.image_select);
 
+
         Typeface typeface = Typeface.createFromAsset(getAssets(), "NotoSansCJKkr_Light.otf");
 
         text_sign_name.setTypeface(typeface);
@@ -379,6 +380,7 @@ public class SignUpActivity extends AppCompatActivity {
                         intent.putExtra("email", text_sign_email.getText().toString());
                         intent.putExtra("password", text_sign_password.getText().toString());
                         intent.putExtra("user_profile", imgPath);
+                        intent.putExtra("check", true);
 
                     } else if (getIntent().getStringExtra("position").equals("write")) {
 
@@ -389,6 +391,7 @@ public class SignUpActivity extends AppCompatActivity {
                         intent.putExtra("email", text_sign_email.getText().toString());
                         intent.putExtra("password", text_sign_password.getText().toString());
                         intent.putExtra("user_profile", imgPath);
+                        intent.putExtra("check", true);
 
                     } else if (getIntent().getStringExtra("position").equals("main")) {
 
@@ -399,6 +402,7 @@ public class SignUpActivity extends AppCompatActivity {
                         intent.putExtra("email", text_sign_email.getText().toString());
                         intent.putExtra("password", text_sign_password.getText().toString());
                         intent.putExtra("user_profile", imgPath);
+                        intent.putExtra("check", true);
 
                     }
 

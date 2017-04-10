@@ -38,7 +38,6 @@
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:hint="이메일"
-        android:cursorVisible="false"
         android:ems="10"
         android:drawablePadding="20dp"
         android:layout_marginEnd="40dp"
@@ -52,7 +51,7 @@
         android:paddingEnd="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
-        android:textColorHint="@color/colorText"/>
+        android:textColorHint="@color/colorText" />
 
     <EditText
         android:id="@+id/text_input_password"
@@ -60,7 +59,6 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:hint="비밀번호"
-        android:cursorVisible="false"
         android:ems="10"
         android:drawablePadding="20dp"
         android:layout_marginEnd="40dp"
