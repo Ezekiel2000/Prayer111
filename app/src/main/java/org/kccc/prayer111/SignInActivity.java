@@ -293,6 +293,7 @@ public class SignInActivity extends AppCompatActivity {
                     PropertyManager.getInstance().setPassword(password);
                     PropertyManager.getInstance().setUserProfile(profileUrl);
                     PropertyManager.getInstance().setUserLoginType("EMAIL");
+                    PropertyManager.getInstance().setLoginCheck(true);
 
                     Log.d("하이", "이미지 : " + profileUrl);
 
@@ -436,6 +437,7 @@ public class SignInActivity extends AppCompatActivity {
                                 PropertyManager.getInstance().setUserId(userId);
                                 PropertyManager.getInstance().setPassword(password);
                                 PropertyManager.getInstance().setUserLoginType("facebook");
+                                PropertyManager.getInstance().setLoginCheck(true);
 
 
                                 Toast.makeText(getApplicationContext(), userName + "님. 반갑습니다.", Toast.LENGTH_SHORT).show();
@@ -620,6 +622,7 @@ public class SignInActivity extends AppCompatActivity {
                 PropertyManager.getInstance().setUserId(userId);
                 PropertyManager.getInstance().setPassword(password);
                 PropertyManager.getInstance().setUserLoginType("kakao");
+                PropertyManager.getInstance().setLoginCheck(true);
 
                 Log.d("하이", "그래서 Id는 : " + userId);
                 Toast.makeText(getApplicationContext(), userName + "님. 반갑습니다.", Toast.LENGTH_SHORT).show();

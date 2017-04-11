@@ -107,27 +107,28 @@ public class PropertyManager {
         mEditor.commit();
     }
 
-    private static final String KEY_CALENDAR_CHECK = "calendar";
-    private String mTodayCheck;
+    private static final String KEY_LOGIN_CHECK = "login";
+    private boolean mLoginCheck = false;
 
-    public String getUserCalendarCheck() {
-        if (mTodayCheck == null) {
-            mTodayCheck = mPrefs.getString(KEY_CALENDAR_CHECK, "");
+    public boolean getLoginCheck() {
+        if (!mLoginCheck) {
+            mLoginCheck = mPrefs.getBoolean(KEY_LOGIN_CHECK, false);
         }
-        return mTodayCheck;
+        return mLoginCheck;
     }
 
-    public void setUserCalendarCheck(String UserCalendarCheck) {
-        mTodayCheck = UserCalendarCheck;
-        mEditor.putString(KEY_CALENDAR_CHECK, UserCalendarCheck);
+    public void setLoginCheck(boolean LoginCheck) {
+        mLoginCheck = LoginCheck;
+        mEditor.putBoolean(KEY_REMEMBER_CHECK, LoginCheck);
         mEditor.commit();
+        Log.d("하이", "로그인 결과" + LoginCheck);
     }
 
     private static final String KEY_REMEMBER_CHECK = "remember";
     private boolean mUserCheck = false;
 
     public boolean getUserRememberCheck() {
-        if (mUserCheck == false) {
+        if (!mUserCheck) {
             mUserCheck = mPrefs.getBoolean(KEY_REMEMBER_CHECK, false);
         }
         return mUserCheck;
@@ -135,9 +136,9 @@ public class PropertyManager {
 
     public void setUserRememberCheck(boolean UserCheck) {
         mUserCheck = UserCheck;
-        mEditor.putBoolean(KEY_REMEMBER_CHECK, false);
+        mEditor.putBoolean(KEY_REMEMBER_CHECK, UserCheck);
         mEditor.commit();
-        Log.d("하이", "결과" + UserCheck);
+        Log.d("하이", "set 결과" + UserCheck);
     }
 
 

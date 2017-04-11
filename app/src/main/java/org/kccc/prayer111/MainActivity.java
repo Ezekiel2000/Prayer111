@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     private ViewPager mViewPager;
     private BackPressCloseHandler backPressCloseHandler;
 
-    private boolean today_checked;
+    private boolean today_checked = false;
 
     String today_pray_content = null;
     String month_pray_content = null;
@@ -185,16 +185,18 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         }
 
 
-
         fab_pray.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                        long now = System.currentTimeMillis();
-                        Date date = new Date(now);
+                long now = System.currentTimeMillis();
+                Date date = new Date(now);
 
-                        SimpleDateFormat dd = new SimpleDateFormat("d", Locale.KOREA);
-                        day = dd.format(date);
+                SimpleDateFormat dd = new SimpleDateFormat("d", Locale.KOREA);
+                day = dd.format(date);
+
+                today_checked = true;
+
 
                 Toast.makeText(MainActivity.this, day + "일, 오늘 기도를 하였습니다.", Toast.LENGTH_SHORT).show();
 
@@ -452,6 +454,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         Log.d("하이", "아이디 : " + PropertyManager.getInstance().getUserId());
         Log.d("하이", "이름 : " + PropertyManager.getInstance().getUserName());
         Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserId());
+        Log.d("하이", "로그인체크 : " + PropertyManager.getInstance().getLoginCheck());
 
         super.onStart();
 
@@ -473,10 +476,10 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!loginCheck) {
-            menu.removeItem(R.id.action_logout);
-        } else {
+        if (PropertyManager.getInstance().getLoginCheck()) {
             menu.removeItem(R.id.action_login);
+        } else {
+            menu.removeItem(R.id.action_logout);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -498,7 +501,9 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
             Intent calenderIntent = new Intent(this, CalendarActivity.class);
             calenderIntent.putExtra("checked", today_checked);
-            calenderIntent.putExtra("day", day);
+            if (today_checked) {
+                calenderIntent.putExtra("day", day);
+            }
             startActivityForResult(calenderIntent, REQUEST_MAIN);
 
         } else if (id == R.id.action_logout) {

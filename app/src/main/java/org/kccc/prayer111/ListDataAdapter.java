@@ -48,7 +48,7 @@ import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHolder> {
 
-    final static int MIN_LINE = 2;
+    final static int MIN_LINE = 10;
     final static int MAX_LINE = 500;
 
     final static int LOAD_ROW = 30;
@@ -250,14 +250,10 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         if (data.getChkHeart() == 0) {
 
             holder.icon_heart.setImageResource(R.drawable.ic_heart);
-//            icon_heart_clicked = true;
-//            Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked );
 
         } else  {
 
             holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
-//            icon_heart_clicked = false;
-//            Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked );
         }
 
         holder.icon_heart.setOnClickListener(new View.OnClickListener() {
@@ -268,21 +264,8 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
 
                 Log.d("하이", "icon_heart_clicked: " + icon_heart_clicked);
-                holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
-                icon_heart_clicked = false;
 
-                Intent commentIntent = new Intent();
-
-                String name = PropertyManager.getInstance().getUserName();
-
-                if (name.equals("")) {
-
-                    commentIntent = new Intent(context, SignInActivity.class);
-                    commentIntent.putExtra("position", "cmt");
-                    commentIntent.putExtra("prayNumber", data.getNumber());
-                    v.getContext().startActivity(commentIntent);
-
-                } else {
+                if (PropertyManager.getInstance().getLoginCheck()) {
 
                     final Handler handler = new Handler();
                     new Thread() {
@@ -369,6 +352,15 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
                     }.start();
 
+                    holder.icon_heart.setImageResource(R.drawable.ic_heart_red);
+                    icon_heart_clicked = false;
+
+
+
+                } else {
+
+                    Toast.makeText(context, "로그인을 하시요.", Toast.LENGTH_SHORT).show();
+
                 }
 
             }
@@ -377,22 +369,17 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         holder.icon_comment.setOnClickListener(v -> {
             Intent commentIntent = new Intent();
 
-            String name = PropertyManager.getInstance().getUserName();
-
-            if (name.equals("")) {
-
-                commentIntent = new Intent(context, SignInActivity.class);
-                commentIntent.putExtra("position", "cmt");
-                commentIntent.putExtra("prayNumber", data.getNumber());
-
-            } else {
+            if (PropertyManager.getInstance().getLoginCheck()) {
 
                 commentIntent = new Intent(context, CommentListActivity.class);
                 commentIntent.putExtra("prayNumber", data.getNumber());
+                v.getContext().startActivity(commentIntent);
+
+            } else {
+
+                Toast.makeText(context, "로그인을 하시요.", Toast.LENGTH_SHORT).show();
 
             }
-
-            v.getContext().startActivity(commentIntent);
 
         });
 
@@ -402,12 +389,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
             public void onClick(View v) {
 
                 // 로그인을 안해서 name값이 없을 경우 로그인하라고 Toast 띄움
-                if (PropertyManager.getInstance().getUserName().equals("")) {
-
-                    Toast.makeText(context, "로그인을 하시요.", Toast.LENGTH_SHORT).show();
-
-                // 로그인을 했을 경우에만 Dialog창을 띄움
-                } else {
+                if (PropertyManager.getInstance().getLoginCheck()) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                     builder.setTitle("공유하기");
@@ -508,6 +490,12 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                     });
 
                     builder.show();
+
+                // 로그인을 했을 경우에만 Dialog창을 띄움
+                } else {
+
+                    Toast.makeText(context, "로그인을 하시요.", Toast.LENGTH_SHORT).show();
+
                 }
 
             }

@@ -38,6 +38,7 @@ public class TodayFragment extends Fragment {
     private static String url = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getToday";
 
     String today_pray;
+    Boolean loadingCheck = false;
 
     ArrayList<HashMap<String, String>> todayPraysList;
 
@@ -73,7 +74,16 @@ public class TodayFragment extends Fragment {
         curMonthFormat = new SimpleDateFormat("MM");
         curDayFormat = new SimpleDateFormat("d");
 
-        new GetTodayPrays().execute();
+        if (!loadingCheck) {
+
+            new GetTodayPrays().execute();
+
+        } else {
+
+            today_pray_content.setText(today_pray);
+
+        }
+
         Log.d("하이", "fragment1  onCreateView" + today_pray);
         return view;
     }
@@ -154,6 +164,7 @@ public class TodayFragment extends Fragment {
 
             }
 
+            loadingCheck = true;
             Log.d("하이", "fragment1  onPostExecute" + today_pray);
 
         }

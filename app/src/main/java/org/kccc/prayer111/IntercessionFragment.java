@@ -110,7 +110,7 @@ public class IntercessionFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = ProgressDialog.show(getContext(), null, "로딩중입니다.", true, false);
+//            progressDialog = ProgressDialog.show(getContext(), null, "로딩중입니다.", true, false);
         }
 
         @Override
@@ -185,7 +185,7 @@ public class IntercessionFragment extends Fragment {
 
             recyclerView.setAdapter(listDataAdapter);
             listDataAdapter.notifyDataSetChanged();
-            progressDialog.dismiss();
+//            progressDialog.dismiss();
 
         }
 

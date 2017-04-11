@@ -40,6 +40,8 @@ public class MonthFragment extends Fragment {
 
     String month_pray;
 
+    boolean loadginCheck = false;
+
     public MonthFragment() {
 
     }
@@ -69,7 +71,15 @@ public class MonthFragment extends Fragment {
         Typeface typefaceContent = Typeface.createFromAsset(getContext().getAssets(), "NotoSansCJKkr_Light.otf");
         month_pray_content.setTypeface(typefaceContent);
 
-        new GetMonthPrays().execute();
+        if (!loadginCheck) {
+
+            new GetMonthPrays().execute();
+
+        } else {
+
+            month_pray_content.setText(month_pray);
+
+        }
 
         return view;
     }
@@ -129,6 +139,8 @@ public class MonthFragment extends Fragment {
             Date date = new Date(now);
 
             String strCurMonth = curYearFormat.format(date) + curMonthFormat.format(date);
+
+            loadginCheck = true;
 
             try {
 

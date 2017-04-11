@@ -33,6 +33,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import okhttp3.MediaType;
@@ -141,21 +143,28 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(v.getContext(), "패스워드 확인을 입력하세요", Toast.LENGTH_SHORT).show();
                 } else if (text_sign_password.getText().toString().equals(text_sign_password_conform.getText().toString())) {
 
-                    Toast.makeText(v.getContext(), "성공", Toast.LENGTH_SHORT).show();
+                    boolean emailCheck = checkEmail(text_sign_email.getText().toString());
 
-                    PropertyManager.getInstance().setUserName(text_sign_name.getText().toString());
-                    PropertyManager.getInstance().setUserId(text_sign_email.getText().toString());
-                    PropertyManager.getInstance().setPassword(text_sign_password.getText().toString());
-                    PropertyManager.getInstance().setUserLoginType("EMAIL");
-                    PropertyManager.getInstance().setUserProfile(imgPath);
+                    if (emailCheck) {
 
-                    Log.d("하이", "setURL : " + setUrl);
+                        PropertyManager.getInstance().setUserName(text_sign_name.getText().toString());
+                        PropertyManager.getInstance().setUserId(text_sign_email.getText().toString());
+                        PropertyManager.getInstance().setPassword(text_sign_password.getText().toString());
+                        PropertyManager.getInstance().setUserLoginType("EMAIL");
+                        PropertyManager.getInstance().setUserProfile(imgPath);
 
-                    new MultiPartUpload().execute(
-                            PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserId(),
-                            PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType(), realPath
-                    );
+                        Log.d("하이", "setURL : " + setUrl);
 
+                        new MultiPartUpload().execute(
+                                PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserId(),
+                                PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType(), realPath
+                        );
+
+                    } else {
+
+                        Toast.makeText(v.getContext(), "이메일 형식이 아닙니다.", Toast.LENGTH_SHORT).show();
+
+                    }
 
                 } else {
 
@@ -277,6 +286,16 @@ public class SignUpActivity extends AppCompatActivity {
 
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
             startActivityForResult(intent, REQ_CODE_CAPTRUE_IMAGE);
+    }
+
+    public static boolean checkEmail(String email) {
+
+        String regex = "^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(email);
+        boolean isNormal = m.matches();
+        return isNormal;
+
     }
 
     public class MultiPartUpload extends AsyncTask<String, Integer, String> {
@@ -406,6 +425,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                     }
 
+                    Toast.makeText(getBaseContext(), "성공", Toast.LENGTH_SHORT).show();
+                    PropertyManager.getInstance().setLoginCheck(true);
                     startActivity(intent);
                     finish();
 

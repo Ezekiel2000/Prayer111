@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,13 +93,17 @@ public class CalendarActivity extends AppCompatActivity {
         dayList.add("금");
         dayList.add("토");
 
-        today = getIntent().getStringExtra("day");
+        try {
+            today = getIntent().getStringExtra("day");
 
-        if (today.equals("1")) {
-            dayEditor.clear();
-            dayEditor.apply();
+            if (today.equals("1")) {
+                dayEditor.clear();
+                dayEditor.apply();
+            }
+
+        } catch (NullPointerException e) {
+            Toast.makeText(getBaseContext(), "이번달 기도한 날짜가 없습니다.", Toast.LENGTH_SHORT).show();
         }
-
 
         String dayLoad = dayCheck.getString("saveDay", "");
 
