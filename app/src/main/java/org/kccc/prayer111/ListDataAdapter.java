@@ -39,8 +39,6 @@ import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
-import static com.facebook.login.widget.ProfilePictureView.TAG;
-
 
 /**
  * Created by ezekiel on 2017. 2. 2..
@@ -165,19 +163,26 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         }
 
         Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserId());
+
+
         Log.d("하이", "Id : " + data.getEmail());
-        if (!PropertyManager.getInstance().getUserId().equals(data.getEmail())) {
-            holder.card_delete.setVisibility(View.GONE);
+
+        Log.d("하이", "로그인 채크 : " + PropertyManager.getInstance().getLoginCheck());
+
+        if (PropertyManager.getInstance().getLoginCheck()) {
+
+                holder.card_delete.setVisibility(View.VISIBLE);
         }
 
-        holder.card_delete.setOnClickListener(new View.OnClickListener() {
+       holder.card_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserId());
                 Log.d("하이", "Id : " + data.getEmail());
+                Log.d("하이", "로그인 채크 : " + PropertyManager.getInstance().getLoginCheck());
 
-                if (userId.equals(data.getEmail()))
+                if (PropertyManager.getInstance().getUserId().equals(data.getEmail()))
                 {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -188,41 +193,52 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                             .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
 
-                                            HttpHandler sh = new HttpHandler();
+                                    if (PropertyManager.getInstance().getLoginCheck()) {
 
-                                            String url = postUrl + "?mode=removeTogetherPray" + "&userId=" + PropertyManager.getInstance().getUserId() + "&prayNo=" + data.getNumber();
+                                        new Thread() {
+                                            @Override
+                                            public void run() {
 
-                                            String jsonStr = sh.makeServiceCall(url);
+                                                HttpHandler sh = new HttpHandler();
 
-                                            if (jsonStr != null) {
+                                                String url = postUrl + "?mode=removeTogetherPray" + "&userId=" + PropertyManager.getInstance().getUserId() + "&prayNo=" + data.getNumber();
 
-                                                try {
+                                                String jsonStr = sh.makeServiceCall(url);
 
-                                                    JSONObject jsonObject = new JSONObject(jsonStr);
-                                                    JSONObject object = jsonObject.getJSONObject("result");
+                                                if (jsonStr != null) {
 
-                                                    String result = object.getString("msg");
+                                                    try {
 
-                                                } catch (JSONException e) {
-                                                    Log.e(TAG, "Json parsing error:" + e.getMessage());
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
+                                                        JSONObject jsonObject = new JSONObject(jsonStr);
+                                                        JSONObject object = jsonObject.getJSONObject("result");
+
+                                                        String result = object.getString("msg");
+
+                                                    } catch (JSONException e) {
+                                                        Log.e("하", "Json parsing error:" + e.getMessage());
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+
                                                 }
 
                                             }
 
-                                        }
+                                        }.start();
 
-                                    }.start();
+                                        remove(new ListData(data.getNumber(), data.getProfileImage(), data.getEmail(), data.getName(),
+                                                data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber(),
+                                                data.getCommentNumber(), data.getChkHeart()), position);
+                                        Toast.makeText(context, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
 
-                                    remove(new ListData(data.getNumber(), data.getProfileImage(), data.getEmail(), data.getName(),
-                                            data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber(),
-                                            data.getCommentNumber(), data.getChkHeart()), position);
-                                    Toast.makeText(context, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+
+                                    } else {
+
+                                        Toast.makeText(context, "로그인하세요.", Toast.LENGTH_SHORT).show();
+
+                                    }
+
                                 }
 
                             })
@@ -505,7 +521,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         Log.d("하이", "포지션 값 : " + position);
         Log.d("하이", "사이즈 값 : " + listData.size());
 
-        if (position == listData.size()-1 ) {
+        if (position == listData.size()-1 && listData.size() >= (LOAD_ROW * start) ) {
 
             if (!endPosition) {
                 loadDataList();

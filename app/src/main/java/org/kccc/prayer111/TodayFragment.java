@@ -171,6 +171,38 @@ public class TodayFragment extends Fragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser) {
+            Log.d("하이", "페이지 1번 보인다.");
+        } else {
+            Log.d("하이", "페이지 1번 안보인다.");
+        }
+    }
+
+    @Override
+    public void onStart() {
+
+        Log.d("하이", "fragment1  onStart");
+
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d("하이", "fragment1  onStop");
+
+        super.onStop();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d("하이", "fragment1  onDetach");
+        super.onDetach();
+    }
+
+    @Override
     public void onResume() {
 
         Log.d("하이", "fragment1  Resume");

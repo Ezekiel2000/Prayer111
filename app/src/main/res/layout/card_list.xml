@@ -77,6 +77,7 @@
                     card_view:layout_constraintTop_toTopOf="parent"
                     android:paddingTop="10dp"
                     android:id="@+id/pray_delete"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -103,6 +104,7 @@
                     android:layout_marginBottom="9dp"
                     android:textColor="#888"
                     android:text="...더보기"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 

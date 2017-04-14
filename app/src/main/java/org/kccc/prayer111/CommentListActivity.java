@@ -566,12 +566,4 @@ public class CommentListActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-
-        Intent okIntent = new Intent(getBaseContext(), MainActivity.class);
-        okIntent.putExtra("position", "cmt");
-        startActivity(okIntent);
-        finish();
-    }
 }

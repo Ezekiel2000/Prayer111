@@ -84,6 +84,17 @@ public class MonthFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser) {
+            Log.d("하이", "페이지 2번 보인다.");
+        } else {
+            Log.d("하이", "페이지 2번 안보인다.");
+        }
+    }
+
     private class GetMonthPrays extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -164,7 +175,21 @@ public class MonthFragment extends Fragment {
 
     }
 
+    @Override
+    public void onStart() {
 
+        Log.d("하이", "fragment2  onStart");
+
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+
+        Log.d("하이", "fragment2  onStop");
+
+        super.onStop();
+    }
 
     @Override
     public void onResume() {

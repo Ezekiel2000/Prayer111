@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.pushwoosh.notification.AbsNotificationFactory;
 import com.pushwoosh.notification.PushData;
@@ -77,6 +78,8 @@ public class NotificationFactory extends AbsNotificationFactory {
     private void addRemoteActions(NotificationCompat.Builder notificationBuilder, PushData pushData) {
 
         String action = pushData.getExtras().getString("my_actions");
+
+        Log.d("하이", "넘어오는 액션 값 :" + action);
 
         if (action != null) {
             try {
