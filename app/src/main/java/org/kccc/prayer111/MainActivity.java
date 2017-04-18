@@ -453,7 +453,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         Log.d("하이", "이미지 : " + PropertyManager.getInstance().getUserProfile());
         Log.d("하이", "아이디 : " + PropertyManager.getInstance().getUserId());
         Log.d("하이", "이름 : " + PropertyManager.getInstance().getUserName());
-        Log.d("하이", "이메일 : " + PropertyManager.getInstance().getUserId());
         Log.d("하이", "로그인체크 : " + PropertyManager.getInstance().getLoginCheck());
 
         super.onStart();

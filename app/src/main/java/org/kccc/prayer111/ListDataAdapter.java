@@ -118,7 +118,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
         holder.text_date.setText(data.getDate());
 
         // glide 라이브러리 사용하여 원형 프로필 만들기
-        Glide.with(context)
+        Glide.with(holder.profile.getContext())
                 .load(data.getProfileImage())
                 .bitmapTransform(new CropCircleTransformation(context))
                 .into(holder.profile);
@@ -155,7 +155,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
         // 이미지가 있을 경우 이미지 뷰를 보여줌
         if (data.getImageInput() != null) {
-            Glide.with(context)
+            Glide.with(holder.image_input.getContext())
                     .load(data.getImageInput())
                     .override(1500, 1500)
                     .into(holder.image_input);
@@ -230,12 +230,12 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                         remove(new ListData(data.getNumber(), data.getProfileImage(), data.getEmail(), data.getName(),
                                                 data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber(),
                                                 data.getCommentNumber(), data.getChkHeart()), position);
-                                        Toast.makeText(context, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(v.getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
 
 
                                     } else {
 
-                                        Toast.makeText(context, "로그인하세요.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(v.getContext(), "로그인하세요.", Toast.LENGTH_SHORT).show();
 
                                     }
 
@@ -339,7 +339,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                                     data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber()-1,
                                                     data.getCommentNumber(), 0), position);
 
-                                            Toast.makeText(context, "좋아요를 클릭을 해제하셨습니다.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(v.getContext(), "좋아요를 클릭을 해제하셨습니다.", Toast.LENGTH_SHORT).show();
 
                                         } else {
 
@@ -347,7 +347,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                                     data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber()+1,
                                                     data.getCommentNumber(), 1), position);
 
-                                            Toast.makeText(context, "좋아요를 클릭하셨습니다.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(v.getContext(), "좋아요를 클릭하셨습니다.", Toast.LENGTH_SHORT).show();
 
 
                                         }
@@ -387,13 +387,13 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
 
             if (PropertyManager.getInstance().getLoginCheck()) {
 
-                commentIntent = new Intent(context, CommentListActivity.class);
+                commentIntent = new Intent(holder.icon_comment.getContext(), CommentListActivity.class);
                 commentIntent.putExtra("prayNumber", data.getNumber());
                 v.getContext().startActivity(commentIntent);
 
             } else {
 
-                Toast.makeText(context, "로그인을 하시요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "로그인을 하시요.", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -418,10 +418,10 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                 smsIntent.setType("vnd.android-dir/mms-sms");
 
                                 try {
-                                    Toast.makeText(context, "메세지 공유", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(v.getContext(), "메세지 공유", Toast.LENGTH_SHORT).show();
                                     v.getContext().startActivity(smsIntent);
                                 } catch (ActivityNotFoundException e) {
-                                    Toast.makeText(context, "문자 어플리케이션이 없습니다.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(v.getContext(), "문자 어플리케이션이 없습니다.", Toast.LENGTH_SHORT).show();
                                 }
 
 
@@ -437,10 +437,10 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                 kakaoIntent.setPackage("com.kakao.talk");
 
                                 try {
-                                    Toast.makeText(context, "카카오톡 공유", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(v.getContext(), "카카오톡 공유", Toast.LENGTH_SHORT).show();
                                     v.getContext().startActivity(kakaoIntent);
                                 } catch (Exception e) {
-                                    Toast.makeText(context, "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(v.getContext(), "카카오톡이 설치가 안되어있습니다.", Toast.LENGTH_SHORT).show();
                                 }
 
                                 break;
@@ -498,7 +498,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                                 remove(new ListData(data.getNumber(), data.getProfileImage(), data.getEmail(), data.getName(),
                                         data.getDate(), data.getContent(), data.getImageInput(), data.getWarn(), data.getPrayerNumber(),
                                         data.getCommentNumber(), data.getChkHeart()), position);
-                                Toast.makeText(context, "해당 기도제목을 신고하였습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(v.getContext(), "해당 기도제목을 신고하였습니다.", Toast.LENGTH_SHORT).show();
 
                                 break;
                         }
@@ -510,7 +510,7 @@ public class ListDataAdapter extends RecyclerView.Adapter<ListDataAdapter.ViewHo
                 // 로그인을 했을 경우에만 Dialog창을 띄움
                 } else {
 
-                    Toast.makeText(context, "로그인을 하시요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), "로그인을 하시요.", Toast.LENGTH_SHORT).show();
 
                 }
 

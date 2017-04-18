@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -93,16 +92,6 @@ public class IntercessionFragment extends Fragment {
 
         userId = ((MainActivity)getActivity()).userId;
 
-        if (!TextUtils.isEmpty(userId)) {
-
-
-            getUrl = url +"&userId=" + userId;
-
-        } else {
-
-            getUrl = url;
-
-        }
 
 //            listData = new ArrayList<>();
 //            listDataAdapter = new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession);
@@ -226,7 +215,20 @@ public class IntercessionFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
 
         if (isVisibleToUser) {
+
+            if (PropertyManager.getInstance().getLoginCheck()) {
+
+
+                getUrl = url +"&userId=" + PropertyManager.getInstance().getUserId();
+
+            } else {
+
+                getUrl = url;
+
+            }
+
             Log.d("하이", "페이지 3번 보인다.");
+
 
             listData = new ArrayList<>();
             listDataAdapter = new ListDataAdapter(getContext(), listData, R.layout.fragment_intercession);
@@ -255,6 +257,8 @@ public class IntercessionFragment extends Fragment {
             HttpHandler sh = new HttpHandler();
 
             String jsonStr = sh.makeServiceCall(getUrl);
+
+            Log.d("하이", "url : " + getUrl);
 
             try {
 
@@ -303,6 +307,10 @@ public class IntercessionFragment extends Fragment {
                 });
 
             } catch (JSONException e) {
+
+                e.printStackTrace();
+
+            } catch (Exception e) {
 
                 e.printStackTrace();
 

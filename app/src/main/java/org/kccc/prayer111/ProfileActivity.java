@@ -221,6 +221,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                 intent.putExtra("check", false);
+                PropertyManager.getInstance().setLoginCheck(false);
                 startActivity(intent);
                 finish();
 

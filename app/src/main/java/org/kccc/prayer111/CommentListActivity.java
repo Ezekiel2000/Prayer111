@@ -188,6 +188,10 @@ public class CommentListActivity extends AppCompatActivity {
                             });
 
                             Intent okIntent = new Intent(getBaseContext(), MainActivity.class);
+                            okIntent.putExtra("user_profile", PropertyManager.getInstance().getUserProfile());
+                            okIntent.putExtra("userId", PropertyManager.getInstance().getUserId());
+                            okIntent.putExtra("name", PropertyManager.getInstance().getUserName());
+                            okIntent.putExtra("password", PropertyManager.getInstance().getPassword());
                             okIntent.putExtra("position", "cmt");
                             startActivity(okIntent);
                         }
