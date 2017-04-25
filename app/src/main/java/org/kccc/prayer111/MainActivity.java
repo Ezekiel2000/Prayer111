@@ -326,39 +326,27 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             }
         });
 
-        Log.d("하이", "팹버튼 변경");
+        if (TextUtils.isEmpty(getIntent().getStringExtra("position"))) {
 
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    SendPushNotification sendPushNotification = new SendPushNotification();
-//                    sendPushNotification.SendPush();
-//                } catch (MalformedURLException e) {
-//
-//                } catch (JSONException e) {
-//
-//                }
-//            }
-//        }.start();
+            // 비어있음
 
+        } else {
 
-        try {
-            String position = getIntent().getStringExtra("position");
-            if (position.equals("cmt") || position.equals("write")) {
-                mViewPager.setCurrentItem(2);
-                fab_write.setVisibility(View.VISIBLE);
-                findViewById(R.id.multiple_action).setVisibility(View.GONE);
+            try {
+                String position = getIntent().getStringExtra("position");
+                if (position.equals("cmt") || position.equals("write")) {
+                    mViewPager.setCurrentItem(2);
+                    fab_write.setVisibility(View.VISIBLE);
+                    findViewById(R.id.multiple_action).setVisibility(View.GONE);
 
-            } else if (position.equals("main")){
+                } else if (position.equals("main")){
 
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
         }
-
-
-
 
     }
 

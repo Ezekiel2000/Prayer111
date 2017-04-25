@@ -118,42 +118,48 @@ public class ProfileActivity extends AppCompatActivity {
                 .bitmapTransform(new CropCircleTransformation(this))
                 .into(image_profile_chage);
 
-        image_profile_chage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-
-                builder.setTitle("사진 선택")
-                        .setNegativeButton("사진첩", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                Intent intent = new Intent(Intent.ACTION_PICK);
-                                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
-
-                            }
-                        })
-                        .setPositiveButton("카메라", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                try {
-
-                                    doTakePhotoAction();
-
-                                } catch (IOException e) {
-
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
-            }
-        });
+        // 이미지 선택시 이미지 파일 교환
+//        image_profile_chage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+//
+//                builder.setTitle("사진 선택")
+//                        .setNegativeButton("사진첩", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//
+//                                Intent intent = new Intent(Intent.ACTION_PICK);
+//                                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+//                                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
+//
+//                            }
+//                        })
+//                        .setPositiveButton("카메라", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                try {
+//
+//                                    doTakePhotoAction();
+//
+//                                } catch (IOException e) {
+//
+//                                    e.printStackTrace();
+//                                }
+//
+//                            }
+//                        });
+//                AlertDialog dialog = builder.create();
+//                dialog.show();
+//
+//                new MultiPartUpload().execute(
+//                        PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserId(),
+//                        PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType(), realPath
+//                );
+//
+//            }
+//        });
 
         text_my_password_change.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,13 +215,6 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                 }
-
-                // PropertyManager 초기화
-//                PropertyManager.getInstance().setUserProfile("");
-//                PropertyManager.getInstance().setUserName("");
-//                PropertyManager.getInstance().setUserId("");
-//                PropertyManager.getInstance().setPassword("");
-//                PropertyManager.getInstance().setUserLoginType("");
 
                 Toast.makeText(v.getContext(), "로그아웃", Toast.LENGTH_SHORT).show();
 

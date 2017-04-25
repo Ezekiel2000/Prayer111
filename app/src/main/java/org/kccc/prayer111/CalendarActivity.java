@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,11 +37,8 @@ public class CalendarActivity extends AppCompatActivity {
     private GridView gridView;
     private Calendar mCal;
 
-    private AlertDialog.Builder alert_today;
-
     String json;
     String today;
-    ArrayList checkday = new ArrayList();
 
     SharedPreferences dayCheck;
 
@@ -78,7 +74,6 @@ public class CalendarActivity extends AppCompatActivity {
 
         final SimpleDateFormat curYearFormat = new SimpleDateFormat("yyyy", Locale.KOREA);
         final SimpleDateFormat curMonthFormat = new SimpleDateFormat("MM", Locale.KOREA);
-        final SimpleDateFormat curDayFormat = new SimpleDateFormat("dd", Locale.KOREA);
 
         textDate.setText(curYearFormat.format(date) + "." + curMonthFormat.format(date));
 
@@ -107,16 +102,11 @@ public class CalendarActivity extends AppCompatActivity {
 
         String dayLoad = dayCheck.getString("saveDay", "");
 
-        Log.d("하이", "getIntent : " + today);
-        Log.d("하이", "dayLoad : " + dayLoad);
-
         if (!dayLoad.isEmpty()) {
 
             try {
                 JSONObject object = new JSONObject(dayLoad);
                 String str = object.getString("array");
-                Log.d("하이", "array : " + object.toString());
-                Log.d("하이", "str : " + str);
 
                 JSONArray array = new JSONArray(str);
                 for (int i = 0 ; i < array.length() ; i++) {
@@ -130,34 +120,21 @@ public class CalendarActivity extends AppCompatActivity {
 
         }
 
-
-
         dayPrayCheckedList.add(today);
-
-        Log.d("하이", "dayPrayCheckedList : " + dayPrayCheckedList.toString());
 
         JSONObject object = new JSONObject();
 
         try {
             JSONArray array = new JSONArray();
             for (int i = 0 ; i < dayPrayCheckedList.size(); i++) {
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.put("day", dayPrayCheckedList.get(i));
                 array.put(dayPrayCheckedList.get(i));
-//                Log.d("하이", "jsonObject : " + jsonObject.toString());
-                Log.d("하이", "jsonObject : " + array.toString());
             }
-
             object.put("array", array);
-            Log.d("하이", "object : " + object.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         String daySave = object.toString();
-
-        Log.d("하이", "saveDay : " + daySave);
 
         dayEditor.putString("saveDay", daySave);
         dayEditor.apply();
@@ -185,16 +162,8 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
-        Log.d("하이", String.valueOf(today_checked) + 0);
-
         Intent intent = getIntent();
         today_checked = intent.getBooleanExtra("checked", today_checked);
-
-        Log.d("하이", String.valueOf(today_checked) + 1);
-
-
-        Log.d("하이", String.valueOf(today_checked) + 3);
-
 
         gridAdapter = new GridAdapter(getApplicationContext(), dayList);
         gridView.setAdapter(gridAdapter);
@@ -207,18 +176,9 @@ public class CalendarActivity extends AppCompatActivity {
 
         for (int j = 0; j < mCal.getActualMaximum(Calendar.DAY_OF_MONTH); j++) {
             dayList.add("" + (j + 1));
-            Log.d("하이", "j의 값 :" + j + dayList.toString());
-            Log.d("하이", "month 의 값 :" + month);
         }
 
     }
-
-//    private void savePreference() {
-//        SharedPreferences pref = getPreferences("pref", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = pref.edit();
-//
-//    }
-
 
     private class GridAdapter extends BaseAdapter {
 
@@ -268,10 +228,6 @@ public class CalendarActivity extends AppCompatActivity {
 
             mCal = Calendar.getInstance();
 
-            Integer today = mCal.get(Calendar.DAY_OF_MONTH);
-            String sToday = String.valueOf(1);
-
-
             for (int i =0 ; i < dayPrayCheckedList.size(); i++) {
 
                 if (getItem(position).equals(dayPrayCheckedList.get(i))) {
@@ -279,14 +235,9 @@ public class CalendarActivity extends AppCompatActivity {
                     holder.textItemGridView.setBackground(getResources().getDrawable(R.drawable.calendar_stamp));
 
                 }
-
             }
-
             return convertView;
         }
-
-
-
     }
 
     private class ViewHolder {

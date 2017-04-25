@@ -12,8 +12,8 @@ android {
         applicationId "org.kccc.prayer111"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 6
-        versionName '1.0.5'
+        versionCode 7
+        versionName '1.0.6'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

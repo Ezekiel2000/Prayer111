@@ -3,7 +3,6 @@ package org.kccc.prayer111;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.kakao.auth.KakaoSDK;
 
@@ -18,7 +17,6 @@ public class GlobalApplication extends Application {
     private static Context mContext;
 
     public static Activity getCurrentAcitivty() {
-        Log.d("하이", "++ currentActivity : " + (currentActivity != null ? currentActivity.getClass().getSimpleName() : ""));
         return currentActivity;
     }
 

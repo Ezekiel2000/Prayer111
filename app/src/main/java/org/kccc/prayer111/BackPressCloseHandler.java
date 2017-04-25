@@ -7,6 +7,7 @@ import android.widget.Toast;
  * Created by ezekiel on 2017. 2. 10..
  */
 
+// 백 키를 두번 눌렀을 경우에만 종료시키는 클래스
 public class BackPressCloseHandler {
 
     private long backKeyPressTime = 0;
@@ -18,6 +19,7 @@ public class BackPressCloseHandler {
         this.activity = activity;
     }
 
+    // 대신 2초 이내에 백 키를 2번 눌렀을 경우에만 종료시킴
     public void onBackPressed() {
         if (System.currentTimeMillis() > backKeyPressTime + 2000) {
             backKeyPressTime = System.currentTimeMillis();

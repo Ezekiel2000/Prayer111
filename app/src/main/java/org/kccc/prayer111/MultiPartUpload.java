@@ -87,6 +87,8 @@ public class MultiPartUpload extends AsyncTask<String, Integer, String> {
                     .build();
 
             OkHttpClient client = new OkHttpClient();
+            client.connectTimeoutMillis();
+            client.readTimeoutMillis();
             Response response = client.newCall(request).execute();
             res = response.body().string();
             Log.d("하이", "response : " + res);

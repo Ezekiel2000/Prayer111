@@ -8,9 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -88,123 +86,7 @@ public class IntercessionFragment extends Fragment {
 
         recyclerView.setAdapter(listDataAdapter);
 
-        Log.d("하이", "호출 : " +getUrl);
-
         userId = ((MainActivity)getActivity()).userId;
-
-
-//            listData = new ArrayList<>();
-//            listDataAdapter = new ListDataAdapter(getActivity().getApplicationContext(), listData, R.layout.fragment_intercession);
-//            new GetIntercessionPrays().execute();
-
-        final GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return true;
-            }
-        });
-
-//        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-//            @Override
-//            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-//
-//                View child = rv.findChildViewUnder(e.getX(), e.getY());
-//
-//                ImageView card_delete = (ImageView) rv.getChildViewHolder(child).itemView.findViewById(R.id.pray_delete);
-//
-//                card_delete.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        Log.d("하이", "listdata.get :" + listData.get(rv.getChildAdapterPosition(child)+1));
-//
-//
-//                        if (userId.equals(listData.get(rv.getChildAdapterPosition(child)).getEmail())) {
-//
-//                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-//
-//                            builder.setTitle("중보기도 삭제")
-//                                    .setMessage("중보기도를 삭제하시겠습니까?")
-//                                    .setCancelable(false)
-//                                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialog, int which) {
-//                                            new Thread() {
-//                                                @Override
-//                                                public void run() {
-//
-//                                                    HttpHandler sh = new HttpHandler();
-//
-//                                                    String url = postUrl + "?mode=removeTogetherPray" + "&userId=" + userId + "&prayNo=" + listData.get(rv.getChildAdapterPosition(child)).getNumber();
-//
-//                                                    Log.d("하이", "url : " + url);
-//
-//                                                    String jsonStr = sh.makeServiceCall(url);
-//
-//                                                    if (jsonStr != null) {
-//
-//                                                        try {
-//
-//                                                            JSONObject jsonObject = new JSONObject(jsonStr);
-//                                                            JSONObject object = jsonObject.getJSONObject("result");
-//
-//                                                            String result = object.getString("msg");
-//
-//                                                            Log.d("하이", "삭제 결과 : " + result);
-//
-//                                                        } catch (JSONException e) {
-//                                                            Log.e(TAG, "Json parsing error:" + e.getMessage());
-//                                                        } catch (Exception e) {
-//                                                            e.printStackTrace();
-//                                                        }
-//
-//                                                    }
-//
-//
-//                                                }
-//                                            }.start();
-//
-//                                            listDataAdapter.remove(new ListData(listData.get(rv.getChildAdapterPosition(child)).getNumber(),
-//                                                    listData.get(rv.getChildAdapterPosition(child)).getProfileImage(), listData.get(rv.getChildAdapterPosition(child)).getEmail(), listData.get(rv.getChildAdapterPosition(child)).getName(),
-//                                                    listData.get(rv.getChildAdapterPosition(child)).getDate(), listData.get(rv.getChildAdapterPosition(child)).getContent(),
-//                                                    listData.get(rv.getChildAdapterPosition(child)).getImageInput(), listData.get(rv.getChildAdapterPosition(child)).getWarn(),
-//                                                    listData.get(rv.getChildAdapterPosition(child)).getPrayerNumber(), listData.get(rv.getChildAdapterPosition(child)).getCommentNumber(),
-//                                                    listData.get(rv.getChildAdapterPosition(child)).getChkHeart()), rv.getChildAdapterPosition(child));
-//                                        }
-//                                    })
-//                                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialog, int which) {
-//                                            dialog.cancel();
-//                                        }
-//                                    });
-//
-//                            AlertDialog dialog = builder.create();
-//                            dialog.show();
-//
-//                        }
-//
-//                        Log.d(TAG, "getChildAdapterPosition=>" + rv.getChildAdapterPosition(child));
-//                        Log.d(TAG, "getChildLayoutPosition=>" + rv.getChildLayoutPosition(child));
-//                        Log.d(TAG, "getChildViewHolder=>" + rv.getChildViewHolder(child).itemView);
-//
-//                    }
-//                });
-//
-//                return false;
-//            }
-//
-//            @Override
-//            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-//
-//            }
-//
-//            @Override
-//            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-//
-//            }
-//        });
-
 
         return view;
 

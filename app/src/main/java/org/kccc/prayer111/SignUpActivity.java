@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,9 +28,17 @@ import com.bumptech.glide.Glide;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -155,10 +164,23 @@ public class SignUpActivity extends AppCompatActivity {
 
                         Log.d("하이", "setURL : " + setUrl);
 
-                        new MultiPartUpload().execute(
-                                PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserId(),
-                                PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType(), realPath
-                        );
+                        if (TextUtils.isEmpty(realPath)) {
+
+                            new SignInUser().execute(
+                                    PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserId(),
+                                    PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType()
+                            );
+
+
+
+                        } else {
+
+                            new MultiPartUpload().execute(
+                                    PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserId(),
+                                    PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType(), realPath
+                            );
+
+                        }
 
                     } else {
 
@@ -298,6 +320,146 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
+    // 가입할 때 image 가 없을 경우 불러오는 쓰레드
+    public class SignInUser extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpURLConnection conn = null;
+            StringBuilder builder = new StringBuilder();
+
+            String res = null;
+
+            try {
+                String name = params[0];
+                String email = params[1];
+                String password = params[2];
+                String method = params[3];
+
+                URL url = new URL(setUrl);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                conn.setChunkedStreamingMode(0);
+                conn.setRequestMethod("POST");
+
+                OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                writer.write( "mode=joinProcess"
+                        + "&name=" + name
+                        + "&email=" + email
+                        + "&password=" + password
+                        + "&method=" + method );
+                writer.flush();
+                writer.close();
+                out.close();
+
+                conn.connect();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+
+                String line = null;
+                while ((line =reader.readLine()) != null) {
+                    if (builder.length() > 0) {
+                        builder.append("\n");
+                    }
+                    builder.append(line);
+                }
+
+                Log.d("하이", builder.toString());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            }
+
+            return builder.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+
+                Log.d("하이", "s : " + s);
+
+                JSONObject jsonObject = new JSONObject(s);
+
+                Log.d("하이", "jsonObject : " + jsonObject);
+
+                JSONObject object = jsonObject.getJSONObject("result");
+                ty = object.getString("ty");
+
+                Log.d("하이", "ty : " + ty);
+
+                if (ty.equals("new")) {
+
+                    Intent intent = new Intent();
+
+                    if (getIntent().getStringExtra("position").equals("cmt")) {
+
+                        intent = new Intent(getBaseContext(), CommentListActivity.class);
+
+                        intent.putExtra("name", text_sign_name.getText().toString());
+                        intent.putExtra("userId", text_sign_email.getText().toString());
+                        intent.putExtra("email", text_sign_email.getText().toString());
+                        intent.putExtra("password", text_sign_password.getText().toString());
+                        intent.putExtra("user_profile", imgPath);
+                        intent.putExtra("check", true);
+
+                    } else if (getIntent().getStringExtra("position").equals("write")) {
+
+                        intent = new Intent(getBaseContext(), WriteActivity.class);
+
+                        intent.putExtra("name", text_sign_name.getText().toString());
+                        intent.putExtra("userId", text_sign_email.getText().toString());
+                        intent.putExtra("email", text_sign_email.getText().toString());
+                        intent.putExtra("password", text_sign_password.getText().toString());
+                        intent.putExtra("user_profile", imgPath);
+                        intent.putExtra("check", true);
+
+                    } else if (getIntent().getStringExtra("position").equals("main")) {
+
+                        intent = new Intent(getBaseContext(), MainActivity.class);
+
+                        intent.putExtra("name", text_sign_name.getText().toString());
+                        intent.putExtra("userId", text_sign_email.getText().toString());
+                        intent.putExtra("email", text_sign_email.getText().toString());
+                        intent.putExtra("password", text_sign_password.getText().toString());
+                        intent.putExtra("user_profile", imgPath);
+                        intent.putExtra("check", true);
+
+                    }
+
+                    Toast.makeText(getBaseContext(), PropertyManager.getInstance().getUserName() + "님. 환영합니다.", Toast.LENGTH_SHORT).show();
+                    PropertyManager.getInstance().setLoginCheck(true);
+                    startActivity(intent);
+                    finish();
+
+                } else if (ty.equals("old")) {
+                    Toast.makeText(getBaseContext(), "이미 있는 계정입니다.", Toast.LENGTH_SHORT).show();
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+
+    // 가입할 때 image 가 있을 경우 불러오는 쓰레드
     public class MultiPartUpload extends AsyncTask<String, Integer, String> {
 
         @Override
@@ -362,6 +524,8 @@ public class SignUpActivity extends AppCompatActivity {
                         .build();
 
                 OkHttpClient client = new OkHttpClient();
+                client.connectTimeoutMillis();
+                client.readTimeoutMillis();
                 Response response = client.newCall(request).execute();
                 res = response.body().string();
                 Log.d("하이", "response : " + res);
@@ -380,7 +544,13 @@ public class SignUpActivity extends AppCompatActivity {
             super.onPostExecute(s);
 
             try {
+
+                Log.d("하이", "s : " + s);
+
                 JSONObject jsonObject = new JSONObject(s);
+
+                Log.d("하이", "jsonObject : " + jsonObject);
+
                 JSONObject object = jsonObject.getJSONObject("result");
                 ty = object.getString("ty");
 
@@ -425,7 +595,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                     }
 
-                    Toast.makeText(getBaseContext(), "성공", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), PropertyManager.getInstance().getUserName() + "님. 환영합니다.", Toast.LENGTH_SHORT).show();
                     PropertyManager.getInstance().setLoginCheck(true);
                     startActivity(intent);
                     finish();

@@ -105,7 +105,6 @@ public class CommentListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         prayNumber = intent.getStringExtra("prayNumber");
 
-        Log.d("하이", "클릭한 중보기도 넘버 : " + prayNumber);
         userId = PropertyManager.getInstance().getUserId();
 
         listCommentDatas = new ArrayList<>();
@@ -164,8 +163,6 @@ public class CommentListActivity extends AppCompatActivity {
                                     builder.append(line);
                                 }
 
-                                Log.d("하이", builder.toString());
-
                             } catch (Exception e) {
                                 e.printStackTrace();
                             } finally {
@@ -177,10 +174,6 @@ public class CommentListActivity extends AppCompatActivity {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-
-//                                    ListCommentData data = new ListCommentData(prayNumber, profile, name, date, content);
-//                                    listCommentDatas.add(data);
-
                                     commentListViewAdapter.notifyDataSetChanged();
                                     recyclerView.setAdapter(commentListViewAdapter);
                                     input_comment.setText("");
@@ -220,13 +213,9 @@ public class CommentListActivity extends AppCompatActivity {
             getUrl = getUrl + "&userId=" + userId +"&prayNo=" + prayNumber;
             String jsonStr = sh.makeServiceCall(getUrl);
 
-            Log.d("하이", "getUrl : " + getUrl);
-            Log.d("하이", "jsonStr : " + jsonStr);
-
             try {
 
                 JSONObject jsonObject = new JSONObject(jsonStr);
-                Log.d("하이", "jsonStr : " + jsonObject);
                 String dataJson = jsonObject.getString("result");
 
                 JSONArray jsonArray = new JSONArray(dataJson);
@@ -238,8 +227,6 @@ public class CommentListActivity extends AppCompatActivity {
                     JSONObject object = jsonArray.getJSONObject(i);
 
                     String commentNumber = object.getString("no");
-                    String prayNumber = object.getString("keyno");
-                    String id = object.getString("id");
                     String name = object.getString("name");
                     String content = object.getString("memo");
                     String profile = object.getString("photo");
@@ -251,16 +238,12 @@ public class CommentListActivity extends AppCompatActivity {
 
                     data[i] = new ListCommentData(commentNumber, profile, name, date, content);
                     listCommentDatas.add(data[i]);
-
                 }
-
-
             } catch (JSONException e) {
 
                 e.printStackTrace();
 
             }
-
             return null;
         }
 
@@ -353,8 +336,6 @@ public class CommentListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    Log.d("하이", "선택한 놈 : " + position);
-
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 
                     builder.setTitle("댓글 삭제")
@@ -401,8 +382,6 @@ public class CommentListActivity extends AppCompatActivity {
                                                     builder.append(line);
                                                 }
 
-                                                Log.d("하이", builder.toString());
-
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             } finally {
@@ -428,99 +407,8 @@ public class CommentListActivity extends AppCompatActivity {
 
                     AlertDialog dialog = builder.create();
                     dialog.show();
-
                 }
             });
-
-            Log.d("하이", "코멘트 갯수 : " + position);
-            Log.d("하이", "리스트 갯수 : " + listCommentDatas.size());
-
-//            if (position == listCommentDatas.size()-1 ) {
-//
-//                if (!endPsotion) {
-//
-//                    loadDataList();
-//
-//                }
-//
-//            }
-
-        }
-
-        public void loadDataList() {
-
-            int row = (start++) * LOAD_ROW;
-
-            String url = setUrl + "?mode=getComment" + "&startRow=" + row + "&userId=" + userId + "&prayNo=" + prayNumber;
-
-            Log.d("하이", "url : " + setUrl);
-
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected void onPreExecute() {
-                    super.onPreExecute();
-                }
-
-                @Override
-                protected Void doInBackground(Void... params) {
-
-                    HttpHandler sh = new HttpHandler();
-
-//                    String url = setUrl + "&userId=" + userId +"&prayNo=" + prayNumber;
-                    String jsonStr = sh.makeServiceCall(url);
-
-                    Log.d("하이", "getUrl : " + url);
-                    Log.d("하이", "jsonStr : " + jsonStr);
-
-                    try {
-
-                        JSONObject jsonObject = new JSONObject(jsonStr);
-                        Log.d("하이", "jsonStr : " + jsonObject);
-                        String dataJson = jsonObject.getString("result");
-
-                        JSONArray jsonArray = new JSONArray(dataJson);
-
-                        jsonArray = soryJsonArray(jsonArray);
-
-                        for (int i = 0 ; i < jsonArray.length(); i++) {
-
-                            JSONObject object = jsonArray.getJSONObject(i);
-
-                            String commentNumber = object.getString("no");
-                            String prayNumber = object.getString("keyno");
-                            String id = object.getString("id");
-                            String name = object.getString("name");
-                            String content = object.getString("memo");
-                            String profile = object.getString("photo");
-                            String date = object.getString("indate");
-
-                            cmtNumber = commentNumber;
-
-                            addData = new ListCommentData[jsonArray.length()];
-
-                            addData[i] = new ListCommentData(commentNumber, profile, name, date, content);
-                            listCommentDatas.add(addData[i]);
-
-                        }
-
-
-                    } catch (JSONException e) {
-
-                        endPsotion = true;
-                        e.printStackTrace();
-
-                    }
-
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
-                    notifyDataSetChanged();
-                }
-            }.execute();
-
         }
 
         @Override
@@ -532,8 +420,6 @@ public class CommentListActivity extends AppCompatActivity {
         public void remove(ListCommentData data, int position) {
 
             try {
-
-                Log.d("하이", "리스트 번호" + listCommentDatas.indexOf(data));
 
                 int pos = position;
                 listCommentDatas.remove(pos);
