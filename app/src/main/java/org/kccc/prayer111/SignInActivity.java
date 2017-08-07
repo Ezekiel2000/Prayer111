@@ -1,7 +1,6 @@
 package org.kccc.prayer111;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,8 +46,6 @@ import java.util.Arrays;
 
 public class SignInActivity extends AppCompatActivity {
 
-    boolean saveLoginData;
-
     EditText text_input_email;
     EditText text_input_password;
     CheckBox checkBox;
@@ -62,10 +59,6 @@ public class SignInActivity extends AppCompatActivity {
     private String profileUrl;
     private String password;
 
-    User user;
-
-    Bitmap mSaved;
-
     private SessionCallback mKakaocallback;
 
     private CallbackManager mFacebookcallbackManager;
@@ -76,6 +69,8 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 페이스북 sdk Initialize
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_sign);
 
@@ -89,6 +84,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private void login() {
 
+        // 로그인 화면의 각 뷰를 제어하기 위한 변수 선언
         text_input_email = (EditText) findViewById(R.id.text_input_email);
         text_input_password = (EditText) findViewById(R.id.text_input_password);
         checkBox = (CheckBox) findViewById(R.id.checkBox);
@@ -96,19 +92,15 @@ public class SignInActivity extends AppCompatActivity {
         signtext = (TextView) findViewById(R.id.text_sign_up);
         kakaoLoginBtn = (Button) findViewById(R.id.btn_sign_kakaotalk);
         facebookLoginBtn = (Button) findViewById(R.id.btn_sign_facebook);
-
         signtext = (TextView) findViewById(R.id.text_sign_up);
 
+        // 이메일 및 비밀번호 자동 저장을 위한 값을 불러와 변수에 대입
         Boolean chk = PropertyManager.getInstance().getUserRememberCheck();
-        Log.d("하이", "체크값 : " + chk);
 
         if (chk) {
-
             checkBox.setChecked(chk);
-            Log.d("하이", "들어옴" );
             text_input_email.setText(PropertyManager.getInstance().getUserId());
             text_input_password.setText(PropertyManager.getInstance().getPassword());
-
         }
 
         // 일반적인 이메일 로그인 버튼 클릭 시
@@ -117,23 +109,19 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (chk) {
-
                     PropertyManager.getInstance().setUserId(text_input_email.getText().toString());
                     PropertyManager.getInstance().setPassword(text_input_password.getText().toString());
-
                 }
 
-                Log.d("하이", "암호값 : " + text_input_password.getText().toString() );
                 password = text_input_password.getText().toString();
                 userId = text_input_email.getText().toString();
 
                 if (text_input_email.getText().length() != 0 && text_input_password.getText().length() != 0) {
 
-
                     new LoginProcess().execute();
 
                     // 서버에서 이메일과 비밀번호를 검색해서 일치되는 것이 있을 경우 로그인
-                    // 일치되는 것이 없을 경우 Toast를 사용하여 다시 입력하
+                    // 일치되는 것이 없을 경우 Toast를 사용하여 다시 입력하기
 
                 } else {
                     Toast.makeText(getApplicationContext(), "빈칸을 입력하세요", Toast.LENGTH_SHORT).show();
@@ -143,6 +131,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        // 회원가입 텍스트 클릭시 회원가입 Activity 로 이동
         signtext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,6 +142,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        // 카카오톡 로그인 버튼 클릭시
         kakaoLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,23 +150,13 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        LoginManager.getInstance().logOut();
-
+        // 페이스북 로그인 버튼 클리시
         facebookLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 isFacebookLogin();
-
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("하이", "Resume");
-
     }
 
     @Override
@@ -185,12 +165,6 @@ public class SignInActivity extends AppCompatActivity {
         Log.d("하이", "Pause");
         PropertyManager.getInstance().setUserRememberCheck(checkBox.isChecked());
 
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d("하이", "Stop");
     }
 
     private class LoginProcess extends AsyncTask<Void, String, String> {
@@ -210,7 +184,7 @@ public class SignInActivity extends AppCompatActivity {
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
-                conn.setChunkedStreamingMode(0);
+                conn.setChunkedStreamingMode(0);        // body 의 길이를 모를 때 사용함
                 conn.setRequestMethod("POST");
 
                 OutputStream out = new BufferedOutputStream(conn.getOutputStream());
@@ -259,93 +233,63 @@ public class SignInActivity extends AppCompatActivity {
             try {
 
                 JSONObject jsonObject = new JSONObject(result);
-
-                Log.d("하이", "jsonObject : " + jsonObject);
-
                 String resultData = jsonObject.getString("result");
-
-                Log.d("하이", "resultData : " + resultData);
-
                 JSONObject object = new JSONObject(resultData);
 
-                if (resultData == null) {
+                profileUrl = object.getString("photo");
+                userId = object.getString("id");
+                userName = object.getString("name");
+                userId = object.getString("email");
 
-                    Log.d("하이", "onPost null: " + object.toString());
-//                    Toast.makeText(getBaseContext(), "아이디 또는 패스워드가 틀렸습니다.", Toast.LENGTH_SHORT).show();
+                setLayoutText();
 
-                } else {
+                PropertyManager.getInstance().setUserName(userName);
+                PropertyManager.getInstance().setUserId(userId);
+                PropertyManager.getInstance().setPassword(password);
+                PropertyManager.getInstance().setUserProfile(profileUrl);
+                PropertyManager.getInstance().setUserLoginType("EMAIL");
+                PropertyManager.getInstance().setLoginCheck(true);
 
+                Intent intent = new Intent();
 
-                    Log.d("하이", "onPost not null: " + object.toString());
+                if (getIntent().getStringExtra("position").equals("cmt")) {
 
-                    profileUrl = object.getString("photo");
-                    userId = object.getString("id");
-                    userName = object.getString("name");
-//                    password = object.getString("passwd");
-                    userId = object.getString("email");
+                    intent = new Intent(getBaseContext(), CommentListActivity.class);
 
-                    setLayoutText();
+                    intent.putExtra("user_profile", profileUrl);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("name", userName);
+                    intent.putExtra("password", password);
+                    intent.putExtra("prayNumber", getIntent().getStringExtra("prayNumber"));
+                    intent.putExtra("check", true);
 
-                    user = new User(profileUrl, userId, userName, "");
+                } else if (getIntent().getStringExtra("position").equals("write")) {
 
-                    PropertyManager.getInstance().setUserName(userName);
-                    PropertyManager.getInstance().setUserId(userId);
-                    PropertyManager.getInstance().setPassword(password);
-                    PropertyManager.getInstance().setUserProfile(profileUrl);
-                    PropertyManager.getInstance().setUserLoginType("EMAIL");
-                    PropertyManager.getInstance().setLoginCheck(true);
+                    intent = new Intent(getBaseContext(), WriteActivity.class);
 
-                    Log.d("하이", "이미지 : " + profileUrl);
+                    intent.putExtra("user_profile", profileUrl);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("name", userName);
+                    intent.putExtra("password", password);
+                    intent.putExtra("check", true);
 
-                    Intent intent = new Intent();
+                } else if (getIntent().getStringExtra("position").equals("main")) {
 
-                    if (getIntent().getStringExtra("position").equals("cmt")) {
+                    intent = new Intent(getBaseContext(), MainActivity.class);
 
-                        intent = new Intent(getBaseContext(), CommentListActivity.class);
-
-                        Log.d("하이", "어디서 왔나 : " + "cmt");
-
-                        intent.putExtra("user_profile", profileUrl);
-                        intent.putExtra("userId", userId);
-                        intent.putExtra("name", userName);
-                        intent.putExtra("password", password);
-//                        intent.putExtra("userData", user);
-                        intent.putExtra("prayNumber", getIntent().getStringExtra("prayNumber"));
-                        intent.putExtra("check", true);
-
-                    } else if (getIntent().getStringExtra("position").equals("write")){
-
-                        intent = new Intent(getBaseContext(), WriteActivity.class);
-
-                        Log.d("하이", "어디서 왔나 : " + "write");
-
-                        intent.putExtra("user_profile", profileUrl);
-                        intent.putExtra("userId", userId);
-                        intent.putExtra("name", userName);
-                        intent.putExtra("password", password);
-                        intent.putExtra("check", true);
-
-                    } else if (getIntent().getStringExtra("position").equals("main")) {
-
-                        intent = new Intent(getBaseContext(), MainActivity.class);
-
-                        Log.d("하이", "어디서 왔나 : " + "main");
-
-                        intent.putExtra("user_profile", profileUrl);
-                        intent.putExtra("userId", userId);
-                        intent.putExtra("name", userName);
-                        intent.putExtra("password", password);
-                        intent.putExtra("position", "main");
-                        intent.putExtra("check", true);
-
-                    }
-
-                    Toast.makeText(getApplicationContext(), userName + "님. 반갑습니다.", Toast.LENGTH_SHORT).show();
-                    setLayoutText();
-                    startActivity(intent);
-                    finish();
+                    intent.putExtra("user_profile", profileUrl);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("name", userName);
+                    intent.putExtra("password", password);
+                    intent.putExtra("position", "main");
+                    intent.putExtra("check", true);
 
                 }
+
+                Toast.makeText(getApplicationContext(), userName + "님. 반갑습니다.", Toast.LENGTH_SHORT).show();
+                setLayoutText();
+                startActivity(intent);
+                finish();
 
             } catch (JSONException e) {
                 e.printStackTrace();

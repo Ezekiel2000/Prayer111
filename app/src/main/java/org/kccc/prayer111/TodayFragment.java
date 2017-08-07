@@ -1,6 +1,5 @@
 package org.kccc.prayer111;
 
-import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by ezekiel on 2017. 2. 2..
@@ -42,8 +42,6 @@ public class TodayFragment extends Fragment {
 
     ArrayList<HashMap<String, String>> todayPraysList;
 
-    ProgressDialog progressDialog;
-
     public TodayFragment() {
 
     }
@@ -58,33 +56,28 @@ public class TodayFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_today, container, false);
 
-        Log.d("하이", "getID" + view.getId());
-
         todayPraysList = new ArrayList<>();
 
         today_pray_title = (TextView) view.findViewById(R.id.today_pray_title);
-        Typeface typefaceTitle = Typeface.createFromAsset(getContext().getAssets(), "tvN_OTF_Light.otf");
-        today_pray_title.setTypeface(typefaceTitle);
-
         today_pray_content = (TextView) view.findViewById(R.id.today_pray_content);
+
+        Typeface typefaceTitle = Typeface.createFromAsset(getContext().getAssets(), "tvN_OTF_Light.otf");
         Typeface typefaceContent = Typeface.createFromAsset(getContext().getAssets(), "NotoSansCJKkr_Light.otf");
+
+        today_pray_title.setTypeface(typefaceTitle);
         today_pray_content.setTypeface(typefaceContent);
 
-        curYearFormat = new SimpleDateFormat("yyyy");
-        curMonthFormat = new SimpleDateFormat("MM");
-        curDayFormat = new SimpleDateFormat("d");
+        curYearFormat = new SimpleDateFormat("yyyy", Locale.KOREA);
+        curMonthFormat = new SimpleDateFormat("MM", Locale.KOREA);
+        curDayFormat = new SimpleDateFormat("d", Locale.KOREA);
 
+        // 처음 한번만 API로 서버에서 기도제목을 불러오고 2번째 부터는 처음 불러왔을 때 기도제목을 저장하여 보여줌
         if (!loadingCheck) {
-
             new GetTodayPrays().execute();
-
         } else {
-
             today_pray_content.setText(today_pray);
-
         }
 
-        Log.d("하이", "fragment1  onCreateView" + today_pray);
         return view;
     }
 
@@ -93,12 +86,10 @@ public class TodayFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = ProgressDialog.show(getContext(), null, "로딩중입니다.", true, false);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-
 
             HttpHandler sh = new HttpHandler();
 
@@ -118,8 +109,6 @@ public class TodayFragment extends Fragment {
 
                     HashMap<String, String> todayPray = new HashMap<>();
 
-                    Log.d("하이", "fragment1  doInBackground" + jsonObject);
-
                     todayPray.put("pray", pray);
                     todayPray.put("yymm", yymm);
                     todayPray.put("day", day);
@@ -128,7 +117,6 @@ public class TodayFragment extends Fragment {
 
                 } catch (JSONException e) {
                     Log.e(TAG, "Json parsing error:" + e.getMessage());
-
                 }
             }
 
@@ -138,12 +126,9 @@ public class TodayFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            progressDialog.dismiss();
 
             long now = System.currentTimeMillis();
             Date date = new Date(now);
-
-            Log.d("하이", "날짜  :" + date);
 
             String strCurYear = curYearFormat.format(date) + curMonthFormat.format(date);
             String strCurDay = curDayFormat.format(date);
@@ -163,10 +148,7 @@ public class TodayFragment extends Fragment {
             } catch (IndexOutOfBoundsException e) {
 
             }
-
             loadingCheck = true;
-            Log.d("하이", "fragment1  onPostExecute" + today_pray);
-
         }
     }
 
@@ -182,30 +164,7 @@ public class TodayFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-
-        Log.d("하이", "fragment1  onStart");
-
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        Log.d("하이", "fragment1  onStop");
-
-        super.onStop();
-    }
-
-    @Override
-    public void onDetach() {
-        Log.d("하이", "fragment1  onDetach");
-        super.onDetach();
-    }
-
-    @Override
     public void onResume() {
-
-        Log.d("하이", "fragment1  Resume");
 
         getActivity().findViewById(R.id.fab_write).setVisibility(View.GONE);
         getActivity().findViewById(R.id.multiple_action).setVisibility(View.VISIBLE);
@@ -219,8 +178,6 @@ public class TodayFragment extends Fragment {
         getActivity().findViewById(R.id.fab_write).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.multiple_action).setVisibility(View.GONE);
 
-
-        Log.d("하이", "fragment1  onPause");
         super.onPause();
     }
 

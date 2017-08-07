@@ -17,13 +17,16 @@ import java.net.URL;
  * Created by ezekiel on 2017. 2. 14..
  */
 
+// Get방식의 데이터 전송을 위한 객체
 public class HttpHandler {
 
     private static final String TAG = HttpHandler.class.getSimpleName();
 
+    // 기본 생성자 매서드
     public HttpHandler() {
     }
 
+    // 매개변수로 받은 url 를 사용하여 get 방식으로 connection open
     public String makeServiceCall(String reqUrl) {
 
         String response = null;
@@ -49,6 +52,7 @@ public class HttpHandler {
         return response;
     }
 
+    // 매개변수로 InputStream 을 String 으로 변환
     private String convertStreamToString(InputStream is) {
 
         BufferedReader reader = null;

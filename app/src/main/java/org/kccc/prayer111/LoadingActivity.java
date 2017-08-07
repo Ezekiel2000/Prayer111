@@ -14,6 +14,7 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
+        // 시작시 로딩화면으로 시작하여 2초후에 메인화면으로 이동
         Handler hd = new Handler();
         hd.postDelayed(new Runnable() {
             @Override

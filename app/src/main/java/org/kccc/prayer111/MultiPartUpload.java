@@ -42,8 +42,6 @@ public class MultiPartUpload extends AsyncTask<String, Integer, String> {
             String method = params[3];
             String image = params[4];
 
-
-
             Log.d("하이", "image : " + image);
 
             File file = new File(image);
@@ -61,10 +59,8 @@ public class MultiPartUpload extends AsyncTask<String, Integer, String> {
             RequestBody fileBody = RequestBody.create(MEDIA_TYPE, file);
 
             if (image.endsWith("png")) {
-                Log.d("하이", "png임");
                 fileBody = RequestBody.create(MEDIA_TYPE_PNG, file);
             } else if (image.endsWith("jpg")) {
-                Log.d("하이", "jpg임");
                 fileBody = RequestBody.create(MEDIA_TYPE_JPG, file);
             }
 
@@ -91,7 +87,6 @@ public class MultiPartUpload extends AsyncTask<String, Integer, String> {
             client.readTimeoutMillis();
             Response response = client.newCall(request).execute();
             res = response.body().string();
-            Log.d("하이", "response : " + res);
 
         } catch (UnknownHostException | UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -110,8 +105,6 @@ public class MultiPartUpload extends AsyncTask<String, Integer, String> {
             JSONObject jsonObject = new JSONObject(s);
             JSONObject object = jsonObject.getJSONObject("result");
             String ty = object.getString("ty");
-
-            Log.d("하이", "ty : " + ty);
 
             if (ty.equals("old")) {
 

@@ -45,8 +45,6 @@ public class SendPushNotification {
         today = today + " 17:32";
         HttpHandler sh = new HttpHandler();
 
-        Log.d("하이", "지금 현재 시각은? : " + today );
-
         String jsonStr = sh.makeServiceCall(url);
 
         if (jsonStr != null) {

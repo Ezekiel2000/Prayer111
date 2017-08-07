@@ -90,6 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        // 해당 Activity 의 상태창의 색을 지정하기 대신 SDK 21 이상에서만 지원
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(0xFF5f4fb2);
         }
@@ -104,13 +105,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         text_my_name.setText(PropertyManager.getInstance().getUserName());
 
+        // 패스워드 변경할 수 있는 창은 로그인 타입이 EMAIL 일때만 화면에 생성
         if (!PropertyManager.getInstance().getUserLoginType().equals("EMAIL")) {
             text_my_password_change.setVisibility(View.GONE);
         }
 
         userId = getIntent().getStringExtra("userId");
 
-        Log.d("하이", "이미지 나옴 : " + getIntent().getStringExtra("user_profile"));
+        // 이미지 파일 불러와서 표현하기
         Glide.with(this)
                 .load(getIntent().getStringExtra("user_profile"))
                 .override(200, 200)
@@ -161,6 +163,7 @@ public class ProfileActivity extends AppCompatActivity {
 //            }
 //        });
 
+        // 패스워드 변경하기 text 창을 클릭시 변경창 띄워주기
         text_my_password_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,6 +192,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        // 로그아웃 버튼 클릭시
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,6 +203,7 @@ public class ProfileActivity extends AppCompatActivity {
                     UserManagement.requestLogout(new LogoutResponseCallback() {
                         @Override
                         public void onCompleteLogout() {
+
                             Log.d("하이", "로그아웃 성공");
                         }
                     });
@@ -227,6 +232,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        // 탈퇴하기 클릭시 해당 아이디를 가지고 있는 모든 정보를 삭제하기
         btn_signout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,10 +252,7 @@ public class ProfileActivity extends AppCompatActivity {
                             conn.setRequestMethod("GET");
                             conn.getInputStream();
 
-                            Log.d("하이", "setUrl" + setUrl);
-
                         } catch (Exception e) {
-                            Log.d("하이", "setUrl" + setUrl);
                             e.printStackTrace();
                         }
                     }
@@ -274,11 +277,15 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private void showAlertDialog() {
+
+        // xml 파일을 다이얼로그로 띄우기 위해 inflater 객체로 생성
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout pwdChangeLayout = (LinearLayout) inflater.inflate(R.layout.dialog_password_change, null);
 
+        // 다이얼로그 빌더 객체 생성
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+        // 빌더 화면으로 xml 파일을 inflater 객체로 생성한 화면 세팅
         builder.setView(pwdChangeLayout);
         builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
             @Override
@@ -286,6 +293,7 @@ public class ProfileActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+        // 확인 클릭시 API 를 통해 기존의 패스워드 변경
         builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -295,8 +303,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                 after_password = input_password_change.getText().toString();
                 after_password_conform = input_password_change_conform.getText().toString();
-
-                Log.d("하이", "패스워드 : " + after_password);
 
                 if ( !after_password.isEmpty() && !after_password_conform.isEmpty()) {
 
@@ -349,21 +355,14 @@ public class ProfileActivity extends AppCompatActivity {
 
                             }
                         }.start();
-
                         Toast.makeText(getApplicationContext(), "비밀번호가 변경되었습니다." , Toast.LENGTH_SHORT).show();
 
                     } else {
-
                         Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
-
                     }
-
                 } else {
-
                     Toast.makeText(getApplicationContext(), "빈칸을 채워주세요.", Toast.LENGTH_SHORT).show();
-
                 }
-
             }
         });
         builder.show();
@@ -480,13 +479,12 @@ public class ProfileActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         Intent reIntent = new Intent();
-        PropertyManager.getInstance().setUserProfile(imgPath);
         setResult(Activity.RESULT_OK, reIntent);
         finish();
 
     }
 
-
+    // 바꾼 이미지 파일을 저장하기 위해서는 서버에 다시 등록을 해야 서버에서 불러올 때 바뀐 이미지 파일을 불러올 수 있음
     public class MultiPartUpload extends AsyncTask<String, Integer, String> {
 
         @Override

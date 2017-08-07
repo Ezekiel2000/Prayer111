@@ -2,11 +2,10 @@ package org.kccc.prayer111;
 
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +34,6 @@ public class MyIntercessionActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(0xFF5f4fb2);
         }
-        Log.d("하이", "시스템바 변경");
 
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -76,8 +74,6 @@ public class MyIntercessionActivity extends AppCompatActivity {
 
                     JSONObject object = jsonArray.getJSONObject(i);
 
-                    Log.d("하이", "불러오는 값 : " + object);
-
                     String number = object.getString("no");
                     String email = object.getString("id");
                     String name = object.getString("name");
@@ -89,9 +85,6 @@ public class MyIntercessionActivity extends AppCompatActivity {
                     int prayNumber = object.getInt("heart");
                     int commentNumber = object.getInt("comment");
                     int chkHeart = object.getInt("chkHeart");
-
-                    Log.d("하이", "불러오는 값 : " + number);
-                    Log.d("하이", "사진값 : " + profile);
 
                     data = new ListData[jsonArray.length()];
 

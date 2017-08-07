@@ -47,12 +47,12 @@ public class IntercessionFragment extends Fragment {
 
     private static int displayedposition = 0;
 
-    private String TAG = IntercessionFragment.class.getSimpleName();
     private static String url = "http://api.kccc.org/AppAjax/111prayer/index.php?mode=getTogether";
     private String postUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
     private static String getUrl;
 
     ListDataAdapter listDataAdapter;
+    FloatingActionButton fab_pray;
 
     ArrayList<HashMap<String, String>> IntercessionPraysList;
 
@@ -88,40 +88,34 @@ public class IntercessionFragment extends Fragment {
 
         userId = ((MainActivity)getActivity()).userId;
 
+        // 로그인이 되어있을 때와 안되어 있을 때를 구분하여 url 생성
+        if (PropertyManager.getInstance().getLoginCheck()) {
+            getUrl = url +"&userId=" + PropertyManager.getInstance().getUserId();
+        } else {
+            getUrl = url;
+        }
+
+        listData = new ArrayList<>();
+        listDataAdapter = new ListDataAdapter(getContext(), listData, R.layout.fragment_intercession);
+        new GetIntercessionPrays().execute();
+
         return view;
 
     }
 
+    // 사용자에게 보이는 순간과 안보이는 순간을 파악하여 boolean 값으로 파악할 수 있음
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
         if (isVisibleToUser) {
 
-            if (PropertyManager.getInstance().getLoginCheck()) {
-
-
-                getUrl = url +"&userId=" + PropertyManager.getInstance().getUserId();
-
-            } else {
-
-                getUrl = url;
-
-            }
-
-            Log.d("하이", "페이지 3번 보인다.");
-
-
-            listData = new ArrayList<>();
-            listDataAdapter = new ListDataAdapter(getContext(), listData, R.layout.fragment_intercession);
-            new GetIntercessionPrays().execute();
-
         } else {
-            Log.d("하이", "페이지 3번 안보인다.");
+
         }
 
-
     }
+
 
     private class GetIntercessionPrays extends AsyncTask<Void, Void, Void> {
 
@@ -130,8 +124,6 @@ public class IntercessionFragment extends Fragment {
             super.onPreExecute();
 //            progressDialog = ProgressDialog.show(getContext(), null, "로딩중입니다.", true, false);
         }
-
-
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -154,8 +146,6 @@ public class IntercessionFragment extends Fragment {
 
                 for (int i = 0; i < jsonArray.length() ; i++) {
                     JSONObject object = jsonArray.getJSONObject(i);
-
-
 
                     String number = object.getString("no");
                     String email = object.getString("id");
@@ -189,10 +179,6 @@ public class IntercessionFragment extends Fragment {
                 });
 
             } catch (JSONException e) {
-
-                e.printStackTrace();
-
-            } catch (Exception e) {
 
                 e.printStackTrace();
 
@@ -254,18 +240,18 @@ public class IntercessionFragment extends Fragment {
 
         Log.d("하이", "fragment3  Resume");
 
-        FloatingActionButton fab_pray = (FloatingActionButton) getActivity().findViewById(R.id.fab_check_today);
-        fab_pray.setVisibility(View.GONE);
-
+//        FloatingActionButton fab_pray = (FloatingActionButton) getActivity().findViewById(R.id.fab_check_today);
+//        fab_pray.setVisibility(View.GONE);
+//
         super.onResume();
     }
 
     @Override
     public void onPause() {
-
-        FloatingActionButton fab_pray = (FloatingActionButton) getActivity().findViewById(R.id.fab_check_today);
-        fab_pray.setVisibility(View.VISIBLE);
-        Log.d("하이", "fragment3  onPause");
+//
+//        FloatingActionButton fab_pray = (FloatingActionButton) getActivity().findViewById(R.id.fab_check_today);
+//        fab_pray.setVisibility(View.VISIBLE);
+//        Log.d("하이", "fragment3  onPause");
 
         super.onPause();
     }

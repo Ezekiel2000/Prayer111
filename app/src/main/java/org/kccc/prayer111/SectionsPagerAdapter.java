@@ -3,7 +3,6 @@ package org.kccc.prayer111;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
 /**
  * Created by ezekiel on 2017. 2. 1..
@@ -18,8 +17,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-
-        Log.d("하이", "플래그먼트 인스턴스" + position );
 
         switch (position) {
             case 0:
@@ -40,10 +37,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         return 3;
     }
 
+    // 매개변수에 따라 페이지 제목값을 리턴함
     @Override
     public CharSequence getPageTitle(int position) {
-
-
 
         switch (position) {
             case 0:

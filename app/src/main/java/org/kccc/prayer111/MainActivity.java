@@ -59,14 +59,15 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     String profile;
     String email;
 
-    User user;
-
     Boolean loginCheck = false;
 
     SharedPreferences mPref;
     SharedPreferences dayCheck;
     SharedPreferences.Editor dayEditor;
     Boolean bFirst;
+
+    FloatingActionButton fab_pray;
+    FloatingActionButton fab_write;
 
     public static final int REQUEST_MAIN = 2501;
 
@@ -86,10 +87,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         // Pushwoosh 기본 세팅
         registerReceivers();
         PushManager pushManager = PushManager.getInstance(this);
-
         pushManager.setNotificationFactory(new NotificationFactory());
-
-
         processPermissions();
 
         try {
@@ -114,24 +112,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
         Log.d("하이", "시스템바 변경");
 
-//        Intent intent = new Intent(MainActivity.this, NotiService.class);
-//        startService(intent);
-
-//        new Thread() {
-//            @Override
-//            public void run() {
-//
-//                try {
-//                    SendPushNotification sendPushNotification = new SendPushNotification();
-//                    sendPushNotification.SendPush();
-//                } catch (MalformedURLException e) {
-//                    e.printStackTrace();
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }.start();
-
         // 첫 실행 판단
         try {
 
@@ -155,10 +135,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        Log.d("하이", "타이틀바 변경");
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -169,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setTabTextColors(0xFFa096db, 0xFF6b58ca);
         tabLayout.setSelectedTabIndicatorColor(0xFF6b58ca);
-        Log.d("하이", "탭바 변경");
 
         CheckBox checked = (CheckBox) findViewById(R.id.checkBox);
 
@@ -178,29 +154,24 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
         CallbackManager callbackManager = CallbackManager.Factory.create();
         ShareDialog shareDialog = new ShareDialog(this);
 
-        FloatingActionButton fab_pray = (FloatingActionButton) findViewById(R.id.fab_check_today);
+        // mViewPager.getCurrentItem() == 0 는 오늘의 기도 페이지
+        fab_pray = (FloatingActionButton) findViewById(R.id.fab_check_today);
         if (mViewPager.getCurrentItem() == 0) {
             fab_pray.setVisibility(View.VISIBLE);
-            Log.d("하이", "나타났음 : " + mViewPager.getCurrentItem());
         }
 
+        fab_pray.setOnClickListener(v -> {
 
-        fab_pray.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            long now1 = System.currentTimeMillis();
+            Date date1 = new Date(now1);
 
-                long now = System.currentTimeMillis();
-                Date date = new Date(now);
+            SimpleDateFormat dd1 = new SimpleDateFormat("d", Locale.KOREA);
+            day = dd1.format(date1);
 
-                SimpleDateFormat dd = new SimpleDateFormat("d", Locale.KOREA);
-                day = dd.format(date);
+            today_checked = true;
 
-                today_checked = true;
+            Toast.makeText(MainActivity.this, day + "일, 오늘 기도를 하였습니다.", Toast.LENGTH_SHORT).show();
 
-
-                Toast.makeText(MainActivity.this, day + "일, 오늘 기도를 하였습니다.", Toast.LENGTH_SHORT).show();
-
-            }
         });
 
         // 카카오톡 공유 펩버튼 및 클릭시
@@ -250,13 +221,9 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             @Override
             public void onClick(View v) {
 
-                Log.d("하이", "지금 현재" + mViewPager.getCurrentItem());
-
                 if (mViewPager.getCurrentItem() == 0) {
 
                     Toast.makeText(getApplicationContext(), "페이스북 오늘의 기도 공유하기 성공", Toast.LENGTH_SHORT).show();
-
-                    Log.d("하이", "기도 : " + today_pray_content);
 
                     ShareLinkContent content = new ShareLinkContent.Builder()
                             .setContentTitle("오늘의 기도")
@@ -300,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             }
         });
 
-        FloatingActionButton fab_write = (FloatingActionButton) findViewById(R.id.fab_write);
+        fab_write = (FloatingActionButton) findViewById(R.id.fab_write);
         fab_write.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -308,29 +275,22 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
                 if (!TextUtils.isEmpty(name)) {
 
                     Intent writeIntent = new Intent(MainActivity.this, WriteActivity.class);
-                    Toast.makeText(MainActivity.this, "자동로그인 되었습니다.", Toast.LENGTH_SHORT).show();
                     writeIntent.putExtra("userId", userId);
                     writeIntent.putExtra("name", name);
                     writeIntent.putExtra("password", password);
                     writeIntent.putExtra("user_profile", profile);
-                    Log.d("하이", "들어갔음?");
                     startActivity(writeIntent);
                 } else {
 
                     Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
                     signInIntent.putExtra("position", "write");
-                    Log.d("하이", "안들어갔음?");
                     startActivity(signInIntent);
                 }
 
             }
         });
 
-        if (TextUtils.isEmpty(getIntent().getStringExtra("position"))) {
-
-            // 비어있음
-
-        } else {
+        if (!TextUtils.isEmpty(getIntent().getStringExtra("position"))) {
 
             try {
                 String position = getIntent().getStringExtra("position");
@@ -344,7 +304,23 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }            try {
+                String position = getIntent().getStringExtra("position");
+                if (position.equals("cmt") || position.equals("write")) {
+                    mViewPager.setCurrentItem(2);
+                    fab_write.setVisibility(View.VISIBLE);
+                    findViewById(R.id.multiple_action).setVisibility(View.GONE);
+
+                } else if (position.equals("main")){
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+        } else {
+
+            // 비어있음
 
         }
 
@@ -407,20 +383,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("하이", "onResume");
-        registerReceivers();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("하이", "onPause");
-        unregisterReceivers();
-    }
-
-    @Override
     protected void onStart() {
         Log.d("하이", "onStart");
 
@@ -445,12 +407,6 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
 
         super.onStart();
 
-    }
-
-    @Override
-    protected void onRestart() {
-        Log.d("하이", "onRestart");
-        super.onRestart();
     }
 
     @Override
@@ -658,14 +614,7 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CODE_EXTERNAL_STORAGE_CONTACTS:
-
-                Log.d("하이", "grantResults : " + grantResults.length);
-
-                Log.d("하이", "grantResults : " + grantResults[0] + grantResults[1] + grantResults[2]);
-
                 if (bFirst == false) {
-                    Log.d("하이", "first");
-
                     if (grantResults.length == 3 && grantResults[0] + grantResults[1] + grantResults[2]
                             == PackageManager.PERMISSION_GRANTED) {
                         Toast.makeText(this,
@@ -674,14 +623,12 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
                         Toast.makeText(this,
                                 "'저장소 읽기'와 '알림 받기'요청을 모두 혹은 일부 거부하셨습니다", Toast.LENGTH_SHORT).show();
                     }
-
                     SharedPreferences.Editor editor = mPref.edit();
                     editor.putBoolean("isFirst", true);
                     editor.commit();
                 }
 
                 if (bFirst == true) {
-                    Log.d("하이", "not first");
                 }
 
                 break;

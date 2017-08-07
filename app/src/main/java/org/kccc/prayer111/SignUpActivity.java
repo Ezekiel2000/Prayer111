@@ -1,7 +1,6 @@
 package org.kccc.prayer111;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -55,7 +54,6 @@ import okhttp3.Response;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    Context context;
     EditText text_sign_name;
     EditText text_sign_email;
     EditText text_sign_password;
@@ -70,7 +68,7 @@ public class SignUpActivity extends AppCompatActivity {
     Uri mImageCaptureUri;
 
     final int REQ_CODE_SELECT_IMAGE = 100;
-    final int REQ_CODE_CAPTRUE_IMAGE = 200;
+    final int REQ_CODE_CAPTURE_IMAGE = 200;
 
     private static String setUrl = "http://api.kccc.org/AppAjax/111prayer/index.php";
 
@@ -79,11 +77,12 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        // 해당 Activity 의 상태창의 색을 지정하기 대신 SDK 21 이상에서만 지원
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(0xFF5f4fb2);
         }
 
-
+        // 로그인 화면의 각 뷰를 제어하기 위한 변수 선언
         text_sign_name = (EditText) findViewById(R.id.text_sign_name);
         text_sign_email = (EditText) findViewById(R.id.text_sign_email);
         text_sign_password = (EditText) findViewById(R.id.text_sign_password);
@@ -91,15 +90,16 @@ public class SignUpActivity extends AppCompatActivity {
         btn_sign = (Button) findViewById(R.id.btn_sign);
         image_select = (ImageView) findViewById(R.id.image_select);
 
-
+        // 폰트 적용하기 위해 Font Setting
         Typeface typeface = Typeface.createFromAsset(getAssets(), "NotoSansCJKkr_Light.otf");
 
+        // 각 Textview 에 폰트 설정
         text_sign_name.setTypeface(typeface);
         text_sign_email.setTypeface(typeface);
         text_sign_password.setTypeface(typeface);
         text_sign_password_conform.setTypeface(typeface);
 
-
+        // 이미지를 삽입하기 위해 이미지 버튼 클릭시
         image_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,10 +138,12 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
+        // 회원가입 버튼 클릭시
         btn_sign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                // 빈 칸이 있을 경우
                 if (text_sign_name.getText().length() == 0) {
                     Toast.makeText(v.getContext(), "이름을 입력하세요", Toast.LENGTH_SHORT).show();
                 } else if (text_sign_email.getText().length() == 0) {
@@ -152,53 +154,40 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(v.getContext(), "패스워드 확인을 입력하세요", Toast.LENGTH_SHORT).show();
                 } else if (text_sign_password.getText().toString().equals(text_sign_password_conform.getText().toString())) {
 
+                    // email 형식인지 아닌지 체크
                     boolean emailCheck = checkEmail(text_sign_email.getText().toString());
 
+                    // 이메일 형식이면
                     if (emailCheck) {
 
+                        // SharedPreference 로 개인 정보를 저장
                         PropertyManager.getInstance().setUserName(text_sign_name.getText().toString());
                         PropertyManager.getInstance().setUserId(text_sign_email.getText().toString());
                         PropertyManager.getInstance().setPassword(text_sign_password.getText().toString());
                         PropertyManager.getInstance().setUserLoginType("EMAIL");
                         PropertyManager.getInstance().setUserProfile(imgPath);
 
-                        Log.d("하이", "setURL : " + setUrl);
-
+                        // 사진이 있는지 없는지를 구분하여 사진이 있을경우 사진과 함께 서버로 보내고 사진이 없을 경우 사진을 제외하고 서버로 보냄
                         if (TextUtils.isEmpty(realPath)) {
-
                             new SignInUser().execute(
                                     PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserId(),
                                     PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType()
                             );
-
-
-
                         } else {
-
                             new MultiPartUpload().execute(
                                     PropertyManager.getInstance().getUserName(), PropertyManager.getInstance().getUserId(),
                                     PropertyManager.getInstance().getPassword(), PropertyManager.getInstance().getUserLoginType(), realPath
                             );
-
                         }
-
                     } else {
-
                         Toast.makeText(v.getContext(), "이메일 형식이 아닙니다.", Toast.LENGTH_SHORT).show();
-
                     }
-
                 } else {
-
-                    Log.d("하이", text_sign_password_conform.getText().toString());
-
                     Toast.makeText(v.getContext(), "패스워드가 틀립니다.", Toast.LENGTH_SHORT).show();
-
                 }
             }
         });
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -230,7 +219,7 @@ public class SignUpActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        } else if (requestCode == REQ_CODE_CAPTRUE_IMAGE) {
+        } else if (requestCode == REQ_CODE_CAPTURE_IMAGE) {
 
             if (resultCode == Activity.RESULT_OK) {
 
@@ -307,7 +296,7 @@ public class SignUpActivity extends AppCompatActivity {
             Log.d("하이", "mImageCaptureUri : " + mImageCaptureUri);
 
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
-            startActivityForResult(intent, REQ_CODE_CAPTRUE_IMAGE);
+            startActivityForResult(intent, REQ_CODE_CAPTURE_IMAGE);
     }
 
     public static boolean checkEmail(String email) {
@@ -331,8 +320,6 @@ public class SignUpActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             HttpURLConnection conn = null;
             StringBuilder builder = new StringBuilder();
-
-            String res = null;
 
             try {
                 String name = params[0];
@@ -363,7 +350,6 @@ public class SignUpActivity extends AppCompatActivity {
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
 
-
                 String line = null;
                 while ((line =reader.readLine()) != null) {
                     if (builder.length() > 0) {
@@ -371,8 +357,6 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                     builder.append(line);
                 }
-
-                Log.d("하이", builder.toString());
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -479,29 +463,19 @@ public class SignUpActivity extends AppCompatActivity {
                 String method = params[3];
                 String image = params[4];
 
-
-
-                Log.d("하이", "image : " + image);
-
                 File file = new File(image);
-
-                Log.d("하이", "file : " + file.toString());
 
                 final MediaType MEDIA_TYPE = MediaType.parse("image/*");
                 final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
                 final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
                 String filename = image.substring(image.lastIndexOf("/") + 1);
 
-                Log.d("하이", "filename : " + filename);
-
                 RequestBody requestBody;
                 RequestBody fileBody = RequestBody.create(MEDIA_TYPE, file);
 
                 if (image.endsWith("png")) {
-                    Log.d("하이", "png임");
                     fileBody = RequestBody.create(MEDIA_TYPE_PNG, file);
                 } else if (image.endsWith("jpg")) {
-                    Log.d("하이", "jpg임");
                     fileBody = RequestBody.create(MEDIA_TYPE_JPG, file);
                 }
 
@@ -515,9 +489,6 @@ public class SignUpActivity extends AppCompatActivity {
                         .addFormDataPart("up", filename, fileBody)
                         .build();
 
-
-                Log.d("하이", "바디 : " + requestBody.toString());
-
                 Request request = new Request.Builder()
                         .url(setUrl)
                         .post(requestBody)
@@ -528,7 +499,6 @@ public class SignUpActivity extends AppCompatActivity {
                 client.readTimeoutMillis();
                 Response response = client.newCall(request).execute();
                 res = response.body().string();
-                Log.d("하이", "response : " + res);
 
             } catch (UnknownHostException | UnsupportedEncodingException e) {
                 e.printStackTrace();
