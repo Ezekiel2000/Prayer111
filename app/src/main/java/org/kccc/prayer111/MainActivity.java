@@ -469,6 +469,24 @@ public class MainActivity extends AppCompatActivity implements PushEventListener
             loginIntent.putExtra("check", loginCheck);
             startActivity(loginIntent);
 
+        } else if (id == R.id.action_facebook) {
+
+            String facebookUrl = "https://www.facebook.com/111Pray";
+
+            try {
+//                int versionCode = getApplicationContext().getPackageManager().getPackageInfo("com.facebook.katana", 0).versionCode;
+//
+//                if (versionCode >= 3002850) {
+                    Uri uri = Uri.parse("fb://facewebmodal/f?href=" + facebookUrl);
+//                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/1737335849929630")));
+//                } else {
+//                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/1737335849929630")));
+//                }
+            } catch (Exception e) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(facebookUrl)));
+            }
+
         }
 
         return super.onOptionsItemSelected(item);

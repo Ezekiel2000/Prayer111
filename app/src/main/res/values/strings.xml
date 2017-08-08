@@ -12,6 +12,7 @@
     <string name="action_logout">회원정보</string>
     <string name="pray">PRAY FOR</string>
     <string name="action_licence">라이센스 고지</string>
+    <string name="facebook_page">111 페이스북 페이지</string>
     <string name="licence_okhttp">Copyright 2016 Square, Inc.
 
 Licensed under the Apache License, Version 2.0 (the \"License\");
